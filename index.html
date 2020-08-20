@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-20 01:12:43" itemprop="dateModified" datetime="2020-08-20T01:12:43+08:00">2020-08-20</time>
+                <time title="修改时间：2020-08-20 16:16:05" itemprop="dateModified" datetime="2020-08-20T16:16:05+08:00">2020-08-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -220,13 +220,11 @@
     <div class="post-body" itemprop="articleBody">
     
       
-          <h2 id="1、基础知识"><a href="#1、基础知识" class="headerlink" title="1、基础知识"></a>1、基础知识</h2><p>NDArray、NumPy的广播机制：1、数组维度不同，后缘维度的轴长（从末尾算起的维度）相同；（4，3）+（3，）；（3，4，2）+（4，2）   2、数组维度相同，其中有个轴为1；（4，3）+（4，1）：在1轴上广播扩展。</p>
+          <h2 id="1、基础知识"><a href="#1、基础知识" class="headerlink" title="1、基础知识"></a>1、基础知识</h2><p>NDArray、NumPy的广播机制：数组维度不同，后缘维度的轴长（从末尾算起的维度）相同；（4，3）+（3，）；（3，4，2）+（4，2）   2、数组维度相同，其中有个轴为1；（4，3）+（4，1）：在1轴上广播扩展。</p>
 <p>NDArray,NumPy的相互变换：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">P = np.ones((<span class="number">2</span>,<span class="number">3</span>))</span><br><span class="line">D = nd.array(P)</span><br><span class="line">D.asnumpy()</span><br></pre></td></tr></table></figure>
 
-
-
-<p>自动求梯度（gradient），MXNET中使用autograd模块自动求梯度：</p>
+<p>自动求梯度（gradient）MXNET中使用autograd模块自动求梯度：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = nd.arange(<span class="number">4</span>).reshape((<span class="number">4</span>,<span class="number">1</span>))</span><br><span class="line">x.attach_grad()  <span class="comment">#申请内存</span></span><br><span class="line"><span class="keyword">with</span> autograd.record():</span><br><span class="line">    y = <span class="number">2</span> * nd.dot(x.T,x) <span class="comment">#若y为标量，贼会默认对y元素求和后，求关于X的梯度</span></span><br><span class="line">y.backward()</span><br></pre></td></tr></table></figure>
 
 
@@ -236,7 +234,7 @@
 <p>解析解：误差最小化问题的解刚好可用数学公式表达出来；大多数为数值解，只能利用优化算法有限次迭代模型参数，从而尽可能降低损失函数的值。</p>
 <p>全连接层：又名稠密层，输出层中的神经元与输入层中的各个输入完全连接；</p>
 <p>矢量计算比标量逐个相加更加省时间，故往往利用矢量矩阵运算来实现深度学习；</p>
-<p>优化算法：小批量随机梯度下降：批量大小batch size,学习率n均为超参数，为人为设定并非模型学习出来的，</p>
+<p>优化算法：小批量随机梯度下降：批量大小batch size,学习率 lr 均为超参数，为人为设定并非模型学习出来的，</p>
 <p>调参：通过反复试错来寻找合适的超参数，</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sgd</span>(<span class="params">params,lr,batch_size</span>):</span> <span class="comment">#sgd函数实现小批量随机梯度下降算法</span></span><br><span class="line">  <span class="keyword">for</span> param <span class="keyword">in</span> params:</span><br><span class="line">    param[:] = param - lr * param.grad / batch_size</span><br></pre></td></tr></table></figure>
 
@@ -251,8 +249,71 @@
 <p>4、定义损失函数：利用loss模块：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> loss <span class="keyword">as</span> gloss</span><br><span class="line">loss = gloss.L2Loss() <span class="comment">#平方损失又是L2范数损失</span></span><br></pre></td></tr></table></figure>
 
-<p>5、定义优化算法：创建Trainer实例</p>
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+<p>5、定义优化算法：创建Trainer实例，以sgd作为优化算法，用来迭代net实例所有通过add函数嵌套的层包含的全部参数，可通过collect_params函数获取。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">trainer = gluon.Trainer(net.collect_params(),<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learning_rate&#x27;</span>:<span class="number">0.03</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>6、训练模型：调用Trainer实例的step函数来迭代模型参数，按sgd的定义，在step中指明批量大小，从而对样本梯度求平均。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">num_epochs = <span class="number">3</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(<span class="number">1</span>,num_epochs + <span class="number">1</span>):</span><br><span class="line">    <span class="keyword">for</span> X,y <span class="keyword">in</span> data_iter:</span><br><span class="line">        <span class="keyword">with</span> autograd.record():</span><br><span class="line">            l = loss(net(X),y)</span><br><span class="line">        l.backward()</span><br><span class="line">        trainer.step(batch_size)</span><br><span class="line">    l = loss(net(features), labels)</span><br><span class="line">    print(<span class="string">&#x27;epoach %d,loss: %f&#x27;</span>%(epoch,l.mean().asnumpy()))</span><br></pre></td></tr></table></figure>
+
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h2 id="3、softmax回归"><a href="#3、softmax回归" class="headerlink" title="3、softmax回归"></a>3、softmax回归</h2><p>模型输出为图像类别这种离散值时，使用softmax回归，其输出单元从一个变成了多个，且引入了softmax运算使输出更加适合离散值的预测和训练。</p>
+<p>sofemax回归模型：将输出特征与权重做线性叠加，输出值个数等于标签里的类别数。例：有4种特征（4个像素的图片）和3种输出动物类别，则权重包含12个标量（带下标w)、偏差包含3个标量（带下标b）。每个On计算都依赖所有输入，故为全连接层。</p>
+<p>softmax计算：直接用最高On作为预测输出，有2个问题。1、输出值范围不定，难以直观判断；2、误差难以衡量。softmax运算符可以解决，即归一化,但softmax运算不改变预测类别输出。<br>$$<br>y1 = exp(O1)/exp(O1)+exp(O2)+exp(O3)<br>$$<br>交叉熵函数：使用更适合衡量分布差异的测量函数，只关心对正确类别的预测概率，<br>$$<br>H(yi,y<em>i) = -Σ(yilogy</em>i)<br>$$<br>交叉熵损失函数，最小化其等价于最大化训练数据集所有标签类别的联合预测概率。<br>$$<br>l(o) =1/n * Σ(yilogy*i)<br>$$<br>图像分类数据集：Fashion-MNIST</p>
+<p>Gluon的DataLoader中可用多进程来加速数据读取；通过ToTensor实例将图像数据从unit8格式变换成32位浮点数格式，并除以255使得所有像素均在0至1之间。</p>
+<h4 id="Gluon简洁实现"><a href="#Gluon简洁实现" class="headerlink" title="Gluon简洁实现"></a>Gluon简洁实现</h4><p>1、导入模块并获取函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> d2zlzh <span class="keyword">as</span> d2l</span><br><span class="line"><span class="keyword">from</span> mxnet <span class="keyword">import</span> gluon, init</span><br><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> loss <span class="keyword">as</span> gloss, nn</span><br><span class="line">batch_size = <span class="number">256</span> <span class="comment">#批量大小设置</span></span><br><span class="line">train_iter,test_iter = d2l.load_data_fashion_mnist(batch_size)</span><br></pre></td></tr></table></figure>
+
+<p>2、定义和初始化模型</p>
+<p>添加输出为10的全连接层，并用均值为0、标准差为0.01的正态分布随机初始化模型的权重参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Dense(<span class="number">10</span>))</span><br><span class="line">net.initialize(init.Normal(sigma=<span class="number">0.01</span>))</span><br></pre></td></tr></table></figure>
+
+<p>3、同时定义softmax和交叉熵损失函数，使数值稳定性更好，使用Gluon提供的函数。</p>
+<p>定义优化算法：使用学习率为0.1的小批量随机梯度下降算法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">loss = gloss.SoftmaxCrossEntropyLoss()</span><br><span class="line">trainer = gluon.Trainer(net.collect_params()，<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learining_rate&#x27;</span>:<span class="number">0.1</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>4、使用上一节定义的训练函数来训练模型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">num_epochs = <span class="number">5</span></span><br><span class="line">d2l.train_ch3(net,train_iter,test_iter,loss,num_epochs,batch_size,<span class="literal">None</span>,<span class="literal">None</span>,trainer)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4、多层感知机"><a href="#4、多层感知机" class="headerlink" title="4、多层感知机"></a>4、多层感知机</h2><p>深度学习主要关注多层模型，以多层感知机NLP（multilayer perceptron）为例。在单层网络的基础上引入了隐藏层hidden layer，但多个仿射线性变换叠加仍然是线性仿射，需引入非线性函数，该函数被称为激活函数</p>
+<p>RELU函数：RELU(x) = max(x,0)</p>
+<p>sigmoid函数：sigmoid(x) = 1/[1+exp(-x)]</p>
+<p>sigmoid函数的导数：sigmoid(x)(1-sigmoid(x))</p>
+<p>tanh（双曲正切）函数：[1- exp(-2x)]/[1+exp(-2x)]</p>
+<p>tanh函数的导数：1 - [tanh(x)]^2</p>
+<h4 id="Gluon的简洁实现"><a href="#Gluon的简洁实现" class="headerlink" title="Gluon的简洁实现"></a>Gluon的简洁实现</h4><p>1、导入包与模块，并定义模型,，多加一个全连接作为隐藏层，单元数为256，用RELU作为激活函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> d2zlzh <span class="keyword">as</span> d2l</span><br><span class="line"><span class="keyword">from</span> mxnet <span class="keyword">import</span> gluon, init</span><br><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> loss <span class="keyword">as</span> gloss, nn</span><br><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dense(<span class="number">10</span>))</span><br><span class="line">net.initialize(init.Normal(sigma = <span class="number">0.01</span>))</span><br></pre></td></tr></table></figure>
+
+<p>2、使用与softmax回归几乎相同的步骤来读取数据并训练模型,学习率为0.5</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">256</span> <span class="comment">#批量大小设置</span></span><br><span class="line">train_iter,test_iter = d2l.load_data_fashion_mnist(batch_size)</span><br><span class="line">oss = gloss.SoftmaxCrossEntropyLoss()</span><br><span class="line">trainer = gluon.Trainer(net.collect_params()，<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learining_rate&#x27;</span>:<span class="number">0.5</span>&#125;)</span><br><span class="line">num_epochs = <span class="number">5</span> <span class="comment">#迭代周期num_epochs指的是要循环学习几次</span></span><br><span class="line">d2l.train_ch3(net,train_iter,test_iter,loss,num_epochs,batch_size,<span class="literal">None</span>,<span class="literal">None</span>,trainer)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5、模型选择与拟合问题"><a href="#5、模型选择与拟合问题" class="headerlink" title="5、模型选择与拟合问题"></a>5、模型选择与拟合问题</h2><p>训练误差：模型在训练集上表现出来的误差；</p>
+<p>泛化误差：任意一个测试数据样本上表现出的误差的期望；</p>
+<p>使用验证数据集来进行模型选择：预留一部分在训练、测试数据集之外的数据来进行模型选择。K折交叉验证：将原始数据分成K个不重合的子数据集，做K次模型训练和验证，每一次用一个子数据集来验证模型，其他用于训练模型。最后对这K次结果分别求平均。</p>
+<p>欠拟合：模型无法得到较低的训练误差。</p>
+<p>过拟合：模型训练误差远小于其在测试集上误差；模型越复杂、训练集越小越容易过拟合。</p>
+<h2 id="6、权重衰减、丢弃法来处理过拟合"><a href="#6、权重衰减、丢弃法来处理过拟合" class="headerlink" title="6、权重衰减、丢弃法来处理过拟合"></a>6、权重衰减、丢弃法来处理过拟合</h2><p>权重衰减：等价于L2范数正则化，通过为模型损失函数添加惩罚项，使学到的模型参数值较小。</p>
+<p>L2惩罚项指的是：模型权重参数的每一个元素的平方和与一个正的常数的乘积。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">l2_penalty</span>(<span class="params">w</span>):</span></span><br><span class="line">  <span class="keyword">return</span> (w**<span class="number">2</span>).sum() / <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="权重衰减Gluon简洁实现："><a href="#权重衰减Gluon简洁实现：" class="headerlink" title="权重衰减Gluon简洁实现："></a>权重衰减Gluon简洁实现：</h4><p>构造Trainer实例时通过wd参数来指定权重衰减超参数，默认下会对权重、偏差同时衰减。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#对权重参数衰减，权重名称一般以weight结尾</span></span><br><span class="line">trainer_w = gluon.Trainer(net.collect_params(<span class="string">&#x27;.*weight&#x27;</span>),<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learning_rate&#x27;</span>:lr,<span class="string">&#x27;wd&#x27;</span>:wd&#125;)</span><br><span class="line"><span class="comment">#不对偏差参数衰减，偏差名称一般以bias结尾</span></span><br><span class="line">trainer_b = gluon.Trainer(net.collect_params(<span class="string">&#x27;.*bias&#x27;</span>),<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learning_rate&#x27;</span>:lr&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>丢弃法：隐藏单元有一定的概率P被丢弃掉，丢弃概率是丢弃法的超参数。具体而言，随机变量$为0和1的概率分别为P和1-P。</p>
+<p>定义dropout函数，以drop_prob的概率丢弃NDArray输入X中的元素。</p>
+<h4 id="丢弃法Gluon简洁实现："><a href="#丢弃法Gluon简洁实现：" class="headerlink" title="丢弃法Gluon简洁实现："></a>丢弃法Gluon简洁实现：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dropout(drop_prob1),  <span class="comment">#在第一个全连接层后添加丢弃层</span></span><br><span class="line">       nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dropout(drop_prob2),nn.Dense(<span class="number">10</span>))</span><br><span class="line">net.initialize(init.Normal(sigma = <span class="number">0.01</span>))</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="7、反向传播"><a href="#7、反向传播" class="headerlink" title="7、反向传播"></a>7、反向传播</h2><p>反向传播：指计算神经网络梯度的方法，依据链式法则，其梯度计算可能依据各变量的当前值，而这些变量的当前值是通过正向传播计算得到的。</p>
+<p>正向传播的计算可能依赖于模型参数的当前值，而参数是在反向传播的梯度计算后通过优化算法迭代的。</p>
+<p>模型参数初始化完成后，交替地进行正向传播和反向传播，并根据反向传播计算的梯度迭代模型参数。</p>
+<p>梯度衰减、爆炸：由于层数过大时，输出呈幂次爆炸增长，故梯度爆炸或梯度消失。</p>
+
       
     </div>
     
