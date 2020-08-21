@@ -133,7 +133,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">4</span></a>
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">5</span></a>
 
   </li>
   </ul>
@@ -161,6 +161,94 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">卷积神经网络</a>
+        </h2>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+    
+              <time title="创建时间：2020-08-20 21:42:51 / 修改时间：23:36:30" itemprop="dateCreated datePublished" datetime="2020-08-20T21:42:51+08:00">2020-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+          <h2 id="1、二维卷积层"><a href="#1、二维卷积层" class="headerlink" title="1、二维卷积层"></a>1、二维卷积层</h2><p>二维卷积层：有高和宽两个空间维度用于处理图像数据，通常使用更直观的互相关运算来代替卷积运算。将输出与卷积核做互相关，并加上一个标量偏差来得到输出。</p>
+<p>在训练模型时，通常先对卷积核初始化，然后不断迭代卷积核与偏差。使用corr2d函数来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr2d</span>(<span class="params">X,K</span>):</span></span><br><span class="line">    h,w = K.shape</span><br><span class="line">    Y = nd.zeros((X.shape[<span class="number">0</span>] - h + <span class="number">1</span>,X.shape[<span class="number">1</span>] - w + <span class="number">1</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(Y.shape[<span class="number">0</span>]):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(Y.shape[<span class="number">1</span>]):</span><br><span class="line">            Y[i,j] = (X[ i:i+h , j: j+w]*K).sum()</span><br><span class="line">    <span class="keyword">return</span> Y</span><br></pre></td></tr></table></figure>
+
+<p>在构造函数中声明了weight和bias，并在forward中利用corr2d函数来实现卷积核。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self,kernel_size,**kwargs</span>):</span></span><br><span class="line">    super(Conv2D,self).__init__(**kwargs)</span><br><span class="line">    self.weight = self.params.get(<span class="string">&#x27;weight&#x27;</span>,shape=kernel_size)</span><br><span class="line">    self.bias = self.params.get(<span class="string">&#x27;bias&#x27;</span>,shape=(<span class="number">1</span>,))</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self,x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> corr2d(x, self.weight.data()) + self.bias.data()</span><br></pre></td></tr></table></figure>
+
+<p>一般通过数据学习得到核数组：首先构造一个卷积层，将其卷积核初始化为随机数组，并在每一次迭代中，使用平方误差来比较输出Y和卷积层的输出，并计算梯度来更新权重。</p>
+<p>由于核数组都是学习出来的，所以卷积层使用互相关运算还是卷积运算都不影响模型预测时的输出。</p>
+<p>特征图：输出可看作输入在空间维度上的表征。</p>
+<p>影响X的前向计算的所有可能输入区域，叫做X的感受野。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="2、填充与步幅"><a href="#2、填充与步幅" class="headerlink" title="2、填充与步幅"></a>2、填充与步幅</h2><p>填充：在输入高、宽的两侧填充元素；用于增加输出的高、宽。</p>
+<p>步幅：卷积窗口从输入窗口左上方开始，依次滑动，每次滑行的行数和列数称为步幅，用于减少输出的高、宽。</p>
+<h2 id="3、多输入、多输出通道"><a href="#3、多输入、多输出通道" class="headerlink" title="3、多输入、多输出通道"></a>3、多输入、多输出通道</h2><p>1、多输入时，构造输入通道数与输入数据的通道数相同的卷积核，从而能够互相关运算，对每个通道做互相关，然后通过add_n函数来进行累加</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr2d_multi_in</span>(<span class="params">X,K</span>):</span></span><br><span class="line">    <span class="comment">#首先沿X和K的第0维（通道维）遍历，然后用*将结果列表变为add_n函数的位置参数（positional argument）来相加</span></span><br><span class="line">    <span class="keyword">return</span> nd.add_n(*[d2l.corr2d(x,k) <span class="keyword">for</span> x , k <span class="keyword">in</span> zip(X,K)])</span><br></pre></td></tr></table></figure>
+
+<p>2、若希望有多输出时，为每个通道分别创建核数组，并将其在输出通道上连结</p>
+
+      
+    </div>
+    
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -197,7 +285,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-20 16:16:05" itemprop="dateModified" datetime="2020-08-20T16:16:05+08:00">2020-08-20</time>
+                <time title="修改时间：2020-08-20 21:39:05" itemprop="dateModified" datetime="2020-08-20T21:39:05+08:00">2020-08-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -239,7 +327,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sgd</span>(<span class="params">params,lr,batch_size</span>):</span> <span class="comment">#sgd函数实现小批量随机梯度下降算法</span></span><br><span class="line">  <span class="keyword">for</span> param <span class="keyword">in</span> params:</span><br><span class="line">    param[:] = param - lr * param.grad / batch_size</span><br></pre></td></tr></table></figure>
 
 <p>在一个迭代周期epoch中，将完整遍历一遍data_iter函数，并对训练数据集中所有样本都使用一次。</p>
-<h4 id="Gluon简洁实现："><a href="#Gluon简洁实现：" class="headerlink" title="Gluon简洁实现："></a>Gluon简洁实现：</h4><p>1、提供data包来读取数据：</p>
+<h3 id="Gluon简洁实现："><a href="#Gluon简洁实现：" class="headerlink" title="Gluon简洁实现："></a>Gluon简洁实现：</h3><p>1、提供data包来读取数据：</p>
 <p>2、提供大量预定义层，nn模块：neural networks：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> nn</span><br><span class="line">net = nn.Sequential()  <span class="comment">#Sequential实例是串联各层的容器，依次添加层，每一层一次计算并作为下一层输入</span></span><br><span class="line">net.add(nn.Dense(<span class="number">1</span>)) <span class="comment">#Dense全连接层，GLUON无须指定各层形状，模型会自动推断</span></span><br></pre></td></tr></table></figure>
 
@@ -255,11 +343,13 @@
 <p>6、训练模型：调用Trainer实例的step函数来迭代模型参数，按sgd的定义，在step中指明批量大小，从而对样本梯度求平均。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">num_epochs = <span class="number">3</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(<span class="number">1</span>,num_epochs + <span class="number">1</span>):</span><br><span class="line">    <span class="keyword">for</span> X,y <span class="keyword">in</span> data_iter:</span><br><span class="line">        <span class="keyword">with</span> autograd.record():</span><br><span class="line">            l = loss(net(X),y)</span><br><span class="line">        l.backward()</span><br><span class="line">        trainer.step(batch_size)</span><br><span class="line">    l = loss(net(features), labels)</span><br><span class="line">    print(<span class="string">&#x27;epoach %d,loss: %f&#x27;</span>%(epoch,l.mean().asnumpy()))</span><br></pre></td></tr></table></figure>
 
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h2 id="3、softmax回归"><a href="#3、softmax回归" class="headerlink" title="3、softmax回归"></a>3、softmax回归</h2><p>模型输出为图像类别这种离散值时，使用softmax回归，其输出单元从一个变成了多个，且引入了softmax运算使输出更加适合离散值的预测和训练。</p>
+
+
+<h2 id="3、softmax回归"><a href="#3、softmax回归" class="headerlink" title="3、softmax回归"></a>3、softmax回归</h2><p>模型输出为图像类别这种离散值时，使用softmax回归，其输出单元从一个变成了多个，且引入了softmax运算使输出更加适合离散值的预测和训练。</p>
 <p>sofemax回归模型：将输出特征与权重做线性叠加，输出值个数等于标签里的类别数。例：有4种特征（4个像素的图片）和3种输出动物类别，则权重包含12个标量（带下标w)、偏差包含3个标量（带下标b）。每个On计算都依赖所有输入，故为全连接层。</p>
 <p>softmax计算：直接用最高On作为预测输出，有2个问题。1、输出值范围不定，难以直观判断；2、误差难以衡量。softmax运算符可以解决，即归一化,但softmax运算不改变预测类别输出。<br>$$<br>y1 = exp(O1)/exp(O1)+exp(O2)+exp(O3)<br>$$<br>交叉熵函数：使用更适合衡量分布差异的测量函数，只关心对正确类别的预测概率，<br>$$<br>H(yi,y<em>i) = -Σ(yilogy</em>i)<br>$$<br>交叉熵损失函数，最小化其等价于最大化训练数据集所有标签类别的联合预测概率。<br>$$<br>l(o) =1/n * Σ(yilogy*i)<br>$$<br>图像分类数据集：Fashion-MNIST</p>
 <p>Gluon的DataLoader中可用多进程来加速数据读取；通过ToTensor实例将图像数据从unit8格式变换成32位浮点数格式，并除以255使得所有像素均在0至1之间。</p>
-<h4 id="Gluon简洁实现"><a href="#Gluon简洁实现" class="headerlink" title="Gluon简洁实现"></a>Gluon简洁实现</h4><p>1、导入模块并获取函数</p>
+<h3 id="Gluon简洁实现"><a href="#Gluon简洁实现" class="headerlink" title="Gluon简洁实现"></a>Gluon简洁实现</h3><p>1、导入模块并获取函数</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> d2zlzh <span class="keyword">as</span> d2l</span><br><span class="line"><span class="keyword">from</span> mxnet <span class="keyword">import</span> gluon, init</span><br><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> loss <span class="keyword">as</span> gloss, nn</span><br><span class="line">batch_size = <span class="number">256</span> <span class="comment">#批量大小设置</span></span><br><span class="line">train_iter,test_iter = d2l.load_data_fashion_mnist(batch_size)</span><br></pre></td></tr></table></figure>
 
 <p>2、定义和初始化模型</p>
@@ -281,7 +371,7 @@
 <p>sigmoid函数的导数：sigmoid(x)(1-sigmoid(x))</p>
 <p>tanh（双曲正切）函数：[1- exp(-2x)]/[1+exp(-2x)]</p>
 <p>tanh函数的导数：1 - [tanh(x)]^2</p>
-<h4 id="Gluon的简洁实现"><a href="#Gluon的简洁实现" class="headerlink" title="Gluon的简洁实现"></a>Gluon的简洁实现</h4><p>1、导入包与模块，并定义模型,，多加一个全连接作为隐藏层，单元数为256，用RELU作为激活函数。</p>
+<h3 id="Gluon的简洁实现"><a href="#Gluon的简洁实现" class="headerlink" title="Gluon的简洁实现"></a>Gluon的简洁实现</h3><p>1、导入包与模块，并定义模型,，多加一个全连接作为隐藏层，单元数为256，用RELU作为激活函数。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> d2zlzh <span class="keyword">as</span> d2l</span><br><span class="line"><span class="keyword">from</span> mxnet <span class="keyword">import</span> gluon, init</span><br><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> loss <span class="keyword">as</span> gloss, nn</span><br><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dense(<span class="number">10</span>))</span><br><span class="line">net.initialize(init.Normal(sigma = <span class="number">0.01</span>))</span><br></pre></td></tr></table></figure>
 
 <p>2、使用与softmax回归几乎相同的步骤来读取数据并训练模型,学习率为0.5</p>
@@ -298,14 +388,14 @@
 <p>L2惩罚项指的是：模型权重参数的每一个元素的平方和与一个正的常数的乘积。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">l2_penalty</span>(<span class="params">w</span>):</span></span><br><span class="line">  <span class="keyword">return</span> (w**<span class="number">2</span>).sum() / <span class="number">2</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="权重衰减Gluon简洁实现："><a href="#权重衰减Gluon简洁实现：" class="headerlink" title="权重衰减Gluon简洁实现："></a>权重衰减Gluon简洁实现：</h4><p>构造Trainer实例时通过wd参数来指定权重衰减超参数，默认下会对权重、偏差同时衰减。</p>
+<h3 id="权重衰减Gluon简洁实现："><a href="#权重衰减Gluon简洁实现：" class="headerlink" title="权重衰减Gluon简洁实现："></a>权重衰减Gluon简洁实现：</h3><p>构造Trainer实例时通过wd参数来指定权重衰减超参数，默认下会对权重、偏差同时衰减。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#对权重参数衰减，权重名称一般以weight结尾</span></span><br><span class="line">trainer_w = gluon.Trainer(net.collect_params(<span class="string">&#x27;.*weight&#x27;</span>),<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learning_rate&#x27;</span>:lr,<span class="string">&#x27;wd&#x27;</span>:wd&#125;)</span><br><span class="line"><span class="comment">#不对偏差参数衰减，偏差名称一般以bias结尾</span></span><br><span class="line">trainer_b = gluon.Trainer(net.collect_params(<span class="string">&#x27;.*bias&#x27;</span>),<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learning_rate&#x27;</span>:lr&#125;)</span><br></pre></td></tr></table></figure>
 
 
 
 <p>丢弃法：隐藏单元有一定的概率P被丢弃掉，丢弃概率是丢弃法的超参数。具体而言，随机变量$为0和1的概率分别为P和1-P。</p>
 <p>定义dropout函数，以drop_prob的概率丢弃NDArray输入X中的元素。</p>
-<h4 id="丢弃法Gluon简洁实现："><a href="#丢弃法Gluon简洁实现：" class="headerlink" title="丢弃法Gluon简洁实现："></a>丢弃法Gluon简洁实现：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dropout(drop_prob1),  <span class="comment">#在第一个全连接层后添加丢弃层</span></span><br><span class="line">       nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dropout(drop_prob2),nn.Dense(<span class="number">10</span>))</span><br><span class="line">net.initialize(init.Normal(sigma = <span class="number">0.01</span>))</span><br></pre></td></tr></table></figure>
+<h3 id="丢弃法Gluon简洁实现："><a href="#丢弃法Gluon简洁实现：" class="headerlink" title="丢弃法Gluon简洁实现："></a>丢弃法Gluon简洁实现：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dropout(drop_prob1),  <span class="comment">#在第一个全连接层后添加丢弃层</span></span><br><span class="line">       nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dropout(drop_prob2),nn.Dense(<span class="number">10</span>))</span><br><span class="line">net.initialize(init.Normal(sigma = <span class="number">0.01</span>))</span><br></pre></td></tr></table></figure>
 
 
 
@@ -313,6 +403,23 @@
 <p>正向传播的计算可能依赖于模型参数的当前值，而参数是在反向传播的梯度计算后通过优化算法迭代的。</p>
 <p>模型参数初始化完成后，交替地进行正向传播和反向传播，并根据反向传播计算的梯度迭代模型参数。</p>
 <p>梯度衰减、爆炸：由于层数过大时，输出呈幂次爆炸增长，故梯度爆炸或梯度消失。</p>
+<h2 id="8、深度学习计算原理细节"><a href="#8、深度学习计算原理细节" class="headerlink" title="8、深度学习计算原理细节"></a>8、深度学习计算原理细节</h2><h3 id="1、基于Block类的模型构建"><a href="#1、基于Block类的模型构建" class="headerlink" title="1、基于Block类的模型构建"></a>1、基于Block类的模型构建</h3><p>Block类是nn模块里提供的一个模型构造类，继承Block类来构造多层感知机，重载init函数与forward函数，分别用于创建模型参数与定义前向计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MLP</span>(<span class="params">nn.Block</span>):</span> <span class="comment">#声明带有模型参数的层，声明2个全连接层</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, **kwargs</span>):</span></span><br><span class="line">        <span class="comment">#调用父类构造函数来进行必要初始化。</span></span><br><span class="line">        super(MLP,self).__init__(**kwargs)</span><br><span class="line">        self.hidden = nn.Dense(<span class="number">256</span>, activation=<span class="string">&#x27;relu&#x27;</span>) <span class="comment">#隐藏层</span></span><br><span class="line">        self.output = nn.Dense(<span class="number">10</span>) <span class="comment">#输出层</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self,x</span>):</span> <span class="comment">#定义模型的前向计算，即如何根据输入x计算返回所需的模型输出</span></span><br><span class="line">        <span class="keyword">return</span> self.output(self.hidden(x))</span><br></pre></td></tr></table></figure>
+
+<p>无需定义反向传播，系统将自动求梯度而生成反向传播所需的backward函数</p>
+<p>实例化MLP类得到net，并传入输入数据X并做一次前向计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X = nd.random.uniform(shape=(<span class="number">2</span>,<span class="number">20</span>))</span><br><span class="line">net = MLP()</span><br><span class="line">net.initialize()</span><br><span class="line">net(X)</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、构建一个继承于Block类的继承类"><a href="#2、构建一个继承于Block类的继承类" class="headerlink" title="2、构建一个继承于Block类的继承类"></a>2、构建一个继承于Block类的继承类</h3><p>提供add函数来逐一添加串联的Block子类实例，而模型的前向计算就是将这些实例按顺序逐一计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MySequential</span>(<span class="params">nn.Block</span>):</span></span><br><span class="line">    def__init__(self,**kwargs):</span><br><span class="line">        super(MySequential,self).__init__(**kwargs)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self,block</span>):</span></span><br><span class="line">        <span class="comment">#block为Block实例，当MySequential实例调用initialize函数时，系统会自动对其所有成员初始化</span></span><br><span class="line">        self._children[block.name] = block</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self,x</span>):</span></span><br><span class="line">        <span class="comment">#OrderedDict保证按添加顺序遍历成员</span></span><br><span class="line">        <span class="keyword">for</span> block <span class="keyword">in</span> self._children.values():</span><br><span class="line">            x = block(x)</span><br><span class="line">         <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3、自定义初始化模型参数"><a href="#3、自定义初始化模型参数" class="headerlink" title="3、自定义初始化模型参数"></a>3、自定义初始化模型参数</h3><p>对于Sequential类构造的神经网络，可通过方括号[]来访问网络的任一层。同时Sequential实例中含模型参数的层，可通过Block类的params属性来访问该层包含的参数。</p>
+<p>共享模型参数：在利用Block类中的forward函数里多次调用一个层来计算。或者，在构造层时指定特定的参数，若不同层使用同一份参数，则它们会在前向、反向时均共享相同的参数。</p>
+<p>延后初始化：只有将形状是（，）的输入X传进网络做前向计算net(X)时，系统才能推断出该层权重参数形状为（，），此时才能真正地开始初始化参数。</p>
+<p>避免延后初始化：1、要对已初始化的模型重新初始化时，由于参数形状不会变化，能够立即重新初始化；2、创建层的时候指定了它的输入个数，故系统不需要额外信息来推测参数形状。</p>
+<h3 id="4、自定义层"><a href="#4、自定义层" class="headerlink" title="4、自定义层"></a>4、自定义层</h3><h3 id="5、读取与存储"><a href="#5、读取与存储" class="headerlink" title="5、读取与存储"></a>5、读取与存储</h3><p>将内存中训练好的模型参数存储在硬盘上，供后续读取使用。</p>
 
       
     </div>
@@ -654,7 +761,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
