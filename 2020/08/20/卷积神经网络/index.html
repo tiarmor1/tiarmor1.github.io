@@ -28,8 +28,11 @@
 <meta property="og:description" content="1、二维卷积层二维卷积层：有高和宽两个空间维度用于处理图像数据，通常使用更直观的互相关运算来代替卷积运算。将输出与卷积核做互相关，并加上一个标量偏差来得到输出。 在训练模型时，通常先对卷积核初始化，然后不断迭代卷积核与偏差。使用corr2d函数来实现： 1234567def corr2d(X,K):    h,w &#x3D; K.shape    Y &#x3D; nd.zeros((X.shape[0] - h">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://yoursite.com/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/NIN.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/GooLeNet.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/ResNet.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/DenseNet.png">
 <meta property="article:published_time" content="2020-08-20T13:42:51.000Z">
-<meta property="article:modified_time" content="2020-08-21T08:26:57.722Z">
+<meta property="article:modified_time" content="2020-08-21T14:22:34.739Z">
 <meta property="article:author" content="Li Yudong">
 <meta property="article:tag" content="初学者">
 <meta name="twitter:card" content="summary">
@@ -138,7 +141,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">5</span></a>
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">6</span></a>
 
   </li>
   </ul>
@@ -202,7 +205,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-21 16:26:57" itemprop="dateModified" datetime="2020-08-21T16:26:57+08:00">2020-08-21</time>
+                <time title="修改时间：2020-08-21 22:22:34" itemprop="dateModified" datetime="2020-08-21T22:22:34+08:00">2020-08-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -278,7 +281,37 @@
 <p>NIN块：由一个卷积层和两个充当全连接层的1 X 1卷积层串联而来，可自由设置第一个卷积层超参数。</p>
 <p><img src="/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/NIN.png" alt="NIN"></p>
 <p>NIN设计:除了使用NIN块以外，NIN去掉了AlexNet最后的3个全连接层，并使用输出通道数等于标签类别数的NIN块，然后使用全局平均池化层对每个通道中所有元素求平均，并直接进行分类。NIN这个设计的好处：显著减少模型参数尺寸，从而缓解过拟合。</p>
-<h3 id="GoogLeNet模型"><a href="#GoogLeNet模型" class="headerlink" title="GoogLeNet模型"></a>GoogLeNet模型</h3>
+<h3 id="GoogLeNet模型"><a href="#GoogLeNet模型" class="headerlink" title="GoogLeNet模型"></a>GoogLeNet模型</h3><p>GoolLeNet中的基础卷积块为Inception块，有4条并行的线路，前3条线路使用窗口分别为1X1,3X3,5X5的卷积层来抽取不同的空间尺寸下的信息，且中间2条线路会对输入先做1X1卷积来减少输入通道数，以降低模型复杂度；第四条线路则用3X3池化层后接1X1卷积层来改变通道数；且均使用了合适的填充来使输入、输出高宽一致。</p>
+<p><img src="/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/GooLeNet.png" alt="GooLeNet"></p>
+<p>GooLeNet跟VGG一样，在主体卷积部分使用5个模块，每个模块之前使用步幅为2的3 X 3最大池化层来减小输出高宽。</p>
+<p>模块一：使用一个64通道的7X7卷积层；</p>
+<p>模块二：使用2个卷积层，64通道的1X1卷积层，然后是将通道增大3倍的3X3卷积层，对应Inception的线路二；</p>
+<p>模块三：串联2个完整的Inception块；</p>
+<p>模块四：串联5个Inception块；</p>
+<p>模块五：2个Inception块，其后紧跟输出层，故同NIN一样使用全局平均池化层来将每个通道的高、宽变成1</p>
+<h2 id="7、批量归一化"><a href="#7、批量归一化" class="headerlink" title="7、批量归一化"></a>7、批量归一化</h2><p>数据标准化处理：任一特征在数据集所有样本上的均值为0、标准差为1，可以使各个特征的分布相近。对于浅层模型，数据标准化预处理已经足够了，但对于深层网络，模型参数更新仍容易造成剧烈变化。</p>
+<p>批量归一化层（batch normalization）：为应对深层模型的挑战，在训练时，利用小批量上的均值和标准差，不断调整神经网络中间输出，从而使整个神经网络在各层的中间输出数值更稳定。</p>
+<h3 id="全连接层的批量归一化"><a href="#全连接层的批量归一化" class="headerlink" title="全连接层的批量归一化"></a>全连接层的批量归一化</h3><p>对于全连接层：将批量归一化层放在全连接层的仿射交换与激活函数之间。</p>
+<h3 id="对卷积层做批量归一化"><a href="#对卷积层做批量归一化" class="headerlink" title="对卷积层做批量归一化"></a>对卷积层做批量归一化</h3><p>对于卷积层：批量归一化发生在卷积计算之后、应用激活函数之前。</p>
+<h2 id="8、残差网络ResNet"><a href="#8、残差网络ResNet" class="headerlink" title="8、残差网络ResNet"></a>8、残差网络ResNet</h2><p>实践中，添加过多层后训练误差往往不降反升，即使利用批量归一化使训练深层模型更加容易，该问题仍存在。</p>
+<p>残差块：当理想映射f(x)极接近恒等映射时，残差映射也易于捕捉恒等映射的细微波动。</p>
+<p><img src="/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/ResNet.png" alt="ResNet块"></p>
+<p>ResNet沿用了VGG全3X3卷积层的设计，残差块中首先由2个相同输出通道数的3X3卷积层，每个卷积层之后接一个批量归一化层和RELU激活函数，然后将输入跳过这2个卷积运算后再加在最后的RELU激活函数前。这样设计要求2个卷积层的输入、输出形状一样，从而可以相加。</p>
+<p>ResNet的前两层跟GoogLeNet一样，在输出通道为64、步幅为2的7X7卷积层后接步幅为2的3X3最大池化层。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Conv2D(<span class="number">64</span>,kernel_size=<span class="number">7</span>,strides=<span class="number">2</span>,padding=<span class="number">3</span>),</span><br><span class="line">       nn.BatchNoem(),nn.Activation(<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">       nn.MaxPool2D(pool_size=<span class="number">3</span>,strides=<span class="number">2</span>,padding=<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+
+<p>不同在于其每个卷积层后增加的批量归一层,GoogLeNet在后面会接4个Inception组成的模块，而ResNet则使用4个由残差块组成的模块，每个模块使用若干个同样输出通道数的残差块。我们用resnet_block函数来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">resnet_block</span>(<span class="params">num_channels, num_residuals, first_block=False</span>):</span></span><br><span class="line">    blk = nn.Sequential()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(num_residuals):</span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">0</span> <span class="keyword">and</span> <span class="keyword">not</span> first_block:</span><br><span class="line">            blk.add(Residual(num_channels, use_1x1conv=<span class="literal">True</span>, strides=<span class="number">2</span>))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            blk.add(Residual(num_channels))</span><br><span class="line">    <span class="keyword">return</span> blk</span><br></pre></td></tr></table></figure>
+
+<p>接着使用ResNet加入所有残差块，这里每个模块使用2个残差块</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">net.add(resnet_block(<span class="number">64</span>, <span class="number">2</span>, first_block=<span class="literal">True</span>),</span><br><span class="line">       resnet_block(<span class="number">128</span>,<span class="number">2</span>),</span><br><span class="line">       resnet_block(<span class="number">256</span>,<span class="number">2</span>),</span><br><span class="line">       resnet_block(<span class="number">512</span>,<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">net.add(nn.GlobalAvgPool2D(), nn.Dense(<span class="number">10</span>))</span><br><span class="line"><span class="comment">#加入全局平均池化层后接上全连接层输出</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="9、稠密连接网络DenseNet"><a href="#9、稠密连接网络DenseNet" class="headerlink" title="9、稠密连接网络DenseNet"></a>9、稠密连接网络DenseNet</h2><p><img src="/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/DenseNet.png" alt="DenseNet"></p>
+<p>DenseNet主要构建模块时稠密块和过渡层，前者定义了输入、输出是如何连结的，后者则用来控制通道数，使之不过大。</p>
+<p>由于每个稠密块都会带来通道数的增加，使用过多则会带来过于复杂的模型，过度层用来控制模型复杂度。它通过1X1卷积层来减少通道数，并使用步幅为2的的平均池化层减半高、宽，从而进一步降低模型复杂度。</p>
+
     </div>
     
     
@@ -341,7 +374,10 @@
     <a href="/2020/08/19/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%88%9D%E8%A7%81/" rel="prev" title="MXNET机器学习初见">
       <i class="fa fa-chevron-left"></i> MXNET机器学习初见
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/21/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="next" title="循环神经网络">
+      循环神经网络 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -400,7 +436,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E4%BA%8C%E7%BB%B4%E5%8D%B7%E7%A7%AF%E5%B1%82"><span class="nav-number">1.</span> <span class="nav-text">1、二维卷积层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%A1%AB%E5%85%85%E4%B8%8E%E6%AD%A5%E5%B9%85"><span class="nav-number">2.</span> <span class="nav-text">2、填充与步幅</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E5%A4%9A%E8%BE%93%E5%85%A5%E3%80%81%E5%A4%9A%E8%BE%93%E5%87%BA%E9%80%9A%E9%81%93"><span class="nav-number">3.</span> <span class="nav-text">3、多输入、多输出通道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%811-x-1-%E5%8D%B7%E7%A7%AF%E5%B1%82"><span class="nav-number">4.</span> <span class="nav-text">4、1 x 1 卷积层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E6%B1%A0%E5%8C%96%E5%B1%82"><span class="nav-number">5.</span> <span class="nav-text">5、池化层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">6.</span> <span class="nav-text">6、卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LeNet%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.1.</span> <span class="nav-text">LeNet模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AlexNet%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.2.</span> <span class="nav-text">AlexNet模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VGG%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.3.</span> <span class="nav-text">VGG模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NIN%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.4.</span> <span class="nav-text">NIN模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GoogLeNet%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.5.</span> <span class="nav-text">GoogLeNet模型</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E4%BA%8C%E7%BB%B4%E5%8D%B7%E7%A7%AF%E5%B1%82"><span class="nav-number">1.</span> <span class="nav-text">1、二维卷积层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%A1%AB%E5%85%85%E4%B8%8E%E6%AD%A5%E5%B9%85"><span class="nav-number">2.</span> <span class="nav-text">2、填充与步幅</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E5%A4%9A%E8%BE%93%E5%85%A5%E3%80%81%E5%A4%9A%E8%BE%93%E5%87%BA%E9%80%9A%E9%81%93"><span class="nav-number">3.</span> <span class="nav-text">3、多输入、多输出通道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%811-x-1-%E5%8D%B7%E7%A7%AF%E5%B1%82"><span class="nav-number">4.</span> <span class="nav-text">4、1 x 1 卷积层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E6%B1%A0%E5%8C%96%E5%B1%82"><span class="nav-number">5.</span> <span class="nav-text">5、池化层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">6.</span> <span class="nav-text">6、卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LeNet%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.1.</span> <span class="nav-text">LeNet模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AlexNet%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.2.</span> <span class="nav-text">AlexNet模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VGG%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.3.</span> <span class="nav-text">VGG模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NIN%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.4.</span> <span class="nav-text">NIN模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GoogLeNet%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.5.</span> <span class="nav-text">GoogLeNet模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7%E3%80%81%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">7、批量归一化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E8%BF%9E%E6%8E%A5%E5%B1%82%E7%9A%84%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">7.1.</span> <span class="nav-text">全连接层的批量归一化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%8D%B7%E7%A7%AF%E5%B1%82%E5%81%9A%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">7.2.</span> <span class="nav-text">对卷积层做批量归一化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8%E3%80%81%E6%AE%8B%E5%B7%AE%E7%BD%91%E7%BB%9CResNet"><span class="nav-number">8.</span> <span class="nav-text">8、残差网络ResNet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9%E3%80%81%E7%A8%A0%E5%AF%86%E8%BF%9E%E6%8E%A5%E7%BD%91%E7%BB%9CDenseNet"><span class="nav-number">9.</span> <span class="nav-text">9、稠密连接网络DenseNet</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -416,7 +452,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
