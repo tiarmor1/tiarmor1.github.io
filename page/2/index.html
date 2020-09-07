@@ -123,17 +123,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">1</span></a>
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">2</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">4</span></a>
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">13</span></a>
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">16</span></a>
 
   </li>
   </ul>
@@ -161,6 +161,490 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/21/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/21/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">循环神经网络</a>
+        </h2>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-08-21 22:33:17" itemprop="dateCreated datePublished" datetime="2020-08-21T22:33:17+08:00">2020-08-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-22 16:54:54" itemprop="dateModified" datetime="2020-08-22T16:54:54+08:00">2020-08-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+          <h2 id="1、语言模型"><a href="#1、语言模型" class="headerlink" title="1、语言模型"></a>1、语言模型</h2><p>与多层感知机和能有效处理空间信息的卷积神经网络不同，循环神经网络是为了更好地处理时序信息而设计的。引入状态变量来存储过去的信息，并用其与当前的输入共同决定当前的输出。</p>
+<p>语言模型：可将自然语言文本看作一段离散的时间序列，假设一段长度为T的文本中的词依次为W1、W2….Wt，那么在离散的时间序列中，Wt可看作在时间步t的输出或标签。给定一个长度为T的词的序列，语言模型将计算该序列概率：P(W1,W2,….,Wt)。为计算该语言模型，需要先计算词的概率，以及一个词在给定前几个词的情况下的条件概率。</p>
+<p>N元语法：计算和存储多个词的概率复杂度会呈指数级增加，故通过马尔可夫假设简化语言模型：一个词的出现只与前面N个词相关，即N阶马尔可夫链。</p>
+<p>故基于n-1阶马尔可夫链，可将语言模型改写为：<br>$$<br>P(W1,W2,…,Wt) = ∏P（Wt|Wt-(n-1),…,Wt-1）<br>$$<br>以上也叫做n元语法，当n较小时，n元语法往往不准确，当n较大时，n元语法需要计算并存储大量的词频和多词相邻频率。</p>
+<h2 id="2、循环神经网络"><a href="#2、循环神经网络" class="headerlink" title="2、循环神经网络"></a>2、循环神经网络</h2><p>循环神经网络：并非刚性地记忆所有固定长度的序列，而是通过隐藏状态来存储之前时间步的信息。利用之前的多层感知机，通过添加隐藏状态将其变成循环神经网络。</p>
+<h3 id="不含隐藏状态的多层感知机："><a href="#不含隐藏状态的多层感知机：" class="headerlink" title="不含隐藏状态的多层感知机："></a>不含隐藏状态的多层感知机：</h3><p>样本数为n、输出个数为d的小批量数据样本X。设隐藏层的激活函数为f，则其输出H为：<br>$$<br>H = f（X Wxh + bh）<br>$$<br>其中隐藏层权重参数W为Rn*d，隐藏层偏差参数b为R1xh，h为隐藏单元个数。上式两者根据广播机制来相加，设输出层的输出个数为q，则输出层的输出为：<br>$$<br>O = HWhq +bq<br>$$<br>若为分类问题，可用softmax(O)来计算输出类别的概率分布。</p>
+<h3 id="含隐藏状态的多层感知机"><a href="#含隐藏状态的多层感知机" class="headerlink" title="含隐藏状态的多层感知机"></a>含隐藏状态的多层感知机</h3><p>与上一个相区别的是，保存上一时间步的隐藏变量Ht-1，并引入一个新的权重参数Whh为Rhxh，该参数用于描述在当前时间步如何使用上一时间步的隐藏变量。<br>$$<br>Ht = f(Xt Wxh + Ht-1Whh +bh)<br>$$<br>与多层感知机相比，添加了隐藏变量来捕捉截至当前时间步的序列的历史信息，就像神经网络当前时间步的状态或记忆一样，因此也称为隐藏状态，由于在当前时间步使用了上一时间步的隐藏状态，因此计算是循环的。通过对上一次时间步的利用，其模型参数的数量不随时间步的增加而增长。将输入与前一时间步隐藏状态连结后，输入至一个激活函数为f的全连接层，该全连接层的输出就是当前时间步的隐藏状态，且模型参数为Wxh与Whh的连结，偏差为bh。</p>
+<p><img src="/2020/08/21/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/%E9%9A%90%E8%97%8F%E7%8A%B6%E6%80%81%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.png" alt="隐藏状态循环神经网络">）</p>
+<h2 id="3、基于字符级神经网络的语言模型"><a href="#3、基于字符级神经网络的语言模型" class="headerlink" title="3、基于字符级神经网络的语言模型"></a>3、基于字符级神经网络的语言模型</h2><p><img src="/2020/08/21/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/%E5%AD%97%E7%AC%A6%E7%BA%A7%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.png" alt="字符级循环神经网络"></p>
+<p>演示如何1基于当前与过去字符来预测下一个字符，训练时对每个时间步的输出层输出使用softmax运算，然后使用交叉熵损失函数来计算其与标签的误差。</p>
+<h3 id="处理数据集"><a href="#处理数据集" class="headerlink" title="处理数据集"></a>处理数据集</h3><p>建立字符索引：将每个字符映射成一个从0开始的连续整数，又称索引以方便后续处理。为得索引，我们将数据集中所有不同字符取出来，并逐一映射到索引来构造字典。</p>
+<p>时序数据采样：每次随机读取小批量样本和标签，样本包含连续的字符。例：时间步数为5，样本序列为5个字符：‘’想，要，有，直，升”，则其标签序列为这些字符在训练集中的下一个字符：“要，有，直，升，机”。</p>
+<p>随机采样：每个样本为原始序列上任意截取的一段序列，相邻的两个随机小批量不一定相邻，故每次随机采样前都需要重新初始化隐藏状态。</p>
+<p>相邻采样：令相邻的两个随机小批量在原始序列上的位置也相毗邻，此时可以用一个小批量最终时间步的隐藏状态来初始化下一个小批量的隐藏状态：如此循环造成的影响：1、训练模型时，只需在每个迭代周期开始时初始化隐藏状态；2、当多个小批量通过传递隐藏状态串联起来时，梯度计算将依赖串联起的序列，迭代次数增加，梯度开销会越来越大。</p>
+<h3 id="one-hot向量"><a href="#one-hot向量" class="headerlink" title="one-hot向量"></a>one-hot向量</h3><p>使用one-hot向量将词表示成向量输入到神经网络：每个字符已经同一个从0到N-1的连续整数值索引一一对应。如果一个字符的索引是i，则其向量为全0的长为N的向量，仅将位置为i的元素设为1。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">to_one_hot</span>(<span class="params">X,size</span>):</span></span><br><span class="line">    <span class="keyword">return</span> [nd.one_hot(x,size) <span class="keyword">for</span> x <span class="keyword">in</span> X.T]</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="构建模型"><a href="#构建模型" class="headerlink" title="构建模型"></a>构建模型</h3><p>先初始化模型参数，将隐藏单元个数num_hiddens作为超参数，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">num_inputs, num_hiddens, num_outputs = vocab_size, <span class="number">256</span>, vocab_size</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_params</span>():</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_one</span>(<span class="params">shape</span>):</span></span><br><span class="line">        <span class="keyword">return</span> nd.random.normal(scale=o.o1, shape=shape, ctx=ctx)</span><br><span class="line">    <span class="comment">#先定义隐藏层参数</span></span><br><span class="line">    W_xh = _one((num_inputs, num_hiddens))</span><br><span class="line">    W_hh = _one((num_hiddens, num_hiddens))</span><br><span class="line">    b_h = nd.zeros(num_hiddens, ctx=ctx)</span><br><span class="line">    <span class="comment">#输出层参数</span></span><br><span class="line">    W_hq = _one((num_hiddens, num_outputs))</span><br><span class="line">    b_q = nd.zeros(num_outputs, ctx=ctx)</span><br><span class="line">    <span class="comment">#附上梯度</span></span><br><span class="line">    params = [W_xh, W_hh, b_h, W_hq, b_q]</span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> params:</span><br><span class="line">        param.attach_grad()</span><br><span class="line">    <span class="keyword">return</span> params</span><br></pre></td></tr></table></figure>
+
+<p>定义init_rnn_state函数来返回初始化的隐藏状态，返回由一个形状为（批量大小，隐藏单元个数）的值为0的NDArray组成的元组。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">init_rnn_state</span>(<span class="params">batch_size, num_hiddens, ctx</span>):</span></span><br><span class="line">    <span class="keyword">return</span> (nd.zeros(shape=(batch_size, num_hiddens), ctx=ctx))</span><br></pre></td></tr></table></figure>
+
+<p>定义rnn函数来在一个时间步中计算隐藏状态与输出，激活函数使用tanh</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rnn</span>(<span class="params">inputs, state, params</span>):</span></span><br><span class="line">    <span class="comment">#inputs和outputs皆为num_steps个形状为（batch_size, vocab_size)的矩阵</span></span><br><span class="line">    W_xh, W_hh, b_h, W_hq, b_q = params</span><br><span class="line">    H, = state</span><br><span class="line">    outputs = []</span><br><span class="line">    <span class="keyword">for</span> X <span class="keyword">in</span> inputs:</span><br><span class="line">        H = nd.tanh(nd.dot(X, W_xh) + nd.dot(H, W_hh) + b_h)</span><br><span class="line">        Y = nd.dot(H, W_hq) + b_q</span><br><span class="line">        outputs.append(Y)</span><br><span class="line">    <span class="keyword">return</span> outputs, (H,)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="定义预测函数"><a href="#定义预测函数" class="headerlink" title="定义预测函数"></a>定义预测函数</h3><p>基于前缀prefix（含有数个字符的字符串）来预测接下来的num_chars个字符:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">predict_rnn</span>(<span class="params">prefix, num_chars, rnn, params, init_rnn_state, </span></span></span><br><span class="line"><span class="function"><span class="params">                num_hiddens, vocab_size, ctx, idx_to_char, char_to_idx</span>):</span></span><br><span class="line">    state = init_rnn_state(<span class="number">1</span>, num_hiddens, ctx)</span><br><span class="line">    output = [char_to_idx[prefix[<span class="number">0</span>]]]</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> range(num_chars + len(prefix) - <span class="number">1</span>):</span><br><span class="line">        <span class="comment">#将上一时间步的输出作为当前时间步的输入</span></span><br><span class="line">        X = to_onehot(nd.array([output[<span class="number">-1</span>]], ctx=ctx), vocab_size)</span><br><span class="line">        <span class="comment">#计算输出和更新隐藏状态</span></span><br><span class="line">        (Y, state) = rnn(X, state, params)</span><br><span class="line">        <span class="comment">#下一个时间步的输入是prefix里的字符或者当前的最佳预测字符</span></span><br><span class="line">        <span class="keyword">if</span> t &lt; len(prefix) - <span class="number">1</span>:</span><br><span class="line">            output.append(char_to_idx[prefix[t + <span class="number">1</span>]])</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            output.append(int(Y[<span class="number">0</span>].argmax(axis=<span class="number">1</span>).asscalar()))</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join([idx_to_char[i] <span class="keyword">for</span> i <span class="keyword">in</span> output])</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="裁剪梯度"><a href="#裁剪梯度" class="headerlink" title="裁剪梯度"></a>裁剪梯度</h3><p>利用裁剪梯度以应对梯度爆炸，假设将所有模型参数梯度的元素拼接成一个向量g，并设裁剪的阈值为s;裁剪后的梯度的L2范数不超过s<br>$$<br>裁剪后的梯度为 min(s/||g|| , 1)g<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">grad_clipping</span>(<span class="params">params, theta, ctx</span>):</span></span><br><span class="line">    norm = nd.array([<span class="number">0</span>], ctx)</span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> params:</span><br><span class="line">        norm += (param.grad **<span class="number">2</span>).sum()</span><br><span class="line">    norm = norm.sqrt().asscalar()</span><br><span class="line">    <span class="keyword">if</span> norm &gt; theta:</span><br><span class="line">        <span class="keyword">for</span> param <span class="keyword">in</span> params:</span><br><span class="line">            param.grad[:] *= theta / norm</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="模型训练函数"><a href="#模型训练函数" class="headerlink" title="模型训练函数"></a>模型训练函数</h3><p>困惑度用于评价语言模型的好坏，是对交叉熵损失函数做指数运算后得到的值。</p>
+<p>与之前章节的训练函数相比，该模型训练有几点不同：1、用困惑度评价模型；2、在迭代模型参数前裁剪梯度；3、对时序数据采用不同的采样方法将导致隐藏状态初始化的不同。</p>
+<h3 id="使用Gluon进行模型的简洁实现"><a href="#使用Gluon进行模型的简洁实现" class="headerlink" title="使用Gluon进行模型的简洁实现"></a>使用Gluon进行模型的简洁实现</h3><p>Gluon的rnn模块提供了循环神经网络的实现，</p>
+<h3 id="时间反向传播"><a href="#时间反向传播" class="headerlink" title="时间反向传播"></a>时间反向传播</h3><p>不裁剪梯度时，模型将无法正常训练。我们将循环神经网络按时间步展开，从而得到模型变量与参数之间的依赖关系，并根据链式法则应用反向传播计算并存储梯度。</p>
+<p><img src="/2020/08/21/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD.png" alt="反向传播"></p>
+<p>每次迭代中，我们在依次计算完以上各个梯度后，会将它们存储起来，从而避免重复计算。同时，反向传播中的梯度计算可能会依赖变量的当前值，他们正是通过正向传播计算出来的。</p>
+<h2 id="4、门控循环单元"><a href="#4、门控循环单元" class="headerlink" title="4、门控循环单元"></a>4、门控循环单元</h2><p>裁剪梯度可以应对梯度爆炸，但是没办法解决梯度衰减的问题。因此，循环神经网络在实际中很难捕捉时间序列中时间步距离较大的依赖关系。GRU门控循环神经网络通过可以学习的门来控制信息的流动。</p>
+<h3 id><a href="#" class="headerlink" title></a></h3><h3 id="重置门和更新门"><a href="#重置门和更新门" class="headerlink" title="重置门和更新门"></a>重置门和更新门</h3><p>两者输入均为当前时间步输入Xt与上一时间步隐藏状态Ht-1，输出由激活函数为sigmoid函数的全连接层计算得到</p>
+<p><img src="/2020/08/21/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/%E9%87%8D%E7%BD%AE%E9%97%A8%E4%B8%8E%E6%9B%B4%E6%96%B0%E9%97%A8.png" alt="重置门与更新门"></p>
+<h3 id="候选隐藏状态"><a href="#候选隐藏状态" class="headerlink" title="候选隐藏状态"></a>候选隐藏状态</h3><p>GRU将计算候选隐藏状态来辅助稍后的隐藏状态计算，先将当前时间步重置门的输出与上一时间步重置门隐藏状态做按元素乘法。重置门中元素值接近0，则意味重置对应隐藏状态元素为0，则丢弃上一时间步的隐藏状态；若近似1，则保留上一时间步隐藏状态。</p>
+<p>之后与当前时间步的输出连结，再通过含t激活函数tanh的全连接层计算候选隐藏状态，其所有元素值域为[-1,1]</p>
+<h3 id="-1"><a href="#-1" class="headerlink" title></a><img src="/2020/08/21/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/%E5%80%99%E9%80%89%E9%9A%90%E8%97%8F%E7%8A%B6%E6%80%81.png" alt="候选隐藏状态"></h3><h3 id="隐藏状态"><a href="#隐藏状态" class="headerlink" title="隐藏状态"></a>隐藏状态</h3><p>最后，时间步的隐藏状态Ht的计算使用了当前时间步的更新门Zt来对上一时间步的隐藏状态Ht-1和当前时间步的候选隐藏状态Ht*来做组合：</p>
+<p><img src="/2020/08/21/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/%E9%9A%90%E8%97%8F%E7%8A%B6%E6%80%81.png" alt="隐藏状态"></p>
+<p>在Gluon中可直接调用rnn模块中的GRU类来实现GRU门控循环。</p>
+<h3 id="LSTM长短期记忆"><a href="#LSTM长短期记忆" class="headerlink" title="LSTM长短期记忆"></a>LSTM长短期记忆</h3><p>LSTM引入了三个门：输入门、遗忘门、输出门</p>
+<p>在Gluon中可调用rnn模块中的LSTM类来实现长短期记忆。</p>
+<h2 id="5、深度循环神经网络"><a href="#5、深度循环神经网络" class="headerlink" title="5、深度循环神经网络"></a>5、深度循环神经网络</h2><p>深度循环神经网络：目前为止介绍的循环神经网络只有一个单项的隐藏层，深度学习中通常会用到含多个隐藏层的循环神经网络，在该网络中，隐藏状态的信息不断传递至当前层的下一时间步和当前时间步的下一层。</p>
+<p>双向循环神经网络：之前的介绍的神经网络模型都是假设当前时间步由前面的较早时间步的序列来决定，因此信息均通过隐藏状态向后传递。故双向神经网络通过增加从后往前传递信息的隐藏层来更灵活地处理这类信息。</p>
+
+      
+    </div>
+    
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">卷积神经网络</a>
+        </h2>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-08-20 21:42:51" itemprop="dateCreated datePublished" datetime="2020-08-20T21:42:51+08:00">2020-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-21 22:22:34" itemprop="dateModified" datetime="2020-08-21T22:22:34+08:00">2020-08-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+          <h2 id="1、二维卷积层"><a href="#1、二维卷积层" class="headerlink" title="1、二维卷积层"></a>1、二维卷积层</h2><p>二维卷积层：有高和宽两个空间维度用于处理图像数据，通常使用更直观的互相关运算来代替卷积运算。将输出与卷积核做互相关，并加上一个标量偏差来得到输出。</p>
+<p>在训练模型时，通常先对卷积核初始化，然后不断迭代卷积核与偏差。使用corr2d函数来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr2d</span>(<span class="params">X,K</span>):</span></span><br><span class="line">    h,w = K.shape</span><br><span class="line">    Y = nd.zeros((X.shape[<span class="number">0</span>] - h + <span class="number">1</span>,X.shape[<span class="number">1</span>] - w + <span class="number">1</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(Y.shape[<span class="number">0</span>]):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(Y.shape[<span class="number">1</span>]):</span><br><span class="line">            Y[i,j] = (X[ i:i+h , j: j+w]*K).sum()</span><br><span class="line">    <span class="keyword">return</span> Y</span><br></pre></td></tr></table></figure>
+
+<p>在构造函数中声明了weight和bias，并在forward中利用corr2d函数来实现卷积核。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self,kernel_size,**kwargs</span>):</span></span><br><span class="line">    super(Conv2D,self).__init__(**kwargs)</span><br><span class="line">    self.weight = self.params.get(<span class="string">&#x27;weight&#x27;</span>,shape=kernel_size)</span><br><span class="line">    self.bias = self.params.get(<span class="string">&#x27;bias&#x27;</span>,shape=(<span class="number">1</span>,))</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self,x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> corr2d(x, self.weight.data()) + self.bias.data()</span><br></pre></td></tr></table></figure>
+
+<p>一般通过数据学习得到核数组：首先构造一个卷积层，将其卷积核初始化为随机数组，并在每一次迭代中，使用平方误差来比较输出Y和卷积层的输出，并计算梯度来更新权重。</p>
+<p>由于核数组都是学习出来的，所以卷积层使用互相关运算还是卷积运算都不影响模型预测时的输出。</p>
+<p>特征图：输出可看作输入在空间维度上的表征。</p>
+<p>影响X的前向计算的所有可能输入区域，叫做X的感受野。</p>
+<h2 id="2、填充与步幅"><a href="#2、填充与步幅" class="headerlink" title="2、填充与步幅"></a>2、填充与步幅</h2><p>填充：在输入高、宽的两侧填充元素；用于增加输出的高、宽。</p>
+<p>步幅：卷积窗口从输入窗口左上方开始，依次滑动，每次滑行的行数和列数称为步幅，用于减少输出的高、宽。</p>
+<h2 id="3、多输入、多输出通道"><a href="#3、多输入、多输出通道" class="headerlink" title="3、多输入、多输出通道"></a>3、多输入、多输出通道</h2><p>1、多输入时，构造输入通道数与输入数据的通道数相同的卷积核，从而能够互相关运算，对每个通道做互相关，然后通过add_n函数来进行累加</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr2d_multi_in</span>(<span class="params">X,K</span>):</span></span><br><span class="line">    <span class="comment">#首先沿X和K的第0维（通道维）遍历，然后用*将结果列表变为add_n函数的位置参数（positional argument）来相加</span></span><br><span class="line">    <span class="keyword">return</span> nd.add_n(*[d2l.corr2d(x,k) <span class="keyword">for</span> x , k <span class="keyword">in</span> zip(X,K)]<span class="number">13</span></span><br></pre></td></tr></table></figure>
+
+<p>2、卷积核输入、输出通道数为Ci、Co，高和宽分别为Kh和Kw。若希望有多输出时，为每个通道分别创建核数组Ci x Kh x Kw，并将其在输出通道维上连结，卷积核形状为C0 X Ci x Kh x Kw，互相关时每个输出通道结果由卷积核在该通道核数组与整个输入数组计算得来。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr2d_multi_in_out</span>(<span class="params">X,K</span>):</span></span><br><span class="line">    <span class="comment">#对K的第0维遍历，每次同输入X做互相关运算，所有结果用stack函数合并在一起</span></span><br><span class="line">    <span class="keyword">return</span> nd.stack(*[corr2d_multi_in(X,K) <span class="keyword">for</span> k <span class="keyword">in</span> k])</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4、1-x-1-卷积层"><a href="#4、1-x-1-卷积层" class="headerlink" title="4、1 x 1 卷积层"></a>4、1 x 1 卷积层</h2><p>1 X 1 卷积主要发生在通道维上,输入与输出具有相同的高宽，输出中每个元素来自输入中在高、宽上相同位置的元素在不同通道之间的按权重累加。将通道维作为特征维，将高、宽上的元素当成数据样本，则其作用与全连接层等价。</p>
+<p>1 X 1卷积层通常用来调整网络层之间的通道数，并控制模型复杂度。</p>
+<h2 id="5、池化层"><a href="#5、池化层" class="headerlink" title="5、池化层"></a>5、池化层</h2><p>目的：为了缓解卷积层对位置的过度敏感性。</p>
+<p>池化层：每次对输入数据的一个固定形状窗口中的元素计算输出，直接计算池化窗口内的元素最大值或平均值，也叫最大池化或者平均池化。p  X  q 池化层</p>
+<p>同样池化层也能设置填充和步幅。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pool2d = nn.MxaPool2D(<span class="number">1</span>, kernel_size=(<span class="number">5</span>,<span class="number">3</span>),padding=(<span class="number">2</span>,<span class="number">1</span>),strides=(<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line"><span class="comment">#使用高、宽分别为5，3的卷积核；在高宽上的填充数分别为2，1；高宽上步幅分别为3，4</span></span><br></pre></td></tr></table></figure>
+
+<p>在处理多通道输入数据时，池化层会对每个输入通道分别池化，而不是像卷积层那样将各通道输入按通道相加。因此，池化层的输出通道数与输入通道数相等。</p>
+<h2 id="6、卷积神经网络"><a href="#6、卷积神经网络" class="headerlink" title="6、卷积神经网络"></a>6、卷积神经网络</h2><p>单隐藏层的多层感知机分类图像：将图像像素逐行展开，得到长为28*28=784的向量，并输入进全连接层中。局限性:1、同一列像素相隔远；2、对于大尺寸图像，全连接层可能导致模型过大。</p>
+<p>卷积层如何解决：1、保留输入形状，使像素在高、宽两个方向的相关性均能被有效识别；2、通过滑动窗口将同一卷积核与不同位置的输入重复计算，从而避免参数尺寸过大。</p>
+<h3 id="LeNet模型"><a href="#LeNet模型" class="headerlink" title="LeNet模型"></a>LeNet模型</h3><p>分为卷积层块与全连接层块。</p>
+<p>卷积层基本单位：卷积层+最大池化层。卷积层用于识别图像中空间模式，最大池化层用于降低卷积层对位置的敏感性。</p>
+<p>卷积层输出形状为（批量大小，通道，高，宽）；当其输出传入全连接层块时，全连接层会将小批量中的每个样本变平。形状将改变为二维，第一维是小批量中的样本，第二维是每个样本变平后的向量表示，且向量长度为通道*高 *宽。</p>
+<h3 id="AlexNet模型"><a href="#AlexNet模型" class="headerlink" title="AlexNet模型"></a>AlexNet模型</h3><p>1、包含8层变换，其中有5层卷积和2层全连接隐藏层，全连接输出个数为4096；</p>
+<p>2、将激活函数由sigmoid改成了更简单的Relu，在不同参数初始化方法下使模型更容易训练，且在正区间的梯度恒为1;</p>
+<p>3、利用丢弃法来控制全连接层的模型复杂度；</p>
+<p>4、引入大量的图像增广，从而进一步扩充数据集来缓解过拟合；</p>
+<p>5、利用了更多的卷积层和更大的参数空间来拟合大规模数据集ImageNet，是浅层网络与深度神经网络的分界线。</p>
+<h3 id="VGG模型"><a href="#VGG模型" class="headerlink" title="VGG模型"></a>VGG模型</h3><p>VGG提出了可以通过重复使用简单的基础块来构建深度模型的思路；其组成规律是：连续使用数个相同的填充为1、窗口形状为3X3的卷积层后接上一个步幅为2、窗口形状为2X2的最大池化层。卷积层保持输入的高、宽不变，而池化层则对其减半。使用vgg_block函数来实现基础的VGG卷积层模块，可指定卷积层数量num_convs和输出通道数num_channels。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">vgg_block</span>(<span class="params">num_convs, num_channels</span>):</span></span><br><span class="line">    blk = nn.Sequential()</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> range(num_convs):</span><br><span class="line">        blk.add(nn.Conv2D(num_channels, kernel_size=<span class="number">3</span>,padding=<span class="number">1</span>,activation=<span class="string">&#x27;relu&#x27;</span>))</span><br><span class="line">    blk.add(nn.MaxPool2D(pool_size=<span class="number">2</span>, strides=<span class="number">2</span>))</span><br><span class="line">    <span class="keyword">return</span> blk</span><br></pre></td></tr></table></figure>
+
+<p>VGG由卷积模块后接全连接层模块构成，卷积层串联数个vgg_block，其超参数由变量conv_arch定义，指定了VGG块中卷积层个数与输出通道数。下面构造VGG，5个卷积块，前2块用单卷积层，后3块用双卷积层。第一块输出通道为64，之后每次输出通道数翻倍，直至512。总共8个卷积，3个全连接，因此称为VGG-11。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">conv_arch = ((<span class="number">1</span>,<span class="number">64</span>),(<span class="number">1</span>,<span class="number">128</span>),(<span class="number">2</span>,<span class="number">256</span>),(<span class="number">2</span>,<span class="number">512</span>),(<span class="number">2</span>,<span class="number">512</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">vgg</span>(<span class="params">conv_arch</span>):</span></span><br><span class="line">    net = nn.Sequential()</span><br><span class="line">    <span class="comment">#卷积层部分</span></span><br><span class="line">    <span class="keyword">for</span> (num_convs, num_channels) <span class="keyword">in</span> conv_arch:</span><br><span class="line">        net.add(vgg_block(num_convs, num_channels))</span><br><span class="line">    <span class="comment">#全连接层部分</span></span><br><span class="line">    net.add(nn.Dense(<span class="number">4096</span>, activation=<span class="string">&#x27;relu&#x27;</span>), nn.Dropout(<span class="number">0.5</span>), </span><br><span class="line">            nn.Dense(<span class="number">4096</span>, activation=<span class="string">&#x27;relu&#x27;</span>), nn.Dropout(<span class="number">0.5</span>), </span><br><span class="line">            nn.Dense(<span class="number">10</span>))</span><br><span class="line">    <span class="keyword">return</span> net</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="NIN模型"><a href="#NIN模型" class="headerlink" title="NIN模型"></a>NIN模型</h3><p>上述模型共通处均是：先以卷积层构成的模块充分抽取空间特征，再以全连接层构成的模块来输出分类结果。</p>
+<p>NIN则提出了另外一个思路：串联多个由卷积层和全连接层构成的小网络来构建深层网络。</p>
+<p>卷积层通常输入、输出：四维数组（样本、通道、高、宽）；全连接层输入输出：二维数组（样本、特征）。故利用1 X 1卷积层来代替全连接层，从而使空间信息自然传递至后面层。</p>
+<p>NIN块：由一个卷积层和两个充当全连接层的1 X 1卷积层串联而来，可自由设置第一个卷积层超参数。</p>
+<p><img src="/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/NIN.png" alt="NIN"></p>
+<p>NIN设计:除了使用NIN块以外，NIN去掉了AlexNet最后的3个全连接层，并使用输出通道数等于标签类别数的NIN块，然后使用全局平均池化层对每个通道中所有元素求平均，并直接进行分类。NIN这个设计的好处：显著减少模型参数尺寸，从而缓解过拟合。</p>
+<h3 id="GoogLeNet模型"><a href="#GoogLeNet模型" class="headerlink" title="GoogLeNet模型"></a>GoogLeNet模型</h3><p>GoolLeNet中的基础卷积块为Inception块，有4条并行的线路，前3条线路使用窗口分别为1X1,3X3,5X5的卷积层来抽取不同的空间尺寸下的信息，且中间2条线路会对输入先做1X1卷积来减少输入通道数，以降低模型复杂度；第四条线路则用3X3池化层后接1X1卷积层来改变通道数；且均使用了合适的填充来使输入、输出高宽一致。</p>
+<p><img src="/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/GooLeNet.png" alt="GooLeNet"></p>
+<p>GooLeNet跟VGG一样，在主体卷积部分使用5个模块，每个模块之前使用步幅为2的3 X 3最大池化层来减小输出高宽。</p>
+<p>模块一：使用一个64通道的7X7卷积层；</p>
+<p>模块二：使用2个卷积层，64通道的1X1卷积层，然后是将通道增大3倍的3X3卷积层，对应Inception的线路二；</p>
+<p>模块三：串联2个完整的Inception块；</p>
+<p>模块四：串联5个Inception块；</p>
+<p>模块五：2个Inception块，其后紧跟输出层，故同NIN一样使用全局平均池化层来将每个通道的高、宽变成1</p>
+<h2 id="7、批量归一化"><a href="#7、批量归一化" class="headerlink" title="7、批量归一化"></a>7、批量归一化</h2><p>数据标准化处理：任一特征在数据集所有样本上的均值为0、标准差为1，可以使各个特征的分布相近。对于浅层模型，数据标准化预处理已经足够了，但对于深层网络，模型参数更新仍容易造成剧烈变化。</p>
+<p>批量归一化层（batch normalization）：为应对深层模型的挑战，在训练时，利用小批量上的均值和标准差，不断调整神经网络中间输出，从而使整个神经网络在各层的中间输出数值更稳定。</p>
+<h3 id="全连接层的批量归一化"><a href="#全连接层的批量归一化" class="headerlink" title="全连接层的批量归一化"></a>全连接层的批量归一化</h3><p>对于全连接层：将批量归一化层放在全连接层的仿射交换与激活函数之间。</p>
+<h3 id="对卷积层做批量归一化"><a href="#对卷积层做批量归一化" class="headerlink" title="对卷积层做批量归一化"></a>对卷积层做批量归一化</h3><p>对于卷积层：批量归一化发生在卷积计算之后、应用激活函数之前。</p>
+<h2 id="8、残差网络ResNet"><a href="#8、残差网络ResNet" class="headerlink" title="8、残差网络ResNet"></a>8、残差网络ResNet</h2><p>实践中，添加过多层后训练误差往往不降反升，即使利用批量归一化使训练深层模型更加容易，该问题仍存在。</p>
+<p>残差块：当理想映射f(x)极接近恒等映射时，残差映射也易于捕捉恒等映射的细微波动。</p>
+<p><img src="/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/ResNet.png" alt="ResNet块"></p>
+<p>ResNet沿用了VGG全3X3卷积层的设计，残差块中首先由2个相同输出通道数的3X3卷积层，每个卷积层之后接一个批量归一化层和RELU激活函数，然后将输入跳过这2个卷积运算后再加在最后的RELU激活函数前。这样设计要求2个卷积层的输入、输出形状一样，从而可以相加。</p>
+<p>ResNet的前两层跟GoogLeNet一样，在输出通道为64、步幅为2的7X7卷积层后接步幅为2的3X3最大池化层。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Conv2D(<span class="number">64</span>,kernel_size=<span class="number">7</span>,strides=<span class="number">2</span>,padding=<span class="number">3</span>),</span><br><span class="line">       nn.BatchNoem(),nn.Activation(<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">       nn.MaxPool2D(pool_size=<span class="number">3</span>,strides=<span class="number">2</span>,padding=<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+
+<p>不同在于其每个卷积层后增加的批量归一层,GoogLeNet在后面会接4个Inception组成的模块，而ResNet则使用4个由残差块组成的模块，每个模块使用若干个同样输出通道数的残差块。我们用resnet_block函数来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">resnet_block</span>(<span class="params">num_channels, num_residuals, first_block=False</span>):</span></span><br><span class="line">    blk = nn.Sequential()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(num_residuals):</span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">0</span> <span class="keyword">and</span> <span class="keyword">not</span> first_block:</span><br><span class="line">            blk.add(Residual(num_channels, use_1x1conv=<span class="literal">True</span>, strides=<span class="number">2</span>))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            blk.add(Residual(num_channels))</span><br><span class="line">    <span class="keyword">return</span> blk</span><br></pre></td></tr></table></figure>
+
+<p>接着使用ResNet加入所有残差块，这里每个模块使用2个残差块</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">net.add(resnet_block(<span class="number">64</span>, <span class="number">2</span>, first_block=<span class="literal">True</span>),</span><br><span class="line">       resnet_block(<span class="number">128</span>,<span class="number">2</span>),</span><br><span class="line">       resnet_block(<span class="number">256</span>,<span class="number">2</span>),</span><br><span class="line">       resnet_block(<span class="number">512</span>,<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">net.add(nn.GlobalAvgPool2D(), nn.Dense(<span class="number">10</span>))</span><br><span class="line"><span class="comment">#加入全局平均池化层后接上全连接层输出</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="9、稠密连接网络DenseNet"><a href="#9、稠密连接网络DenseNet" class="headerlink" title="9、稠密连接网络DenseNet"></a>9、稠密连接网络DenseNet</h2><p><img src="/2020/08/20/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/DenseNet.png" alt="DenseNet"></p>
+<p>DenseNet主要构建模块时稠密块和过渡层，前者定义了输入、输出是如何连结的，后者则用来控制通道数，使之不过大。</p>
+<p>由于每个稠密块都会带来通道数的增加，使用过多则会带来过于复杂的模型，过度层用来控制模型复杂度。它通过1X1卷积层来减少通道数，并使用步幅为2的的平均池化层减半高、宽，从而进一步降低模型复杂度。</p>
+
+      
+    </div>
+    
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/19/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%88%9D%E8%A7%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/19/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%88%9D%E8%A7%81/" class="post-title-link" itemprop="url">MXNET机器学习初见</a>
+        </h2>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-08-19 23:28:46" itemprop="dateCreated datePublished" datetime="2020-08-19T23:28:46+08:00">2020-08-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-29 20:20:13" itemprop="dateModified" datetime="2020-08-29T20:20:13+08:00">2020-08-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+          <h2 id="1、基础知识"><a href="#1、基础知识" class="headerlink" title="1、基础知识"></a>1、基础知识</h2><p>NDArray、NumPy的广播机制：数组维度不同，后缘维度的轴长（从末尾算起的维度）相同；（4，3）+（3，）；（3，4，2）+（4，2）   2、数组维度相同，其中有个轴为1；（4，3）+（4，1）：在1轴上广播扩展。</p>
+<p>NDArray,NumPy的相互变换：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">P = np.ones((<span class="number">2</span>,<span class="number">3</span>))</span><br><span class="line">D = nd.array(P)</span><br><span class="line">D.asnumpy()</span><br></pre></td></tr></table></figure>
+
+<p>自动求梯度（gradient）MXNET中使用autograd模块自动求梯度：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = nd.arange(<span class="number">4</span>).reshape((<span class="number">4</span>,<span class="number">1</span>))</span><br><span class="line">x.attach_grad()  <span class="comment">#申请内存</span></span><br><span class="line"><span class="keyword">with</span> autograd.record():</span><br><span class="line">    y = <span class="number">2</span> * nd.dot(x.T,x) <span class="comment">#若y为标量，贼会默认对y元素求和后，求关于X的梯度</span></span><br><span class="line">y.backward()</span><br></pre></td></tr></table></figure>
+
+
+
+<p>uniform:均匀分布采样；normal:正态分布采样；poisson:泊松分布采样。</p>
+<h2 id="2、线性回归"><a href="#2、线性回归" class="headerlink" title="2、线性回归"></a>2、线性回归</h2><p>损失函数：平方函数，平方损失；在模型训练中，希望找到一组模型参数为w1,w2,b使得训练样本平均损失最小。</p>
+<p>解析解：误差最小化问题的解刚好可用数学公式表达出来；大多数为数值解，只能利用优化算法有限次迭代模型参数，从而尽可能降低损失函数的值。</p>
+<p>全连接层：又名稠密层，输出层中的神经元与输入层中的各个输入完全连接；</p>
+<p>矢量计算比标量逐个相加更加省时间，故往往利用矢量矩阵运算来实现深度学习；</p>
+<p>优化算法：小批量随机梯度下降：批量大小batch size,学习率 lr 均为超参数，为人为设定并非模型学习出来的，</p>
+<p>调参：通过反复试错来寻找合适的超参数，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sgd</span>(<span class="params">params,lr,batch_size</span>):</span> <span class="comment">#sgd函数实现小批量随机梯度下降算法</span></span><br><span class="line">  <span class="keyword">for</span> param <span class="keyword">in</span> params:</span><br><span class="line">    param[:] = param - lr * param.grad / batch_size</span><br></pre></td></tr></table></figure>
+
+<p>在一个迭代周期epoch中，将完整遍历一遍data_iter函数，并对训练数据集中所有样本都使用一次。</p>
+<h3 id="Gluon简洁实现："><a href="#Gluon简洁实现：" class="headerlink" title="Gluon简洁实现："></a>Gluon简洁实现：</h3><p>1、提供data包来读取数据：</p>
+<p>2、提供大量预定义层，nn模块：neural networks：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> nn</span><br><span class="line">net = nn.Sequential()  <span class="comment">#Sequential实例是串联各层的容器，依次添加层，每一层一次计算并作为下一层输入</span></span><br><span class="line">net.add(nn.Dense(<span class="number">1</span>)) <span class="comment">#Dense全连接层，GLUON无须指定各层形状，模型会自动推断</span></span><br></pre></td></tr></table></figure>
+
+<p>3、利用init模块来实现模型参数初始化的各种方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> init</span><br><span class="line">net.initialize(init.Normal(sigma=<span class="number">0.01</span>)) <span class="comment">#均值为0，标准差0.01的正态分布</span></span><br></pre></td></tr></table></figure>
+
+<p>4、定义损失函数：利用loss模块：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> loss <span class="keyword">as</span> gloss</span><br><span class="line">loss = gloss.L2Loss() <span class="comment">#平方损失又是L2范数损失</span></span><br></pre></td></tr></table></figure>
+
+<p>5、定义优化算法：创建Trainer实例，以sgd作为优化算法，用来迭代net实例所有通过add函数嵌套的层包含的全部参数，可通过collect_params函数获取。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">trainer = gluon.Trainer(net.collect_params(),<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learning_rate&#x27;</span>:<span class="number">0.03</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>6、训练模型：调用Trainer实例的step函数来迭代模型参数，按sgd的定义，在step中指明批量大小，从而对样本梯度求平均。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">num_epochs = <span class="number">3</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(<span class="number">1</span>,num_epochs + <span class="number">1</span>):</span><br><span class="line">    <span class="keyword">for</span> X,y <span class="keyword">in</span> data_iter:</span><br><span class="line">        <span class="keyword">with</span> autograd.record():</span><br><span class="line">            l = loss(net(X),y)</span><br><span class="line">        l.backward()</span><br><span class="line">        trainer.step(batch_size)</span><br><span class="line">    l = loss(net(features), labels)</span><br><span class="line">    print(<span class="string">&#x27;epoach %d,loss: %f&#x27;</span>%(epoch,l.mean().asnumpy()))</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3、softmax回归"><a href="#3、softmax回归" class="headerlink" title="3、softmax回归"></a>3、softmax回归</h2><p>模型输出为图像类别这种离散值时，使用softmax回归，其输出单元从一个变成了多个，且引入了softmax运算使输出更加适合离散值的预测和训练。</p>
+<p>sofemax回归模型：将输出特征与权重做线性叠加，输出值个数等于标签里的类别数。例：有4种特征（4个像素的图片）和3种输出动物类别，则权重包含12个标量（带下标w)、偏差包含3个标量（带下标b）。每个On计算都依赖所有输入，故为全连接层。</p>
+<p>softmax计算：直接用最高On作为预测输出，有2个问题。1、输出值范围不定，难以直观判断；2、误差难以衡量。softmax运算符可以解决，即归一化,但softmax运算不改变预测类别输出。<br>$$<br>y1 = exp(O1)/exp(O1)+exp(O2)+exp(O3)<br>$$<br>交叉熵函数：使用更适合衡量分布差异的测量函数，只关心对正确类别的预测概率，<br>$$<br>H(yi,y<em>i) = -Σ(yilogy</em>i)<br>$$<br>交叉熵损失函数，最小化其等价于最大化训练数据集所有标签类别的联合预测概率。<br>$$<br>l(o) =1/n * Σ(yilogy*i)<br>$$<br>图像分类数据集：Fashion-MNIST</p>
+<p>Gluon的DataLoader中可用多进程来加速数据读取；通过ToTensor实例将图像数据从unit8格式变换成32位浮点数格式，并除以255使得所有像素均在0至1之间。</p>
+<h3 id="Gluon简洁实现"><a href="#Gluon简洁实现" class="headerlink" title="Gluon简洁实现"></a>Gluon简洁实现</h3><p>1、导入模块并获取函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> d2zlzh <span class="keyword">as</span> d2l</span><br><span class="line"><span class="keyword">from</span> mxnet <span class="keyword">import</span> gluon, init</span><br><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> loss <span class="keyword">as</span> gloss, nn</span><br><span class="line">batch_size = <span class="number">256</span> <span class="comment">#批量大小设置</span></span><br><span class="line">train_iter,test_iter = d2l.load_data_fashion_mnist(batch_size)</span><br></pre></td></tr></table></figure>
+
+<p>2、定义和初始化模型</p>
+<p>添加输出为10的全连接层，并用均值为0、标准差为0.01的正态分布随机初始化模型的权重参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Dense(<span class="number">10</span>))</span><br><span class="line">net.initialize(init.Normal(sigma=<span class="number">0.01</span>))</span><br></pre></td></tr></table></figure>
+
+<p>3、同时定义softmax和交叉熵损失函数，使数值稳定性更好，使用Gluon提供的函数。</p>
+<p>定义优化算法：使用学习率为0.1的小批量随机梯度下降算法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">loss = gloss.SoftmaxCrossEntropyLoss()</span><br><span class="line">trainer = gluon.Trainer(net.collect_params()，<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learining_rate&#x27;</span>:<span class="number">0.1</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>4、使用上一节定义的训练函数来训练模型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">num_epochs = <span class="number">5</span></span><br><span class="line">d2l.train_ch3(net,train_iter,test_iter,loss,num_epochs,batch_size,<span class="literal">None</span>,<span class="literal">None</span>,trainer)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4、多层感知机"><a href="#4、多层感知机" class="headerlink" title="4、多层感知机"></a>4、多层感知机</h2><p>深度学习主要关注多层模型，以多层感知机NLP（multilayer perceptron）为例。在单层网络的基础上引入了隐藏层hidden layer，但多个仿射线性变换叠加仍然是线性仿射，需引入非线性函数，该函数被称为激活函数</p>
+<p>RELU函数：RELU(x) = max(x,0)</p>
+<p>sigmoid函数：sigmoid(x) = 1/[1+exp(-x)]</p>
+<p>sigmoid函数的导数：sigmoid(x)(1-sigmoid(x))</p>
+<p>tanh（双曲正切）函数：[1- exp(-2x)]/[1+exp(-2x)]</p>
+<p>tanh函数的导数：1 - [tanh(x)]^2</p>
+<h3 id="Gluon的简洁实现"><a href="#Gluon的简洁实现" class="headerlink" title="Gluon的简洁实现"></a>Gluon的简洁实现</h3><p>1、导入包与模块，并定义模型,，多加一个全连接作为隐藏层，单元数为256，用RELU作为激活函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> d2zlzh <span class="keyword">as</span> d2l</span><br><span class="line"><span class="keyword">from</span> mxnet <span class="keyword">import</span> gluon, init</span><br><span class="line"><span class="keyword">from</span> mxnet.gluon <span class="keyword">import</span> loss <span class="keyword">as</span> gloss, nn</span><br><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dense(<span class="number">10</span>))</span><br><span class="line">net.initialize(init.Normal(sigma = <span class="number">0.01</span>))</span><br></pre></td></tr></table></figure>
+
+<p>2、使用与softmax回归几乎相同的步骤来读取数据并训练模型,学习率为0.5</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">256</span> <span class="comment">#批量大小设置</span></span><br><span class="line">train_iter,test_iter = d2l.load_data_fashion_mnist(batch_size)</span><br><span class="line">oss = gloss.SoftmaxCrossEntropyLoss()</span><br><span class="line">trainer = gluon.Trainer(net.collect_params()，<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learining_rate&#x27;</span>:<span class="number">0.5</span>&#125;)</span><br><span class="line">num_epochs = <span class="number">5</span> <span class="comment">#迭代周期num_epochs指的是要循环学习几次</span></span><br><span class="line">d2l.train_ch3(net,train_iter,test_iter,loss,num_epochs,batch_size,<span class="literal">None</span>,<span class="literal">None</span>,trainer)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5、模型选择与拟合问题"><a href="#5、模型选择与拟合问题" class="headerlink" title="5、模型选择与拟合问题"></a>5、模型选择与拟合问题</h2><p>训练误差：模型在训练集上表现出来的误差；</p>
+<p>泛化误差：任意一个测试数据样本上表现出的误差的期望；</p>
+<p>使用验证数据集来进行模型选择：预留一部分在训练、测试数据集之外的数据来进行模型选择。K折交叉验证：将原始数据分成K个不重合的子数据集，做K次模型训练和验证，每一次用一个子数据集来验证模型，其他用于训练模型。最后对这K次结果分别求平均。</p>
+<p>欠拟合：模型无法得到较低的训练误差。</p>
+<p>过拟合：模型训练误差远小于其在测试集上误差；模型越复杂、训练集越小越容易过拟合。</p>
+<h2 id="6、权重衰减、丢弃法来处理过拟合"><a href="#6、权重衰减、丢弃法来处理过拟合" class="headerlink" title="6、权重衰减、丢弃法来处理过拟合"></a>6、权重衰减、丢弃法来处理过拟合</h2><p>权重衰减：等价于L2范数正则化，通过为模型损失函数添加惩罚项，使学到的模型参数值较小。</p>
+<p>L2惩罚项指的是：模型权重参数的每一个元素的平方和与一个正的常数的乘积。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">l2_penalty</span>(<span class="params">w</span>):</span></span><br><span class="line">  <span class="keyword">return</span> (w**<span class="number">2</span>).sum() / <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="权重衰减Gluon简洁实现："><a href="#权重衰减Gluon简洁实现：" class="headerlink" title="权重衰减Gluon简洁实现："></a>权重衰减Gluon简洁实现：</h3><p>构造Trainer实例时通过wd参数来指定权重衰减超参数，默认下会对权重、偏差同时衰减。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#对权重参数衰减，权重名称一般以weight结尾</span></span><br><span class="line">trainer_w = gluon.Trainer(net.collect_params(<span class="string">&#x27;.*weight&#x27;</span>),<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learning_rate&#x27;</span>:lr,<span class="string">&#x27;wd&#x27;</span>:wd&#125;)</span><br><span class="line"><span class="comment">#不对偏差参数衰减，偏差名称一般以bias结尾</span></span><br><span class="line">trainer_b = gluon.Trainer(net.collect_params(<span class="string">&#x27;.*bias&#x27;</span>),<span class="string">&#x27;sgd&#x27;</span>,&#123;<span class="string">&#x27;learning_rate&#x27;</span>:lr&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>丢弃法：隐藏单元有一定的概率P被丢弃掉，丢弃概率是丢弃法的超参数。具体而言，随机变量$为0和1的概率分别为P和1-P。</p>
+<p>定义dropout函数，以drop_prob的概率丢弃NDArray输入X中的元素。</p>
+<h3 id="丢弃法Gluon简洁实现："><a href="#丢弃法Gluon简洁实现：" class="headerlink" title="丢弃法Gluon简洁实现："></a>丢弃法Gluon简洁实现：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dropout(drop_prob1),  <span class="comment">#在第一个全连接层后添加丢弃层</span></span><br><span class="line">       nn.Dense(<span class="number">256</span>,activation = <span class="string">&#x27;relu&#x27;</span>),nn.Dropout(drop_prob2),nn.Dense(<span class="number">10</span>))</span><br><span class="line">net.initialize(init.Normal(sigma = <span class="number">0.01</span>))</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="7、反向传播"><a href="#7、反向传播" class="headerlink" title="7、反向传播"></a>7、反向传播</h2><p>反向传播：指计算神经网络梯度的方法，依据链式法则，其梯度计算可能依据各变量的当前值，而这些变量的当前值是通过正向传播计算得到的。</p>
+<p>正向传播的计算可能依赖于模型参数的当前值，而参数是在反向传播的梯度计算后通过优化算法迭代的。</p>
+<p>模型参数初始化完成后，交替地进行正向传播和反向传播，并根据反向传播计算的梯度迭代模型参数。</p>
+<p>梯度衰减、爆炸：由于层数过大时，输出呈幂次爆炸增长，故梯度爆炸或梯度消失。</p>
+<h2 id="8、深度学习计算原理细节"><a href="#8、深度学习计算原理细节" class="headerlink" title="8、深度学习计算原理细节"></a>8、深度学习计算原理细节</h2><h3 id="1、基于Block类的模型构建"><a href="#1、基于Block类的模型构建" class="headerlink" title="1、基于Block类的模型构建"></a>1、基于Block类的模型构建</h3><p>Block类是nn模块里提供的一个模型构造类，继承Block类来构造多层感知机，重载init函数与forward函数，分别用于创建模型参数与定义前向计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MLP</span>(<span class="params">nn.Block</span>):</span> <span class="comment">#声明带有模型参数的层，声明2个全连接层</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, **kwargs</span>):</span></span><br><span class="line">        <span class="comment">#调用父类构造函数来进行必要初始化。</span></span><br><span class="line">        super(MLP,self).__init__(**kwargs)</span><br><span class="line">        self.hidden = nn.Dense(<span class="number">256</span>, activation=<span class="string">&#x27;relu&#x27;</span>) <span class="comment">#隐藏层</span></span><br><span class="line">        self.output = nn.Dense(<span class="number">10</span>) <span class="comment">#输出层</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self,x</span>):</span> <span class="comment">#定义模型的前向计算，即如何根据输入x计算返回所需的模型输出</span></span><br><span class="line">        <span class="keyword">return</span> self.output(self.hidden(x))</span><br></pre></td></tr></table></figure>
+
+<p>无需定义反向传播，系统将自动求梯度而生成反向传播所需的backward函数</p>
+<p>实例化MLP类得到net，并传入输入数据X并做一次前向计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X = nd.random.uniform(shape=(<span class="number">2</span>,<span class="number">20</span>))</span><br><span class="line">net = MLP()</span><br><span class="line">net.initialize()</span><br><span class="line">net(X)</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、构建一个继承于Block类的继承类"><a href="#2、构建一个继承于Block类的继承类" class="headerlink" title="2、构建一个继承于Block类的继承类"></a>2、构建一个继承于Block类的继承类</h3><p>提供add函数来逐一添加串联的Block子类实例，而模型的前向计算就是将这些实例按顺序逐一计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MySequential</span>(<span class="params">nn.Block</span>):</span></span><br><span class="line">    def__init__(self,**kwargs):</span><br><span class="line">        super(MySequential,self).__init__(**kwargs)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self,block</span>):</span></span><br><span class="line">        <span class="comment">#block为Block实例，当MySequential实例调用initialize函数时，系统会自动对其所有成员初始化</span></span><br><span class="line">        self._children[block.name] = block</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self,x</span>):</span></span><br><span class="line">        <span class="comment">#OrderedDict保证按添加顺序遍历成员</span></span><br><span class="line">        <span class="keyword">for</span> block <span class="keyword">in</span> self._children.values():</span><br><span class="line">            x = block(x)</span><br><span class="line">         <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3、自定义初始化模型参数"><a href="#3、自定义初始化模型参数" class="headerlink" title="3、自定义初始化模型参数"></a>3、自定义初始化模型参数</h3><p>对于Sequential类构造的神经网络，可通过方括号[]来访问网络的任一层。同时Sequential实例中含模型参数的层，可通过Block类的params属性来访问该层包含的参数。</p>
+<p>共享模型参数：在利用Block类中的forward函数里多次调用一个层来计算。或者，在构造层时指定特定的参数，若不同层使用同一份参数，则它们会在前向、反向时均共享相同的参数。</p>
+<p>延后初始化：只有将形状是（，）的输入X传进网络做前向计算net(X)时，系统才能推断出该层权重参数形状为（，），此时才能真正地开始初始化参数。</p>
+<p>避免延后初始化：1、要对已初始化的模型重新初始化时，由于参数形状不会变化，能够立即重新初始化；2、创建层的时候指定了它的输入个数，故系统不需要额外信息来推测参数形状。</p>
+<h3 id="4、自定义层"><a href="#4、自定义层" class="headerlink" title="4、自定义层"></a>4、自定义层</h3><h3 id="5、读取与存储"><a href="#5、读取与存储" class="headerlink" title="5、读取与存储"></a>5、读取与存储</h3><p>将内存中训练好的模型参数存储在硬盘上，供后续读取使用。</p>
+
+      
+    </div>
+    
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -579,20 +1063,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

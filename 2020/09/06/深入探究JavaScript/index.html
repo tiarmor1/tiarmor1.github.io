@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="JS方法&#x2F;函数重载的姿势JavaScript不支持重载的语法，它没有重载所需要的函数签名。  ECMAScript函数不能像传统意义上那样实现重载。而在其他语言（如 Java）中，可以为一个函数编写两个定义，只要这两个定义的签名（接受的参数的类型和数量）不同即可。如前所述，ECMAScirpt函数没有签名，因为其参数是由包含零或多个值的数组来表示的。而没有函数签名，真正的重载是不可能做到的。 —">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入探究JavaScript">
+<meta property="og:url" content="http://yoursite.com/2020/09/06/%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6JavaScript/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="JS方法&#x2F;函数重载的姿势JavaScript不支持重载的语法，它没有重载所需要的函数签名。  ECMAScript函数不能像传统意义上那样实现重载。而在其他语言（如 Java）中，可以为一个函数编写两个定义，只要这两个定义的签名（接受的参数的类型和数量）不同即可。如前所述，ECMAScirpt函数没有签名，因为其参数是由包含零或多个值的数组来表示的。而没有函数签名，真正的重载是不可能做到的。 —">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-06T13:28:16.000Z">
+<meta property="article:modified_time" content="2020-09-07T01:09:02.815Z">
+<meta property="article:author" content="Li Yudong">
+<meta property="article:tag" content="探究语言逻辑">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/06/%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6JavaScript/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>深入探究JavaScript | Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">16</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/06/%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6JavaScript/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深入探究JavaScript
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-09-06 21:28:16" itemprop="dateCreated datePublished" datetime="2020-09-06T21:28:16+08:00">2020-09-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-07 09:09:02" itemprop="dateModified" datetime="2020-09-07T09:09:02+08:00">2020-09-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2/" itemprop="url" rel="index"><span itemprop="name">前端页面</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="JS方法-函数重载的姿势"><a href="#JS方法-函数重载的姿势" class="headerlink" title="JS方法/函数重载的姿势"></a>JS方法/函数重载的姿势</h1><p>JavaScript不支持重载的语法，它没有重载所需要的函数签名。</p>
+<blockquote>
+<p>ECMAScript函数不能像传统意义上那样实现重载。而在其他语言（如 Java）中，可以为一个函数编写两个定义，只要这两个定义的签名（接受的参数的类型和数量）不同即可。如前所述，<strong>ECMAScirpt函数没有签名</strong>，因为其参数是由包含零或多个值的数组来表示的。而<strong>没有函数签名，真正的重载是不可能做到的</strong>。 — <em>JavaScript高级程序设计（第3版）3.7.2小节</em></p>
+</blockquote>
+<p>在JavaScript中，函数名本身就是变量，函数声明类似于变量赋值。当同个函数名被多次声明时，后声明的内容将覆盖前面的内容。尽管JavaScript无法做到真正的重载，但是可以通过检查传入函数中参数的类型和数量并作相应的处理，从而实现重载的效果，曲线救国。</p>
+<h2 id="借助流程控制语句"><a href="#借助流程控制语句" class="headerlink" title="借助流程控制语句"></a>借助流程控制语句</h2><p>通过判断传入参数的数量（arguments.length），执行相应的代码块。</p>
+<h2 id="巧用闭包特性"><a href="#巧用闭包特性" class="headerlink" title="巧用闭包特性"></a>巧用闭包特性</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ninja = &#123;&#125;;</span><br><span class="line">addMethod(ninja, <span class="string">&#x27;whatever&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;<span class="comment">/* code */</span>&#125;);</span><br><span class="line">addMethod(ninja, <span class="string">&#x27;whatever&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">a</span>)</span>&#123;<span class="comment">/* code */</span>&#125;);</span><br><span class="line">addMethod(ninja, <span class="string">&#x27;whatever&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123;<span class="comment">/* code */</span>&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>addMethod函数接收3个参数：目标对象、目标方法名、函数体，当函数被调用时：</p>
+<p>先将目标object[name]的值存入变量old中，因此<strong>起初old中的值可能不是一个函数</strong>；接着向object[name]赋值一个代理函数，并且由于变量old、fn在代理函数中被引用，所以<strong>old、fn将常驻内存</strong>不被回收。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addMethod</span>(<span class="params">object, name, fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> old = object[name];  <span class="comment">// 保存前一个值，以便后续调用</span></span><br><span class="line">  object[name] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;  <span class="comment">// 向object[name]赋值一个代理函数</span></span><br><span class="line">    <span class="comment">// 判断fn期望接收的参数与传入参数个数是否一致</span></span><br><span class="line">    <span class="keyword">if</span> (fn.length == <span class="built_in">arguments</span>.length)</span><br><span class="line">      <span class="comment">// 若是，则调用fn</span></span><br><span class="line">      <span class="keyword">return</span> fn.apply(<span class="built_in">this</span>, <span class="built_in">arguments</span>)</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> old == <span class="string">&#x27;function&#x27;</span>)  <span class="comment">// 若否，则判断old的值是否为函数</span></span><br><span class="line">      <span class="comment">// 若是，则调用old</span></span><br><span class="line">      <span class="keyword">return</span> old.apply(<span class="built_in">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代理函数被调用时：</p>
+<p>先判断传入参数与<strong>其父级作用域中fn</strong>期望接收参数的个数是否一致，若是则调用该fn；</p>
+<p>若否，则判断<strong>其父级作用域中old</strong>值类型是否为函数，若是则调用该old；</p>
+<p> 当old中存有上一次生成的代理函数时，则会重复前面两个步骤，直至old值<strong>不为代理函数</strong>。</p>
+<hr>
+<p>上述两种方法都是通过检查参数个数来实现重载，<strong>不区分参数类型</strong>。此外，方法1在继承时重载的那些函数无法被重写，而方法2通过逐个执行代理函数，比对参数个数，直至找到目标函数，效率不高。</p>
+<h2 id="巧用引用类型特性"><a href="#巧用引用类型特性" class="headerlink" title="巧用引用类型特性"></a>巧用引用类型特性</h2><p><strong>核心思想</strong>：由于ECMAScript函数是一种<strong>引用类型</strong>对象，可扩展属性与方法。借此通过创建一个容器用于存储要重载的函数，并将容器挂载到代理函数上以便后续访问，而代理函数利用闭包特性访问容器。</p>
+<p><strong>重载顺序</strong>：首先查找参数类型匹配的函数，其次查找参数个数匹配的函数。</p>
+<p><strong>存储格式</strong>：键值对，键名由逗号与参数个数或参数类型组成，键值为要重载的函数，如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&#x27;,0&#x27;</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;<span class="comment">/* code */</span>&#125;,</span><br><span class="line">  <span class="string">&#x27;,1&#x27;</span>: <span class="function"><span class="keyword">function</span>(<span class="params">a</span>)</span>&#123;<span class="comment">/* code */</span>&#125;,</span><br><span class="line">  <span class="string">&#x27;,string,number&#x27;</span>: <span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123;<span class="comment">/* code */</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>工具函数被调用时</strong>：</p>
+<ol>
+<li>先判断是否已重载过，若有，直接将要重载的函数按格式存入容器；</li>
+<li>若未重载过，则创建一个容器变量；</li>
+<li>判断未重载前的值是否为一个函数，若是，则以逗号+参数个数的格式存入容器；</li>
+<li>将要重载的函数存入容器；</li>
+<li>代理原函数，并将容器挂载到代理函数上；</li>
+<li>当代理函数被调用时，将依次查找容器中匹配的函数并调用。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 重载工具函数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Object&#125;</span> <span class="variable">ctx</span></span> - 上下文</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;String&#125;</span> <span class="variable">name</span></span> - 函数名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Function&#125;</span> <span class="variable">fn</span></span> - 函数体</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;String&#125;</span> <span class="variable">type</span></span> - 参数类型</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author </span>范围兄 &lt;ambit_tsai<span class="doctag">@qq</span>.com&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@example </span>不指定参数类型</span></span><br><span class="line"><span class="comment"> *  overload(obj, &#x27;do&#x27;, function()&#123;...&#125;);</span></span><br><span class="line"><span class="comment"> *  overload(obj, &#x27;do&#x27;, function(a)&#123;...&#125;);</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@example </span>指定参数类型</span></span><br><span class="line"><span class="comment"> *  overload(obj, &#x27;do&#x27;, function(a,b)&#123;...&#125;, &#x27;string,number&#x27;);</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">overload</span>(<span class="params">ctx, name, fn, type</span>)</span>&#123;</span><br><span class="line">  type = type? type.trim().toLowerCase(): fn.length;</span><br><span class="line">  <span class="comment">// 已重载过</span></span><br><span class="line">  <span class="keyword">if</span>(<span class="keyword">typeof</span> ctx[name]===<span class="string">&#x27;function&#x27;</span> &amp;&amp; <span class="keyword">typeof</span> ctx[name]._$fnMap===<span class="string">&#x27;object&#x27;</span>)&#123;</span><br><span class="line">    ctx[name]._$fnMap[<span class="string">&#x27;,&#x27;</span>+type] = fn;    <span class="comment">// 将fn存入_$fnMap</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 未重载过</span></span><br><span class="line">  <span class="keyword">var</span> fnMap = &#123;&#125;;   <span class="comment">// 容器</span></span><br><span class="line">  <span class="keyword">if</span>(<span class="keyword">typeof</span> ctx[name] === <span class="string">&#x27;function&#x27;</span>)&#123;</span><br><span class="line">    <span class="comment">// 若ctx[name]是一个函数，则存入容器</span></span><br><span class="line">    fnMap[<span class="string">&#x27;,&#x27;</span>+ctx[name].length] = ctx[name];</span><br><span class="line">  &#125;</span><br><span class="line">  fnMap[<span class="string">&#x27;,&#x27;</span>+type] = fn;</span><br><span class="line">  ctx[name] = <span class="function"><span class="keyword">function</span> <span class="title">overloading</span>(<span class="params"></span>)</span>&#123;   <span class="comment">// 代理</span></span><br><span class="line">    <span class="keyword">var</span> args = <span class="built_in">arguments</span>, </span><br><span class="line">        len = args.length, </span><br><span class="line">        type, i;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>, type=<span class="string">&#x27;&#x27;</span>; i&lt;len; ++i)&#123;  <span class="comment">// 计算参数类型</span></span><br><span class="line">      type += <span class="string">&#x27;,&#x27;</span> + <span class="keyword">typeof</span> args[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 依次匹配：参数类型-&gt;参数个数</span></span><br><span class="line">    <span class="keyword">if</span>(fnMap[type]) <span class="keyword">return</span> fnMap[type].apply(<span class="built_in">this</span>, args);</span><br><span class="line">    <span class="keyword">if</span>(fnMap[<span class="string">&#x27;,&#x27;</span>+len]) <span class="keyword">return</span> fnMap[<span class="string">&#x27;,&#x27;</span>+len].apply(<span class="built_in">this</span>, args);</span><br><span class="line">    <span class="keyword">throw</span> <span class="string">&#x27;Overload: no matched function&#x27;</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">  ctx[name]._$fnMap = fnMap;   <span class="comment">// 将fnMap挂载到代理上</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Li Yudong 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Li Yudong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/09/06/%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6JavaScript/" title="深入探究JavaScript">http://yoursite.com/2020/09/06/深入探究JavaScript/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8E%A2%E7%A9%B6%E8%AF%AD%E8%A8%80%E9%80%BB%E8%BE%91/" rel="tag"># 探究语言逻辑</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/06/%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6C/" rel="prev" title="深入探究C++">
+      <i class="fa fa-chevron-left"></i> 深入探究C++
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JS%E6%96%B9%E6%B3%95-%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD%E7%9A%84%E5%A7%BF%E5%8A%BF"><span class="nav-number">1.</span> <span class="nav-text">JS方法&#x2F;函数重载的姿势</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%9F%E5%8A%A9%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.1.</span> <span class="nav-text">借助流程控制语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A7%E7%94%A8%E9%97%AD%E5%8C%85%E7%89%B9%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text">巧用闭包特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A7%E7%94%A8%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%89%B9%E6%80%A7"><span class="nav-number">1.3.</span> <span class="nav-text">巧用引用类型特性</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+
