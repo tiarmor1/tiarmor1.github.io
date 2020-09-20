@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="请乐观，请珍惜">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Technical blog">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="请乐观，请珍惜">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Li Yudong">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/page/3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">23</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/19/C-%E5%9B%9B%E5%A4%A9%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/19/C-%E5%9B%9B%E5%A4%A9%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">C++初见</a>
+        </h2>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-08-19 18:14:31" itemprop="dateCreated datePublished" datetime="2020-08-19T18:14:31+08:00">2020-08-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-26 19:00:16" itemprop="dateModified" datetime="2020-08-26T19:00:16+08:00">2020-08-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+          <h1 id="基础架构"><a href="#基础架构" class="headerlink" title="基础架构"></a>基础架构</h1><h2 id="1、数组与函数的关系"><a href="#1、数组与函数的关系" class="headerlink" title="1、数组与函数的关系"></a>1、数组与函数的关系</h2><p>数组与函数并无本质区别，均是一种映射的形式。变量函数，指针数组。</p>
+<p>数组：展开的函数，关键在于指针变化，查询时间快。</p>
+<p>函数：压缩的数组，关键在于值传递，用INDEX来定位，所用空间小。</p>
+<p>算法中的时空互换逻辑，时间复杂度与空间复杂度可以一定程度互换。</p>
+<h2 id="2、C-的编程逻辑"><a href="#2、C-的编程逻辑" class="headerlink" title="2、C++的编程逻辑"></a>2、C++的编程逻辑</h2><p>面向过程：自顶向下的编程，性能高，但需要处理实现性能的每一个细节，难以复用、扩展。</p>
+<p>面向对象：抽象化事物，建立模型。</p>
+<p>函数式编程：强调将计算过程分解成可复用的函数，MAP方法。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">auto</span> add = [](<span class="built_in">int</span> a,<span class="built_in">int</span> b) -&gt; <span class="built_in">int</span> &#123;<span class="keyword">return</span> a+b&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>泛型编程：STL，编写完全一般化并可重复使用的算法，其效率与针对某特定数据类型而设计的算法相同；泛型：在多种数据类型上皆可操作；将算法与数据结构完全分离。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">template</span> &lt;typename <span class="type">T</span>,typename <span class="type">U</span>&gt;</span><br><span class="line"><span class="title">auto</span> add(<span class="type">T</span> a, <span class="type">U</span>, b) -&gt; decl<span class="keyword">type</span>(a+b)</span><br><span class="line"><span class="title">return</span> a + b</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3、程序执行的底层"><a href="#3、程序执行的底层" class="headerlink" title="3、程序执行的底层"></a>3、程序执行的底层</h2><h3 id="C源码—编译—》对象文件—链接—》可执行程序"><a href="#C源码—编译—》对象文件—链接—》可执行程序" class="headerlink" title="C源码—编译—》对象文件—链接—》可执行程序"></a>C源码—编译—》对象文件—链接—》可执行程序</h3><p>编译时：语法检查，一个源码生成一个目标文件</p>
+<p>对象文件：存储各种各样定义</p>
+<p>链接：需将所有对象文件定义捏合在一起</p>
+<p>定义：函数具体的实现过程在这（有地址空间的为定义）</p>
+<p>声明：说有这样一个东西（无地址空间为声明），作用于编译阶段用于语法检查，在调用函数时做语法检查，仅包含函数传入参数与返回值，并不关心函数内部</p>
+<p>nm -C main.O </p>
+<p>查看main.O该对象文件内容，main.O中printf由系统库实现，add由自定库实现</p>
+<p>为何要分开定义与声明？ </p>
+<h3 id="h头文件—》放置声明-源文件—》放置定义"><a href="#h头文件—》放置声明-源文件—》放置定义" class="headerlink" title=".h头文件—》放置声明   源文件—》放置定义"></a>.h头文件—》放置声明   源文件—》放置定义</h3><p>把定义放在头文件往往会产生bug</p>
+<p>apt-get install vim.deb; ctrl +t 打开中断</p>
+<p>凡是未定义（undefined）、冲突（duplicate:符号定义有2个）的错误—》一般是链接阶段的错误；</p>
+<h2 id="4、google测试框架"><a href="#4、google测试框架" class="headerlink" title="4、google测试框架"></a>4、google测试框架</h2><p>要实现第三方模块功能的引入—》引入头文件 .h</p>
+<p>其定义压缩在一起生成了库文件：静态链接库： .lib</p>
+<p>IDE：集成开发环境=文本(vim,gcc) + 编译(g++) + 调试(gdb,lldb)</p>
+<h3 id="添加谷歌测试框架"><a href="#添加谷歌测试框架" class="headerlink" title="添加谷歌测试框架"></a>添加谷歌测试框架</h3><p>使用make命令</p>
+<p>一般未定义、重复定义的错误：一般均出现在链接阶段的错误。</p>
+<p>而找不到头文件的错误，一般出现在预编译阶段，需要添加上头文件的编译路径。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">TEST(test, add1)&#123;</span><br><span class="line">    EXPECT_EQ(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">7</span>);</span><br><span class="line">    EXPECT_NQ(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">6</span>);</span><br><span class="line">    EXPECT_LT(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">8</span>);</span><br><span class="line">    EXPECT_LE(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">7</span>);</span><br><span class="line">    EXPECT_GT(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">6</span>);</span><br><span class="line">    EXPECT_GE(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">7</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">TEST(test, add2)&#123;</span><br><span class="line">    EXPECT_EQ(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">7</span>);</span><br><span class="line">    EXPECT_NQ(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">7</span>);</span><br><span class="line">    EXPECT_LT(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">7</span>);</span><br><span class="line">    EXPECT_LE(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">7</span>);</span><br><span class="line">    EXPECT_GT(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">7</span>);</span><br><span class="line">    EXPECT_GE(add(<span class="number">3</span>,<span class="number">4</span>),<span class="number">7</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>谷歌测试框架中Run_All：1、能够输出彩色字体；2、能够动态地获取知道有多少个测试用例</p>
+<h3 id="使用printf输出彩色信息"><a href="#使用printf输出彩色信息" class="headerlink" title="使用printf输出彩色信息"></a>使用printf输出彩色信息</h3><p>使用printf输出信息之前，可以在printf添加配置参数，调整输出的字体颜色。以\033[开头，以m结尾</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[1;33;41madd(3,4) = %d\n&quot;</span>,add(<span class="number">3</span>,<span class="number">4</span>));</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>两行的内容均会改变颜色，因为底层的信息决定了显示的颜色，<strong>而终端的程序就是**</strong>用来显示底层信息**的。我们上述的修改是修改了自己配置颜色信息的部分，因此Terminal看到了设置背景色、前景色之后时，之后打印均按照该信息进行，直到后续碰到谷歌框架配置颜色信息的代码时，才按照该框架的配置来显示颜色。</p>
+<p>在该配置中0为重置所有属性，故可用下列代码确保仅一行输出改变颜色,\033[0m</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[1;33;41madd(3,4) = %d\n\033[0m&quot;</span>,add(<span class="number">3</span>,<span class="number">4</span>));</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="实现调试信息log日志打印功能"><a href="#实现调试信息log日志打印功能" class="headerlink" title="实现调试信息log日志打印功能"></a>实现调试信息log日志打印功能</h3><p>在大型工程中同样的调试信息输出代码很常见，故难以判断调试信息在哪输出，因此需要能输出功能更丰富的输出调试信息。</p>
+<p>预处理命令：宏定义#define :1、定义符号常量；2、定义傻瓜表达式；3、定义代码段</p>
+<p>宏做的事情就是最基本的替换，发生在预处理阶段</p>
+<p>*<em>C源码–预处理–》待编译      +  代码 –编译</em>–目标文件–链接–》可执行文件*</p>
+<p>g++ -E :单独执行预处理阶段</p>
+<p>最终决定程序功能的并不是C源码，而是待编译源码。因此需要经过预处理阶段之后补充代码之后，才能够正确的实现功能。</p>
+<p>#define:宏定义，只做基础的替换，而不做语法检查，且在编译器的视角中，宏定义一定要是一行代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> s(a,b) a*b</span></span><br><span class="line"></span><br><span class="line">s(<span class="keyword">int</span>, p) = &amp;n;</span><br><span class="line"></span><br><span class="line">#这句代码是正确的，因为define并不检查语法，而是只做基础替换，替换后变为： <span class="keyword">int</span> *p = &amp;n；</span><br><span class="line"></span><br><span class="line">s(<span class="number">3</span>+<span class="number">6</span>,<span class="number">4</span>);</span><br><span class="line">#预处理后成为<span class="number">3</span>+<span class="number">6</span>*<span class="number">4</span>；因此输出为<span class="number">27</span>，而不是<span class="number">4</span>*<span class="number">9</span>=<span class="number">36</span></span><br><span class="line"></span><br><span class="line">#define P(a)&#123;\</span><br><span class="line">               <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, d);\&#125;</span><br><span class="line">#利用反斜杠让编译器认为上面的宏定义其实是一行代码</span><br><span class="line"></span><br><span class="line">#预定义的宏</span><br><span class="line">#_DATE_ 日期 #_TIME_ 时间 #_LINE_ 行号 #_FILE_ 文件名 </span><br><span class="line">#_func_ 函数名/非标准 #_FUNC_ 函数名/标准 </span><br><span class="line">#_PRETTY_FUNCTION_ 更详细的函数信息</span><br><span class="line">这些预定义的宏信息可用于检查版本，同样也可用于调试信息<span class="built_in">log</span>日志打印</span><br><span class="line">    </span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> log(msg) &#123;\</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[%s : %s : %d] %s\n&quot;</span>, __FILE__, __func__, __LINE__, msg) ;\</span><br><span class="line">        &#125;</span><br><span class="line">    故通过<span class="built_in">log</span>能够打印出调试信息从而进行分析</span><br><span class="line">如何根据上述地修改下，实现任意参数的宏，变参函数、变参宏</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> log(frm, args...) &#123;\</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[%s : %s : %d] %s\n&quot;</span>, __FILE__, __func__, __LINE__, msg) ;\</span><br><span class="line">        <span class="built_in">printf</span>(frm,##args);\</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);\</span><br><span class="line">        &#125;</span><br><span class="line"> 这样就实现了一个外在表现像是<span class="built_in">printf</span>函数的宏，其输出信息会更多许多</span><br></pre></td></tr></table></figure>
+
+<p>#include：将后面文件内容原封不动地拷被至该位置，故待编译源码才能完整地反映功能。</p>
+<p>#const：分配空间</p>
+<h3 id="预处理命令-条件编译"><a href="#预处理命令-条件编译" class="headerlink" title="预处理命令-条件编译"></a>预处理命令-条件编译</h3><p>如何确保在发布版中没有日志信息，即需要用简单的方式对日志信息创建开关，必须以#endif 结尾</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> DEBUG <span class="comment">//是否定义了DEBUG宏</span></span></span><br></pre></td></tr></table></figure>
+
+<p>预处理的条件编译只有一个作用：做代码剪裁，使用该命令决定留下哪些代码</p>
+<h3 id="实现EXCEPT系列封装"><a href="#实现EXCEPT系列封装" class="headerlink" title="实现EXCEPT系列封装"></a>实现EXCEPT系列封装</h3><p>将谷歌测试框架的头文件换成自己的头文件，并编写自己头文件程序完成同样代码的编译；</p>
+<p>1、实现TEST方法；2、实现未卜先知函数RUN_ALL_TEST；3、实现相等、不等、小于等判断方法，可判断不是由函数封装出来的，而是用宏进行封装；</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _MYTEST_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _MYTEST_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXPECT_EQ(a,b)&#123;\</span></span><br><span class="line">     <span class="keyword">if</span>(!((a) == (b))&#123;\</span><br><span class="line">     <span class="built_in">print</span>(<span class="string">&quot;error\n&quot;</span>);&#125;&#125;</span><br><span class="line"></span><br><span class="line">#define EXPECT_NE(a,b)&#123;\</span><br><span class="line">     <span class="keyword">if</span>(!((a) != (b))&#123;\</span><br><span class="line">     <span class="built_in">print</span>(<span class="string">&quot;error\n&quot;</span>);&#125;&#125;</span><br><span class="line"></span><br><span class="line">#define EXPECT_EQ(a,b)&#123;\</span><br><span class="line">     <span class="keyword">if</span>(!((a) &lt; (b))&#123;\</span><br><span class="line">     <span class="built_in">print</span>(<span class="string">&quot;error\n&quot;</span>);&#125;&#125;</span><br><span class="line">其实此处代码可以进行复用，来使代码变得简洁，用宏能做的基础替换来进行复用。</span><br><span class="line">#define EXPECT(a, comp, b)&#123;\</span><br><span class="line">      <span class="keyword">if</span>(!((a) comp (b))&#123;\</span><br><span class="line">           <span class="built_in">print</span>(<span class="string">&quot;error\n&quot;</span>);&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#define EXPECT_EQ(a, b) EXPECT(a, == ,b)</span><br><span class="line">#define EXPECT_NE(a, b) EXPECT(a, != ,b)</span><br><span class="line">#define EXPECT_LT(a, b) EXPECT(a, &lt; ,b) </span><br><span class="line">#define EXPECT_LE(a, b) EXPECT(a, &lt;= ,b)</span><br><span class="line">#define EXPECT_GT(a, b) EXPECT(a, &gt; ,b)</span><br><span class="line">#define EXPECT_GE(a, b) EXPECT(a, &gt;= ,b)</span><br><span class="line"></span><br><span class="line">TEST应当是宏，在预编译后应当展开为函数的头部信息</span><br><span class="line">#define TEST(a, b) <span class="keyword">void</span> a##_##b()</span><br><span class="line"></span><br><span class="line">如何实现RUN_ALL_TEST未卜先知函数</span><br><span class="line">如何确保将测试用例函数信息写入存储区：注册函数</span><br><span class="line">#define TEST(a, b)\</span><br><span class="line"><span class="keyword">void</span> a##_##b();\</span><br><span class="line">__attribute__((constructor))\</span><br><span class="line"><span class="keyword">void</span> reg_##a##_##b()&#123;\</span><br><span class="line">    add_test_func(a##_##b, #a<span class="number">&#x27;.&#x27;</span>#b);\</span><br><span class="line">    <span class="keyword">return</span> ;\</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">struct&#123;</span><br><span class="line">    <span class="keyword">void</span>(*func)();</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *func_name;</span><br><span class="line">&#125; func_arr[<span class="number">100</span>];<span class="comment">//并非动态存储，而是只能存储100个，可用链表作用来动态开辟空间</span></span><br><span class="line">int_func_cont = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> add_test_func(<span class="keyword">void</span>(*func)(), <span class="keyword">const</span> *name)&#123;</span><br><span class="line">    func_arr[func_cnt].func =func;</span><br><span class="line">    func_Arr[func_cnt].func_name = name;</span><br><span class="line">    func_cnt += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> RUN_ALLO_TEST&#123;\</span><br><span class="line">      <span class="comment">//遍历每一个测试用例函数（如何遍历，指向函数的指针,有一个存储区存储所有测试函数用例的地址，使用struct结构来设计存储区</span></span><br><span class="line">    <span class="comment">//依次每一个测试用例函数</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; func_cntr; i++)&#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[  RUN  ]%S\n&quot;</span>,func_arr[i]-&gt;name);</span><br><span class="line">        func_arr[i].func();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">                 &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5、简单算法"><a href="#5、简单算法" class="headerlink" title="5、简单算法"></a>5、简单算法</h2><p>二分查找：在一个有序数组中查找一个数据是否存在；二分函数：二分查找如何处理浮点型数据，连续函数；二分答案</p>
+<p>本质：二分查找解决的问题：求解单调函数F(x)，函数与数组关系，其实和有序数组查找值一样的方法；</p>
+<p>应用特点：给出X很好求，但F(X)并不好求。对于F(X) = 2X,这种正反均好求时，用不着二分查找；而对于在数组中，给出数组下标容易得出值，但给出值查找下标较为困难。</p>
+<h3 id="简单版快速排序："><a href="#简单版快速排序：" class="headerlink" title="简单版快速排序："></a>简单版快速排序：</h3><p>核心：partation方法，分区方法，</p>
+<p>头部指针、尾部指针：1、先尾部指针，找一个小于基准值放前面；2、再头部指针：找一个大于基准值的放后面；3、头尾指针依次进行交替，直至指针指向同一空位置；</p>
+<p>写一个用于测试快速排序的程序：<em>TEST.H</em></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TEST(func, arr, l, r)&#123;</span></span><br><span class="line">   <span class="keyword">int</span> *temp = (<span class="keyword">int</span>*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);<span class="comment">//传入数组</span></span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;n; i++) temp[i] = arr[i];<span class="comment">//将arr中函数拷贝到temp中</span></span><br><span class="line">   func(temp, <span class="number">0</span> ,n<span class="number">-1</span>);</span><br><span class="line">   <span class="keyword">if</span>(check(temp, <span class="number">0</span>, n<span class="number">-1</span>))&#123;</span><br><span class="line">       <span class="built_in">print</span>(<span class="string">&quot;[    OK    ]%s\n&quot;</span>, #func);</span><br><span class="line">   &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">       <span class="built_in">print</span>(<span class="string">&quot;[    FAILED    ]%s\n&quot;</span>, #func); </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> *arr, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = l + <span class="number">1</span>; i &lt;= r; i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(arr[i] &lt; arr[i<span class="number">-1</span>]) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> *<span class="title">getRandData</span><span class="params">(<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> *arr = (<span class="keyword">int</span>*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);<span class="comment">//分配位置</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) arr[i] = rand() % n;</span><br><span class="line">    <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="version1"><a href="#version1" class="headerlink" title="version1"></a>version1</h4><p>partation：选择待排序区间的第一个元素作为基准值，将小于基准值的元素放在前面，大于基准值的元素放在后面，前后指针重合时，再分别对前后两部分进行快速排序的操作。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quick_sort_v1</span><span class="params">(<span class="keyword">int</span> *arr_, <span class="keyword">int</span> l , <span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l &gt;= r) <span class="keyword">return</span>; <span class="comment">//递归过程第一步必然要进行边界判断</span></span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">1</span>; y = r; z = arr[];<span class="comment">// Z为基准值应该在的位置</span></span><br><span class="line">    <span class="keyword">while</span>(x &lt; y)&#123;</span><br><span class="line">        <span class="keyword">while</span> (x &lt; y &amp;&amp; arr[y] &gt;= z) --y;</span><br><span class="line">        <span class="keyword">if</span>(x &lt; y) arr[x++] = arr[y];<span class="comment">//放至头指针指向的空位</span></span><br><span class="line">        <span class="keyword">while</span> (x &lt; y &amp;&amp; arr[x] &lt;= z) ++x;</span><br><span class="line">        <span class="keyword">if</span>(x &lt; y) arr[y--] = arr[x];</span><br><span class="line">    &#125;</span><br><span class="line">    arr[x] = z;<span class="comment">//最后将基准值放回其原来应该在的位置</span></span><br><span class="line">    quick_sort_v1(arr, l, x - <span class="number">1</span>);</span><br><span class="line">    quick_sort_va(arr, x + <span class="number">1</span>, r);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>算法工程师平时考虑的是时间复杂度吗？</p>
+<p>大环境下的共识：你和你身边的同事都是算法工程师，因此nlogn时间复杂度算法都能想到，关键在于在实现时代码实现的细节；</p>
+<h4 id="version2：单边递归法"><a href="#version2：单边递归法" class="headerlink" title="version2：单边递归法"></a>version2：单边递归法</h4><p>当本层的快速排序做完partation操作时，会分别对左右两边进行递归操作，因此相当于一个二叉树的结构；</p>
+<p>单边递归法核心思想：作为一个主管，在要被优化掉之前，做下一层的活。当前的version1函数，partation做完之后等着左右两边，可以让左半边继续递归，但右半边交给当前层程序进行执行。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quick_sort_v2</span><span class="params">(<span class="keyword">int</span> *arr_, <span class="keyword">int</span> l , <span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; r)&#123; </span><br><span class="line">        <span class="keyword">int</span> x = l ; y = r; z = arr[l];<span class="comment">// Z为基准值应该在的位置</span></span><br><span class="line">        <span class="keyword">while</span>(x &lt; y)&#123;</span><br><span class="line">            <span class="keyword">while</span> (x &lt; y &amp;&amp; arr[y] &gt;= z) --y;</span><br><span class="line">            <span class="keyword">if</span>(x &lt; y) arr[x++] = arr[y];<span class="comment">//放至头指针指向的空位</span></span><br><span class="line">            <span class="keyword">while</span> (x &lt; y &amp;&amp; arr[x] &lt;= z) ++x;</span><br><span class="line">            <span class="keyword">if</span>(x &lt; y) arr[y--] = arr[x];</span><br><span class="line">        &#125;</span><br><span class="line">        arr[x] = z;<span class="comment">//最后将基准值放回其原来应该在的位置</span></span><br><span class="line">        quick_sort_v2(arr, l, x - <span class="number">1</span>);</span><br><span class="line">        l = x + <span class="number">1</span>;</span><br><span class="line">    &#125;<span class="comment">//使用while，做完partation操作后，左半边排序通过递归来进行，</span></span><br><span class="line">    <span class="comment">//右半边的排序通过修改本层的</span></span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="version3：无监督优化"><a href="#version3：无监督优化" class="headerlink" title="version3：无监督优化"></a>version3：无监督优化</h4><p>凡是判断坐标范围超界的判断：均为监督项，无监督优化：将监督项干掉；</p>
+<p>先以插入排序来举例子：</p>
+<p>插入排序思想：将无序序列分成两部分，前半部分为已排序区，后半部分为未排序区，每次从未排序区的头部选择一个元素，插入至已排序区中。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert_sort_v1</span><span class="params">(<span class="keyword">int</span> *arr, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = l + <span class="number">1</span>; i &lt;= r; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> j = i;</span><br><span class="line">        <span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; arr[j] &lt; arr[j - <span class="number">1</span>])&#123;</span><br><span class="line">            swap(arr[j], arr[j<span class="number">-1</span>]);</span><br><span class="line">            --j;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>无监督思想：为何需要监督项，确保指针访问不越界，那么如何才能去掉这个监督项看上述while(j &gt; 0 &amp;&amp; arr[j] &lt; arr[j - 1])，只有当前插入的元素，是当前已排序区间的最小值，才会越界；因此，先做一个预处理，将该全局范围内的最小值先放置第一位，则不可能发生这种越界操作，则不再需要插入排序中的监督项。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert_sort_v2</span><span class="params">(<span class="keyword">int</span> *arr, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ind = l;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = l + <span class="number">1</span>; i &lt;= r; i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(arr[ind] &gt; arr[i]) ind = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//插入排序是一个稳定的排序，而直接交换两个位置的值会破坏其稳定性</span></span><br><span class="line">    <span class="comment">//找到全局最小值位置后，应当将其依次一个个换至最前面</span></span><br><span class="line">    <span class="keyword">while</span> (ind &gt; l)&#123;</span><br><span class="line">        swap(arr[ind], arr[ind <span class="number">-1</span>]);</span><br><span class="line">        --ind;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = l + <span class="number">1</span>; i &lt;= r; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> j = i;</span><br><span class="line">        <span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; arr[j] &lt; arr[j - <span class="number">1</span>])&#123;</span><br><span class="line">            swap(arr[j], arr[j<span class="number">-1</span>]);</span><br><span class="line">            --j;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>那么如何实现无监督的快速排序呢？快速排序中的partation过程，小于基准值放在前，大于的放在后；逻辑上讲，确定基准值后，其前后元素的数量就已经定了，由于基准值前后的位置数量是固定的，则有前一个值往后移、则必然后后面一个元素向前移。</p>
+<p>故可以头尾指针同时向中间走，且两者同时进行交换，这样就能去掉快速排序过程中其所谓的监督项了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quick_sort_v3</span><span class="params">(<span class="keyword">int</span> *arr_, <span class="keyword">int</span> l , <span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; r)&#123;</span><br><span class="line">        <span class="keyword">int</span> x = <span class="number">1</span>, y = r, z = arr[l];</span><br><span class="line">        <span class="keyword">do</span>&#123;</span><br><span class="line">            <span class="keyword">while</span>(arr[x] &lt; z) ++x;</span><br><span class="line">            <span class="keyword">while</span>(arr[y] &gt; z) --y;</span><br><span class="line">            <span class="keyword">if</span>(x &lt;= y)&#123;</span><br><span class="line">                swap(arr[x], arr[y]);</span><br><span class="line">                ++x, --y;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">while</span>(x &lt;= y);</span><br><span class="line">    quick_sort_v3(arr, l, y);</span><br><span class="line">    l = x ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>无监督的算法优化思维是一种非常重要的代码优化思维。</p>
+<h4 id="version4：基准值选择优化"><a href="#version4：基准值选择优化" class="headerlink" title="version4：基准值选择优化"></a>version4：基准值选择优化</h4><p>核心思维：快速排序时间复杂度，T(n) = n * h，其中h为递归二叉树的树高，而递归二叉树最多为n个节点，logn &lt; h &lt; n；则nlogn &lt; T(n) &lt; n**2</p>
+<p>如何让快排的时间复杂度稳定在nlogn：控制二叉树树高，即每一次区分左右树时，尽量让左右两边平分，即基准值能平分数组。</p>
+<p>方法一：三点取中法，在头指针l，尾指针r，中间元素指针m，三者指向的值之间，选取中位的那个数值作为基准值。</p>
+<h2 id="6、虚函数"><a href="#6、虚函数" class="headerlink" title="6、虚函数"></a>6、虚函数</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line">    <span class="keyword">public</span> :</span><br><span class="line">       <span class="function"><span class="keyword">void</span> <span class="title">say</span><span class="params">()</span></span>&#123;</span><br><span class="line">           <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;this is Class A&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> :</span> <span class="keyword">public</span> A &#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">       <span class="function"><span class="keyword">void</span> <span class="title">say</span><span class="params">()</span></span>&#123;</span><br><span class="line">           <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;this is class B&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    B b;</span><br><span class="line">    A &amp;a = b;</span><br><span class="line">    A *c = &amp;b;</span><br><span class="line">    b.say(); <span class="comment">//会调用B类say方法</span></span><br><span class="line">    a.say();<span class="comment">//会调用A类say方法</span></span><br><span class="line">    c-&gt;say();<span class="comment">//会调用A类say方法</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//普通的成员函数方法是跟着类走的，根据其类类别，来判断调用哪种成员方法</span></span><br><span class="line"><span class="comment">//而虚函数的方法，其调用的方法是跟着对象走的</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> &#123;</span></span><br><span class="line">    <span class="keyword">public</span> :</span><br><span class="line">       <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">say</span><span class="params">()</span></span>&#123;  <span class="comment">//前面加virtual,使其变成虚函数</span></span><br><span class="line">           <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;this is Class A&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span> :</span> <span class="keyword">public</span> C &#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">       <span class="function"><span class="keyword">void</span> <span class="title">say</span><span class="params">()</span></span>&#123; <span class="comment">//父类的方法定义为虚函数，则其继承的子类的对应方法也会变成虚函数</span></span><br><span class="line">           <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;this is class B&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    B b;</span><br><span class="line">    A &amp;a = b;<span class="comment">//a虽然是A类型的引用，但它绑定的是B类型的对象</span></span><br><span class="line">    A *c = &amp;b;<span class="comment">//间接引用C时，C虽然指针类型，但它指向的是B类的对象，因此也是调用B类方法</span></span><br><span class="line">    b.say(); <span class="comment">//会调用B类say方法</span></span><br><span class="line">    a.say();<span class="comment">//会调用A类say方法</span></span><br><span class="line">    c-&gt;say();<span class="comment">//会调用A类say方法</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="为什么虚函数可以跟着对象走："><a href="#为什么虚函数可以跟着对象走：" class="headerlink" title="为什么虚函数可以跟着对象走："></a>为什么虚函数可以跟着对象走：</h3><p>任何一个对象都会占据一片存储空间，当对象中存在虚函数时，其底层存储区域中的第一个位置会记录一个地址；该地址指向一张虚函数的表vtable，表中每一项都存储的是虚函数。</p>
+<p>因此虚函数是跟着对象走的，不管是何种类型的对象，都会指向了虚函数表，从而调用了当前对象所绑定的虚函数方法。 </p>
+<p>假设虚函数类型为T类型，则虚函数表首地址为T* 类型， 则存储T*类型数据区的数据为T**类型。因此可用C语言中指针来提取虚函数。但若用此方法来提取带参数的虚函数时，可能会导致参数混乱。</p>
+<h3 id="this指针"><a href="#this指针" class="headerlink" title="this指针"></a>this指针</h3><p>原因是：在成员方法中的特殊变量：this指针,在成员方法中，看着是一个参数，实则会添加一个隐藏参数：this指针。因此两个参数：一个是this指针指向的地址，一个才是真正的传递参数。</p>
+<p>this指针其实是一个变量，是成员方法的隐藏参数。</p>
+
+      
+    </div>
+    
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/15/%E9%A6%96%E7%AF%87%E5%8D%9A%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/15/%E9%A6%96%E7%AF%87%E5%8D%9A%E6%96%87/" class="post-title-link" itemprop="url">基于HEXO的博客搭建</a>
+        </h2>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-08-15 19:11:49" itemprop="dateCreated datePublished" datetime="2020-08-15T19:11:49+08:00">2020-08-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-19 23:26:07" itemprop="dateModified" datetime="2020-08-19T23:26:07+08:00">2020-08-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2/" itemprop="url" rel="index"><span itemprop="name">前端页面</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+          <h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>1、Git下载并利用SSH密钥关联上GitHub账号</p>
+<p>2、JS.node下载</p>
+<p>3、npm、cnpm、hexo下载</p>
+<h2 id="创建博客并利用GitHub-Pages上传网络端"><a href="#创建博客并利用GitHub-Pages上传网络端" class="headerlink" title="创建博客并利用GitHub Pages上传网络端"></a>创建博客并利用GitHub Pages上传网络端</h2><p>1、创建空文件夹，并使用hexo init 生成博客</p>
+<p>2、利用GitHub生成新的仓库作为博客资源，在原blog文件夹下安装GIT，并部署至该仓库</p>
+
+      
+    </div>
+    
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/15/hello-world/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/15/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
+        </h2>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-08-15 19:06:14" itemprop="dateCreated datePublished" datetime="2020-08-15T19:06:14+08:00">2020-08-15</time>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+
+      
+    </div>
+    
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+

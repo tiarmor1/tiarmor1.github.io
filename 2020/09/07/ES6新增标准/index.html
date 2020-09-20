@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="三大组成部分：ECMAScript；DOM（文档对象模型）：对文档的操作；BOM（浏览器对象模型）：主要包括对浏览器的相关操作； let和constlet、const和var的区别var的特性1、var可以重复声明； 2、var作用域：全局作用域和函数作用域； 3、会进行预解析，但可能造成代码混乱； let的特性1、let在同一作用域下不能进行重复声明； 2、let作用域：全局作用域和块级作用域；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6新增标准">
+<meta property="og:url" content="http://yoursite.com/2020/09/07/ES6%E6%96%B0%E5%A2%9E%E6%A0%87%E5%87%86/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="三大组成部分：ECMAScript；DOM（文档对象模型）：对文档的操作；BOM（浏览器对象模型）：主要包括对浏览器的相关操作； let和constlet、const和var的区别var的特性1、var可以重复声明； 2、var作用域：全局作用域和函数作用域； 3、会进行预解析，但可能造成代码混乱； let的特性1、let在同一作用域下不能进行重复声明； 2、let作用域：全局作用域和块级作用域；">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-07T09:39:59.000Z">
+<meta property="article:modified_time" content="2020-09-11T03:38:12.883Z">
+<meta property="article:author" content="Li Yudong">
+<meta property="article:tag" content="初学者">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/07/ES6%E6%96%B0%E5%A2%9E%E6%A0%87%E5%87%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ES6新增标准 | Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">23</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/07/ES6%E6%96%B0%E5%A2%9E%E6%A0%87%E5%87%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ES6新增标准
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-09-07 17:39:59" itemprop="dateCreated datePublished" datetime="2020-09-07T17:39:59+08:00">2020-09-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-11 11:38:12" itemprop="dateModified" datetime="2020-09-11T11:38:12+08:00">2020-09-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2/" itemprop="url" rel="index"><span itemprop="name">前端页面</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <p>三大组成部分：ECMAScript；DOM（文档对象模型）：对文档的操作；BOM（浏览器对象模型）：主要包括对浏览器的相关操作；</p>
+<h1 id="let和const"><a href="#let和const" class="headerlink" title="let和const"></a>let和const</h1><h2 id="let、const和var的区别"><a href="#let、const和var的区别" class="headerlink" title="let、const和var的区别"></a>let、const和var的区别</h2><h3 id="var的特性"><a href="#var的特性" class="headerlink" title="var的特性"></a>var的特性</h3><p>1、var可以重复声明；</p>
+<p>2、var作用域：全局作用域和函数作用域；</p>
+<p>3、会进行预解析，但可能造成代码混乱；</p>
+<h3 id="let的特性"><a href="#let的特性" class="headerlink" title="let的特性"></a>let的特性</h3><p>1、let在同一作用域下不能进行重复声明；</p>
+<p>2、let作用域：全局作用域和块级作用域；if、while、for等有{}的语句，let会考虑在花括号之间的为块级作用域，仅在代码块内部起作用；（与C++类似）</p>
+<p>3、不进行预解析；JS有预解析机制，在下面声明而在上面去调用并不会报错，然而使用let声明时不会进行预解析；</p>
+<h3 id="const的特性"><a href="#const的特性" class="headerlink" title="const的特性"></a>const的特性</h3><p>1、const为常量，声明时必须赋值，而之后并不能对其进行修改；</p>
+<p>2、其他情况与let一样，不能重复声明、不能预解析、为块级作用域。</p>
+<h1 id="块级作用域"><a href="#块级作用域" class="headerlink" title="块级作用域"></a>块级作用域</h1><p>之前在写代码时，为了避免与全局冲突，一般会先声明一个匿名函数，并马上对其调用；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+
+<p>有了块级作用域之后，可以直接用{}来生成代码块，便能直接在代码块里添加代码；</p>
+<p>如果在循环之中添加了一个块级作用域，将要如何去处理，</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> lis = <span class="built_in">document</span>.querySelectorAll(<span class="string">&quot;li&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; lis.length; i++)&#123;</span><br><span class="line">        lis[i].onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//这么写相当于生成了lis.length个代码块，遍历i时每个i的值均声成代码块，循环几次便开辟几个块级作用域；</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="解构赋值"><a href="#解构赋值" class="headerlink" title="解构赋值"></a>解构赋值</h1><h2 id="对象的解构赋值"><a href="#对象的解构赋值" class="headerlink" title="对象的解构赋值"></a>对象的解构赋值</h2><p>对象可以有若干属性，且每个属性方法衷都可以存储数据；当你希望用其他的变量将原变量的属性存储起来，原本的JS写法如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    a: <span class="number">1</span>,</span><br><span class="line">    b: <span class="number">2</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> a = obj.a;</span><br><span class="line"><span class="keyword">let</span> b = obj.b;</span><br></pre></td></tr></table></figure>
+
+<p>在ES6的标准下，可以把声明改成这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    a: <span class="number">1</span>,</span><br><span class="line">    b: <span class="number">2</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> &#123;a, b, c&#125; = obj;</span><br><span class="line"><span class="comment">//语法中对象的名字必须与obj里面的属性名称一样，这样才能进行对象解构赋值，故c为undefined</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="数组的解构赋值"><a href="#数组的解构赋值" class="headerlink" title="数组的解构赋值"></a>数组的解构赋值</h2><p>对象的解构赋值要求变量名与属性名一致，但数组的话，仅要求顺序必须一致；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>];</span><br><span class="line"><span class="keyword">let</span> [e, f] = arr;</span><br><span class="line"></span><br><span class="line"><span class="comment">//面试题：如何快速交换a, b值</span></span><br><span class="line"><span class="keyword">let</span> a = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> b = <span class="number">1</span>;</span><br><span class="line">[a, b] = [b, a];</span><br><span class="line"><span class="comment">//使用数组解构赋值便能快速交换；</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="字符串的解构赋值"><a href="#字符串的解构赋值" class="headerlink" title="字符串的解构赋值"></a>字符串的解构赋值</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> [e, f] = str</span><br><span class="line"><span class="comment">//其实跟数组一样，根据顺序的索引来解构赋值</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="展开运算符"><a href="#展开运算符" class="headerlink" title="展开运算符"></a>展开运算符</h1><h2 id="数组展开"><a href="#数组展开" class="headerlink" title="数组展开"></a>数组展开</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</span><br><span class="line"><span class="keyword">let</span> arr2 = [<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>,...arr,<span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>];</span><br><span class="line"><span class="comment">//如何简单处理，将两个数组加一起</span></span><br><span class="line"><span class="comment">//剩余参数</span></span><br><span class="line"><span class="keyword">let</span> [a, b,...c] = arr;</span><br></pre></td></tr></table></figure>
+
+<h2 id="对象展开"><a href="#对象展开" class="headerlink" title="对象展开"></a>对象展开</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    a:<span class="number">1</span>,</span><br><span class="line">    b:<span class="number">2</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> obj2 = &#123;</span><br><span class="line">    ...obj,</span><br><span class="line">    c:<span class="number">3</span>,</span><br><span class="line">    d:<span class="number">4</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//不建议对象直接赋给另一个对象，不然一个改变另一个也会改变，因为其本身传递的是一个地址，那么如何来处理呢，用obj解构来代替obj，其本质是所有内容而不是对象的地址</span></span><br><span class="line"><span class="keyword">let</span> obj2 = &#123;...obj&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="set对象"><a href="#set对象" class="headerlink" title="set对象"></a>set对象</h1><p>set本身是一个函数，用于构建对象，还有Data、Array,调用后返回构造对象，统称构造函数，用于构造某一类型的对象，即对象的实例化。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</span><br><span class="line"><span class="keyword">let</span>  s = <span class="keyword">new</span> <span class="built_in">Set</span>(arr);</span><br><span class="line">arr = [...s]</span><br><span class="line"><span class="comment">//arr返回之后便是去重之后的结果</span></span><br><span class="line">s.size<span class="comment">//size属性，储存保留之后值得个数</span></span><br><span class="line">s.clear()；<span class="comment">//清空</span></span><br><span class="line">s.delete(<span class="string">&quot;a&quot;</span>);<span class="comment">//删除某项值</span></span><br><span class="line">s.add(<span class="number">6</span>);<span class="comment">//添加某项值</span></span><br><span class="line">s.has();<span class="comment">//查看是否包含某个值</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Map对象"><a href="#Map对象" class="headerlink" title="Map对象"></a>Map对象</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [</span><br><span class="line">    [<span class="string">&quot;a&quot;</span>,<span class="number">1</span>],</span><br><span class="line">    [<span class="string">&quot;b&quot;</span>,<span class="number">2</span>],</span><br><span class="line">    [<span class="string">&quot;c&quot;</span>,<span class="number">3</span>]</span><br><span class="line">]；</span><br><span class="line"><span class="keyword">let</span> s = <span class="keyword">new</span> <span class="built_in">Map</span>(arr);</span><br><span class="line"><span class="comment">//map结构会存成键值对得形式key-value</span></span><br><span class="line">clear();<span class="comment">//清空所有值</span></span><br><span class="line"><span class="keyword">delete</span>();<span class="comment">//删除某一项</span></span><br><span class="line"><span class="comment">//参数：key，数据的key值；返回值，true、false是否删除成功</span></span><br><span class="line">get();<span class="comment">//获取某一项值</span></span><br><span class="line">has();<span class="comment">//是否包含某一项</span></span><br><span class="line">set(key, val);<span class="comment">//设置一个值</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="函数新增内容"><a href="#函数新增内容" class="headerlink" title="函数新增内容"></a>函数新增内容</h1><h2 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//function()&#123;return ;&#125;</span></span><br><span class="line"><span class="keyword">let</span> fn = <span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">1</span>);</span><br><span class="line">&#125;;</span><br><span class="line">fn();</span><br><span class="line"><span class="comment">//箭头函数，=&gt;</span></span><br><span class="line"><span class="comment">//形参=&gt;返回值</span></span><br><span class="line"><span class="keyword">let</span> fn = <span class="function"><span class="params">nub</span> =&gt;</span> nub *<span class="number">2</span>;</span><br><span class="line"><span class="comment">//多个形参时，则加括号（形参，形参）=&gt;返回值</span></span><br><span class="line"><span class="comment">//()=&gt;返回值,没有参数时也要加上括号</span></span><br><span class="line"><span class="comment">//  ()=&gt;&#123;</span></span><br><span class="line"><span class="comment">//  执行语句</span></span><br><span class="line"><span class="comment">//   return 返回值</span></span><br><span class="line"><span class="comment">//    &#125;</span></span><br><span class="line"><span class="comment">//箭头函数没有arguments，即不能使用不定参,但可以使用扩展运算符加剩余参数来进行实现不定参数的功能,</span></span><br><span class="line"><span class="keyword">let</span> fn = <span class="function">(<span class="params">a,b...arg</span>)=&gt;</span></span><br><span class="line"><span class="comment">//rest参数存在数组中，即拿到该数组便能拿到剩余参数，其实跟前面的展开运算符一致</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>,onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> fn = <span class="function">()=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="built_in">this</span>);</span><br><span class="line">    &#125;;</span><br><span class="line">    fn();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用正常函数时，this指针一般指向windows，但换成箭头函数时，this指针指向document；因为箭头函数本身没有this，调用箭头函数的this时，指向的是其声明时所在的作用域的this；</p>
+<p>参数默认值问题:ES6中有简便方法设置参数默认值</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fn = <span class="function">(<span class="params">a = <span class="number">2</span>,b = <span class="number">10</span></span>)=&gt;</span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="数组新增方法"><a href="#数组新增方法" class="headerlink" title="数组新增方法"></a>数组新增方法</h1><h2 id="日期对象"><a href="#日期对象" class="headerlink" title="日期对象"></a>日期对象</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>().getTime();<span class="comment">//方法属于Date返回的对象的方法,需要对对象进行调用</span></span><br><span class="line"><span class="built_in">Date</span>.now();<span class="comment">//直接使用Date的方法；</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Array</span>()</span><br><span class="line"><span class="built_in">Array</span>.from();</span><br><span class="line">arr.forEach();<span class="comment">//需要区分一下哪些方法是构造函数的本身方法，而哪些方法是需要利用对象来调用的方法</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//新增方法如下</span></span><br><span class="line"><span class="built_in">Array</span>.from()<span class="comment">//把一个类数组转换成真正的数组，类数组：有下标有length；返回值：转换之后的新数组；是Array构造函数的方法</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> lis = <span class="built_in">document</span>.querySelectorAll(<span class="string">&quot;#list li&quot;</span>);</span><br><span class="line">    <span class="comment">//map是数组方法，因此需要先将lis从类数组变成数组</span></span><br><span class="line">    <span class="keyword">let</span> arr=[];</span><br><span class="line">    lis = <span class="built_in">Array</span>.from(lis);</span><br><span class="line">    lis.map(<span class="function"><span class="params">item</span>=&gt;</span>&#123;</span><br><span class="line">       <span class="keyword">return</span> item; </span><br><span class="line">    &#125;);</span><br><span class="line">    lis = <span class="built_in">Array</span>.from(lis,<span class="function">(<span class="params">item,index</span>)=&gt;</span>&#123;</span><br><span class="line">       <span class="built_in">console</span>.log(item, index);</span><br><span class="line">        <span class="keyword">return</span> index;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//利用from组成新数组</span></span><br><span class="line"><span class="comment">//of方法将放入的元素组成新数组后返回</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">Array</span>.of(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="string">&quot;5&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//isArray方法：判断接收的数据是否是数组，类数组不是数组</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="数组的find、findIndex"><a href="#数组的find、findIndex" class="headerlink" title="数组的find、findIndex"></a>数组的find、findIndex</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">//find查找数组中满足要求的第一个元素的值</span></span><br><span class="line">    <span class="keyword">let</span> arr = [<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>];</span><br><span class="line">    arr.indexOf(<span class="string">&quot;a&quot;</span>);</span><br><span class="line">    <span class="keyword">let</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">let</span> val = arr.find(<span class="function">(<span class="params">item,index</span>)=&gt;</span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(item &gt; <span class="number">3</span>)&#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">       &#125; </span><br><span class="line">    &#125;);</span><br><span class="line">    val = arr.find(<span class="function"><span class="params">item</span>=&gt;</span> item &gt;= <span class="number">3</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(val);</span><br><span class="line">    <span class="comment">//fingIndex返回数组中满足要求的第一个元素的索引</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="数组扁平化处理"><a href="#数组扁平化处理" class="headerlink" title="数组扁平化处理"></a>数组扁平化处理</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = &#123;</span><br><span class="line">    [<span class="string">&quot;小明&quot;</span>，<span class="string">&quot;18&quot;</span>],</span><br><span class="line">    [<span class="string">&quot;小刚&quot;</span>，<span class="string">&quot;18&quot;</span>],</span><br><span class="line">&#125;</span><br><span class="line">arr.flat(n);</span><br><span class="line"><span class="comment">//flat(n)将多维数组转换成低维的数组，向下提取n层;后续传递的参数决定了提取几层</span></span><br><span class="line"><span class="comment">//当嵌套多层时，使用</span></span><br><span class="line">flat(<span class="literal">Infinity</span>);<span class="comment">//提取无限层，确保变为一维数组</span></span><br><span class="line"><span class="comment">//利用flatMap来扁平化处理后得到每一项</span></span><br><span class="line"><span class="keyword">let</span> newArr = arr.flatMap(<span class="function">(<span class="params">item,index</span>)=&gt;</span>&#123;</span><br><span class="line">   cosole.log(item,index);</span><br><span class="line">    item = item.filter(<span class="function">(<span class="params">item,index</span>)=&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> index == <span class="number">0</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> item;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(newArr);</span><br></pre></td></tr></table></figure>
+
+<p>flatMap参数：callback回调函数，可以生成一个新数组中元素的参数；可选参数：thisArg，执行callback函数时，使用的this值；返回值：一个包含将数组和子数组中所有元素的数组。</p>
+<p>flatMap：只能处理一层的数组，要处理多层的话需要进行if判断是否里面还存在数组，并进行递归操作进行多次扁平化。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//fill语句，将数组用...数据填充满，从第几位开始填充，且本身是不修改原数组长度的</span></span><br><span class="line"><span class="comment">//includes判断数组中是否包含一个指定的值</span></span><br><span class="line"><span class="keyword">let</span> arr = [<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>,<span class="string">&quot;d&quot;</span>,<span class="string">&quot;e&quot;</span>];</span><br><span class="line">arr.includes(<span class="string">&quot;c&quot;</span>,<span class="number">2</span>);</span><br><span class="line"><span class="comment">//后面参数代表从第几位开始检索</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="字符串新增方法"><a href="#字符串新增方法" class="headerlink" title="字符串新增方法"></a>字符串新增方法</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str = <span class="string">&quot;开课吧和面为课堂&quot;</span>；</span><br><span class="line">str.startsWith(<span class="string">&quot;开课吧&quot;</span>);<span class="comment">//返回一个bool值</span></span><br><span class="line">str.endsWith(<span class="string">&quot;面为课堂&quot;</span>)；</span><br><span class="line">str.repeat(<span class="number">30</span>);</span><br><span class="line"><span class="comment">//模板字符串，如何快速地构造出想要的字符串</span></span><br><span class="line"><span class="comment">//$&#123;&#125;插值表达式，可以用值，也可以用函数，适合该值有复杂的逻辑处理</span></span><br><span class="line"><span class="keyword">let</span> p = <span class="built_in">document</span>.querySelector(<span class="string">&quot;p&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> name = <span class="string">&quot;小明&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> age = <span class="number">18</span>;</span><br><span class="line"><span class="keyword">let</span> school = <span class="string">&quot;大学&quot;</span>;</span><br><span class="line">p.innerHTML = <span class="string">`今年&lt;strong&gt;<span class="subst">$&#123;name&#125;</span>&lt;/strong&gt;就要&lt;strong&gt;<span class="subst">$&#123;age&#125;</span>&lt;/strong&gt;岁了，终于升入&lt;strong&gt;<span class="subst">$&#123;school&#125;</span>&lt;/strong&gt;了`</span>；</span><br><span class="line"><span class="comment">//先用``反引号将整个值包起来，在用插值表达式来一个个插入值</span></span><br><span class="line"><span class="comment">//模板字符串可以换行</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="对象新增方法"><a href="#对象新增方法" class="headerlink" title="对象新增方法"></a>对象新增方法</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> b = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">let</span> name = <span class="string">&quot;小明&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    a,</span><br><span class="line">    b,</span><br><span class="line">    c()&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&quot;a&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    [name]: <span class="number">111</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//可以直接在obj里面起属性名表达式，可通过变量来给属性名赋值。</span></span><br><span class="line"><span class="comment">//对象合并,其实可以使用之前的对象展开来进行合并</span></span><br><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    a: <span class="number">1</span>,</span><br><span class="line">    b :<span class="number">2</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> obj2 = &#123;</span><br><span class="line">    c : <span class="number">3</span>,</span><br><span class="line">    d :<span class="number">4</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">Object</span>.assign(obj2 ，obj);<span class="comment">//第一个参数为合并传入的对象</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//is方法 obj函数下的方法，接受两个值并判断是否一样</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="Babel"><a href="#Babel" class="headerlink" title="Babel"></a>Babel</h1><p>babel是一个JavaScript编译器，用于语法编译，把JS本身不识别、不兼容的语法糖编译成兼容的，babel最简单的使用：将babel引入到页面当中。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> b = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    a,</span><br><span class="line">    b,</span><br><span class="line">    c()&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> obj2 = &#123;</span><br><span class="line">    d: <span class="number">4</span>,</span><br><span class="line">    ...obj,</span><br><span class="line">    e: <span class="number">5</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Li Yudong 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Li Yudong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/09/07/ES6%E6%96%B0%E5%A2%9E%E6%A0%87%E5%87%86/" title="ES6新增标准">http://yoursite.com/2020/09/07/ES6新增标准/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%88%9D%E5%AD%A6%E8%80%85/" rel="tag"># 初学者</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/06/%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6JavaScript/" rel="prev" title="深入探究JavaScript">
+      <i class="fa fa-chevron-left"></i> 深入探究JavaScript
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/09/TypeScript%E5%85%A5%E9%97%A8/" rel="next" title="TypeScript入门">
+      TypeScript入门 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#let%E5%92%8Cconst"><span class="nav-number">1.</span> <span class="nav-text">let和const</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#let%E3%80%81const%E5%92%8Cvar%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.1.</span> <span class="nav-text">let、const和var的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#var%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.1.</span> <span class="nav-text">var的特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#let%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.2.</span> <span class="nav-text">let的特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#const%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.3.</span> <span class="nav-text">const的特性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9D%97%E7%BA%A7%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">2.</span> <span class="nav-text">块级作用域</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC"><span class="nav-number">3.</span> <span class="nav-text">解构赋值</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC"><span class="nav-number">3.1.</span> <span class="nav-text">对象的解构赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%9A%84%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC"><span class="nav-number">3.2.</span> <span class="nav-text">数组的解构赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC"><span class="nav-number">3.3.</span> <span class="nav-text">字符串的解构赋值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B1%95%E5%BC%80%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.</span> <span class="nav-text">展开运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%B1%95%E5%BC%80"><span class="nav-number">4.1.</span> <span class="nav-text">数组展开</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%B1%95%E5%BC%80"><span class="nav-number">4.2.</span> <span class="nav-text">对象展开</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#set%E5%AF%B9%E8%B1%A1"><span class="nav-number">5.</span> <span class="nav-text">set对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Map%E5%AF%B9%E8%B1%A1"><span class="nav-number">6.</span> <span class="nav-text">Map对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%96%B0%E5%A2%9E%E5%86%85%E5%AE%B9"><span class="nav-number">7.</span> <span class="nav-text">函数新增内容</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0"><span class="nav-number">7.1.</span> <span class="nav-text">箭头函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%96%B0%E5%A2%9E%E6%96%B9%E6%B3%95"><span class="nav-number">8.</span> <span class="nav-text">数组新增方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E5%AF%B9%E8%B1%A1"><span class="nav-number">8.1.</span> <span class="nav-text">日期对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%9A%84find%E3%80%81findIndex"><span class="nav-number">8.2.</span> <span class="nav-text">数组的find、findIndex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%89%81%E5%B9%B3%E5%8C%96%E5%A4%84%E7%90%86"><span class="nav-number">8.3.</span> <span class="nav-text">数组扁平化处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%96%B0%E5%A2%9E%E6%96%B9%E6%B3%95"><span class="nav-number">9.</span> <span class="nav-text">字符串新增方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%96%B0%E5%A2%9E%E6%96%B9%E6%B3%95"><span class="nav-number">10.</span> <span class="nav-text">对象新增方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Babel"><span class="nav-number">11.</span> <span class="nav-text">Babel</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+
