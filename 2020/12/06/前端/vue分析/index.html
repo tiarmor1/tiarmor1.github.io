@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="源码思维健壮性代码在发生预期之外的错误时，其应对错误的能力：即就算出错也能够轻松定位到错误，且减少错误的影响范围。 1234567891011&#x2F;&#x2F;1、不要轻易去相信传入参数，需要判断参数类型function add(a, b) &amp;#123;    if (typeof a &#x3D;&#x3D; &amp;#x27;number&amp;#x27; &amp;&amp; typeof b &#x3D;&#x3D; &amp;#x27;number&amp;#x27;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue分析">
+<meta property="og:url" content="http://yoursite.com/2020/12/06/%E5%89%8D%E7%AB%AF/vue%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="源码思维健壮性代码在发生预期之外的错误时，其应对错误的能力：即就算出错也能够轻松定位到错误，且减少错误的影响范围。 1234567891011&#x2F;&#x2F;1、不要轻易去相信传入参数，需要判断参数类型function add(a, b) &amp;#123;    if (typeof a &#x3D;&#x3D; &amp;#x27;number&amp;#x27; &amp;&amp; typeof b &#x3D;&#x3D; &amp;#x27;number&amp;#x27;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-06T13:28:16.000Z">
+<meta property="article:modified_time" content="2021-03-12T14:51:58.349Z">
+<meta property="article:author" content="Li Yudong">
+<meta property="article:tag" content="vue">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/12/06/%E5%89%8D%E7%AB%AF/vue%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>vue分析 | Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">34</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/06/%E5%89%8D%E7%AB%AF/vue%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vue分析
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-12-06 21:28:16" itemprop="dateCreated datePublished" datetime="2020-12-06T21:28:16+08:00">2020-12-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-12 22:51:58" itemprop="dateModified" datetime="2021-03-12T22:51:58+08:00">2021-03-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2/" itemprop="url" rel="index"><span itemprop="name">前端页面</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="源码思维"><a href="#源码思维" class="headerlink" title="源码思维"></a>源码思维</h1><h2 id="健壮性"><a href="#健壮性" class="headerlink" title="健壮性"></a>健壮性</h2><p>代码在发生预期之外的错误时，其应对错误的能力：即就算出错也能够轻松定位到错误，且减少错误的影响范围。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1、不要轻易去相信传入参数，需要判断参数类型</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> a == <span class="string">&#x27;number&#x27;</span> &amp;&amp; <span class="keyword">typeof</span> b == <span class="string">&#x27;number&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;a&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//2、易错代码用try catch包裹起来</span></span><br><span class="line">a[<span class="number">0</span>] &amp;&amp; a[<span class="number">0</span>].data[<span class="number">0</span>];<span class="comment">//取属性之前，先判断其是否存在</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="defineProperty"><a href="#defineProperty" class="headerlink" title="defineProperty"></a>defineProperty</h2><p>主要用于vue的数据绑定，</p>
+<p>使用defineProperty中的get来进行设置属性时，这个属性不能被改值，因为只写了get，只能够取到值而不能改值；要能够改值则需要写上set。其实这是一种变量权限的问题，如果该变量是某个属性的话，则可以使用defineProperty来控制其各类权限。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.$router = <span class="built_in">this</span>._root._router;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(<span class="built_in">this</span>, <span class="string">&#x27;$router&#x27;</span>, &#123;</span><br><span class="line">    get() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>._root._router;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>模块支持检测：先判断当前的环境符合的哪种模块规范；cmd、amd、umd，或者CommonJS规范、import规范。</p>
+<h2 id="架构模式"><a href="#架构模式" class="headerlink" title="架构模式"></a>架构模式</h2><h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>通俗而讲：我去构建一个工厂方法，让使用者调用这个工厂方法去拿到他要的对象，而不是自己去构建，即不需要去new。</p>
+<p>典型例子：jquery。使用jquery时是DOM时代，频繁获取并操作DOM。工厂模式直接用$()就可以拿到对象。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//jQuery</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">window</span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">jquery</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> jquery.fn.init();</span><br><span class="line">    &#125;</span><br><span class="line">    jquery.fn.init.prototype = jquery.fn;</span><br><span class="line">    jquery.fn = jquery.prototype = &#123;</span><br><span class="line">        init:<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    jquery.extend(&#123;</span><br><span class="line">        <span class="comment">//回调。给一个对象，将其添加到jquery上</span></span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">//这样去包装是为了jquery中的方法可以有多种调用方式，</span></span><br><span class="line">    <span class="comment">//但对象为引用类型，var b = &#123;&#125;, a = b, c = b,修改b时a、c均会修改，实现改一个均影响到。</span></span><br><span class="line">    <span class="built_in">window</span>.$ = <span class="built_in">window</span>.jquery = jquery;</span><br><span class="line">&#125;)(<span class="built_in">window</span>);<span class="comment">//定义一个匿名自执行函数，不污染外部全局变量，</span></span><br><span class="line"><span class="comment">//同时后面直接传参(window),减少作用链长度</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//vue</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">global, factory</span>) </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;(<span class="built_in">this</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;));<span class="comment">//this在浏览器环境为window，在node环境为global，不会去写死</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h3><p>在构建一个庞大的框架时，先把整个框架分开成几个模块，=》预制=》然后将各个模块融合在一起。</p>
+<p>典型例子：vue-2，构建一个庞大的框架。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Vue</span>(<span class="params">options</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!(<span class="built_in">this</span> <span class="keyword">instanceof</span> Vue)) &#123;</span><br><span class="line">        warn(<span class="string">&#x27;Vue is a constructor&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">this</span>._init(options);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">initMixin(Vue);</span><br><span class="line">stateMixin(Vue);</span><br><span class="line">eventsMixin(Vue);</span><br><span class="line">lifecycleMixin(Vue);</span><br><span class="line">renderMixin(Vue);</span><br><span class="line"><span class="comment">/*为什么非要分开开发，而不是全部放到原型链上即可。</span></span><br><span class="line"><span class="comment">1、由于是团队开发，全放在prototype，可能会收到相互之间的影响</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="函数式"><a href="#函数式" class="headerlink" title="函数式"></a>函数式</h3><p>整体的功能就是一大堆的函数，通过函数之间的相互调用来实现整体的功能。对于javaScript，函数才是一等公民：1、tree-shaking：基于文档流的原理，判断某个函数是否被调用，因此能够webpack时自动删除未被调用的函数。2、组合大于继承。因此函数式编程适用于工具库。</p>
+<p>典型例子：Vue3，</p>
+<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>vue-router、vuex这样的只能有一个，即典型的一个类只有一个实例化对象，即单例模式。实现很容易，就是先判断是否已经被实例化过，如果已经实例化过，就不再实例化；需要通过一个变量判断是否已经实例化过。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> _vue;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">install</span>(<span class="params">vue</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (install.installed &amp;&amp; _vue == vue) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">//执行安装</span></span><br><span class="line">    install.installed = <span class="literal">true</span>;</span><br><span class="line">    _vue = vue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码简洁技巧：jquery中的extend({})方法，传入两个对象时，会将两个对象合并再传入。享元模式：减少重复的代码块的数量，将不同点提取出来作为参数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> target = <span class="built_in">this</span>;</span><br><span class="line">    <span class="keyword">let</span> source = <span class="built_in">arguments</span>[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">arguments</span>.length == <span class="number">2</span>) &#123;</span><br><span class="line">        target = <span class="built_in">this</span>;</span><br><span class="line">        source = <span class="built_in">arguments</span>[<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">in</span> source) &#123;</span><br><span class="line">        target[item] = source[item];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>优雅利用原生方法：vue使用defineProperty来实现双向绑定，但只能应用于对象的属性；那么数组怎么来触发更新？将数组原生的push、pop、shift方法加上了能够触发双向绑定的功能。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="string">&quot;push&quot;</span>, <span class="string">&quot;pop&quot;</span>];</span><br><span class="line"><span class="keyword">var</span> arrayProto = <span class="built_in">Array</span>.prototype;</span><br><span class="line"><span class="keyword">let</span> arrayMethods = <span class="built_in">Object</span>.create(arraryProto);</span><br><span class="line"><span class="comment">//执行以下拷贝，来避免污染原生的原型链</span></span><br><span class="line">arr.forEach(<span class="function">(<span class="params">methos</span>) =&gt;</span> &#123;</span><br><span class="line">    arrMethods[method] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">let</span> original = arrayProto[method];</span><br><span class="line">        <span class="keyword">let</span> result = original.apply(<span class="built_in">this</span>, args);</span><br><span class="line">        <span class="comment">//先找到需要修改的方法，并先将原生方法的功能附加上去；</span></span><br><span class="line">        dep.noyify();<span class="comment">//触发数组更新</span></span><br><span class="line">        <span class="keyword">return</span> result;<span class="comment">//保持返回值与原方法一致</span></span><br><span class="line">        <span class="comment">//最后只替换数组中的原型链即可</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="应用进阶"><a href="#应用进阶" class="headerlink" title="应用进阶"></a>应用进阶</h1><h2 id="缓存架构-API"><a href="#缓存架构-API" class="headerlink" title="缓存架构-API"></a>缓存架构-API</h2><p>优化方案：快、小、省。</p>
+<p>缓存：是所有优化方案里最常用、最有效、可以节省http请求，可以从内存中最快读取数据。</p>
+<p>1、选择更快的API、算法，减少时间复杂度；</p>
+<p>2、看到网站主要消耗的时间，更多地并不在于代码的执行速度，而在于资源加载的速度，因此文件体积小更重要。一、用webpack压缩treeshaking；二、减少代码重复；</p>
+<p>vue3方面的改进：1、快：更快的API，用proxy来代替defineProperty；代理proxy不会去改变原对象；diff算法方面改进：对比新老的DOM，先分析动态DOM，只比对动态的DOM；2、小：函数式API：拥抱tree-shaking，可以很方便地将没有用到的方法取出来，并不附加在工程文件中。</p>
+<p>3、省：节省http请求</p>
+<p>读取数据的快慢：最慢：网络请求；其次：从硬盘中拿数据；最快：从内存中拿数据。因此请求缓存思路就是：有缓存的话，不去发送请求而是直接从缓存中拿去数据。</p>
+<p>缓存架构的技巧：</p>
+<p>1、缓存架构需要使用单例模式，即所有的缓存都放在一个里面。</p>
+<p>2、权限问题，存缓的区域不能直接拿出去给别人操作。因此，需要隐藏起来，使用匿名自执行函数来进行；但同样，需要外界能够进行读取缓存操作，因此需要返回一个对象，在该对象内有一系列操作缓存的方法。这其实是函数闭包的应用。</p>
+<p>3、缓存都会存在副作用：</p>
+<p>一、更新问题：使用localstorage、session、cookies缓存时，缓存至本地，需要考虑更新问题。(1)、与后端进行websocket连接，但过于麻烦，没必要；(2)、通过定期轮询，定时器，每隔一段时间向后端发起ajax请求；经常变动的API不要用这种缓存；</p>
+<p>使用内存缓存时，是不用考虑更新问题；但内存缓存同样有自己的问题，需要考虑占用内存问题，每往里面加东西，都会占用内存。javascript的内存限制较严重，因此需要做一个限制。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="built_in">window</span>.mycache) &#123;</span><br><span class="line">    <span class="built_in">window</span>.mycache = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> cache = &#123;&#125;;</span><br><span class="line">        <span class="keyword">var</span> cacheArr = [];</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            get: <span class="function"><span class="keyword">function</span> (<span class="params">api</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">                    <span class="comment">//promise实现异步以及链式调用</span></span><br><span class="line">                 <span class="keyword">if</span> (cache[api])&#123;</span><br><span class="line">                    resolve(cache[api])</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="built_in">this</span>.set(api).then(<span class="function">()=&gt;</span> &#123;</span><br><span class="line">                        <span class="keyword">if</span> (cacheArr.length &gt; <span class="number">10</span>) &#123;</span><br><span class="line">                            <span class="keyword">let</span> _api = cacheArr.shift();</span><br><span class="line">                            <span class="built_in">this</span>.remove(_api);</span><br><span class="line">                        &#125;</span><br><span class="line">                        cache[api] = res;</span><br><span class="line">                        cacheArr.push(api);</span><br><span class="line">                        <span class="comment">//需要确保内存限制，不要占用太多内存</span></span><br><span class="line">                        resolve(res);</span><br><span class="line">                    &#125;)</span><br><span class="line">                &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;,</span><br><span class="line">            set: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> axios.get(api);</span><br><span class="line">            &#125;,</span><br><span class="line">            remove: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)();</span><br><span class="line">    <span class="comment">//放在匿名自执行函数里面</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="vue插件"><a href="#vue插件" class="headerlink" title="vue插件"></a>vue插件</h2><p>关键的两个API：Vue.use；Vue.mixin。</p>
+<p>Vue.use();原理：将一个方法执行一次，如果该方法中有install属性，就执行其install属性，来代替执行该方法；</p>
+<p>Vue.mixin()；原理：相当于一个全局混合；(局部混合相当于在组件的export后写mixin)，可以混合方法methods、数据data、混合生命周期(生命周期的混入才是核心功能)。即，混入的生命周期操作，所有的组件在对应的生命周期均执行该操作函数。</p>
+<p>打包项目=》打包体积过大，可以使用异步加载来减少体积 =》 vuex内容太大；=》vuex异步加载，根据组件来异步加载vuex，放在beforeCreated阶段，在DOM还没有加载好之前，将其之间的依赖关系读取好。 </p>
+<p>插件的用途：1、提供逻辑复用；2、注入自定义操作；</p>
+<h2 id="常用API"><a href="#常用API" class="headerlink" title="常用API"></a>常用API</h2><p>Vue.util.defineReative：其实就是Vue自身去做响应式的方法，；一般来说只有data的数据能触发响应。这里，我们可以调用这个API，使外部数据也能触发响应。</p>
+<p>用法：1、将localstorage中的数据触发响应，不需要将其取出来；2、监听window的事件，常用的是resize，实现尺寸的自适应；3、监听浏览器版本、内存；</p>
+<p>本质是让外部数据也能触发响应。</p>
+<p>Vue.extend：传入一个对象时，其会返回一个构造函数，直接new便可以创建实例。用于import，在使用import时，导入的是vue的选项。</p>
+<p>vue单元测试=》测某个组件的方法和节点渲染结果</p>
+<p>render渲染：提供函数，用JS来表达你的整个template，当页面的逻辑较为复杂时。</p>
+<h1 id="API层"><a href="#API层" class="headerlink" title="API层"></a>API层</h1><h2 id="Axios源码分析"><a href="#Axios源码分析" class="headerlink" title="Axios源码分析"></a>Axios源码分析</h2><h3 id="Axios如何实现请求拦截、响应拦截"><a href="#Axios如何实现请求拦截、响应拦截" class="headerlink" title="Axios如何实现请求拦截、响应拦截"></a>Axios如何实现请求拦截、响应拦截</h3><p>1、初始化Axios，其实是调用request方法；</p>
+<p>请求拦截器设置的处理——发送请求——响应拦截器设置的处理：这些一大堆方法由数组来存储；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">axios.interceptors.request.use(<span class="function">()=&gt;</span> &#123;</span><br><span class="line">    </span><br><span class="line">&#125;)</span><br><span class="line">axios.interceptors.response.use(<span class="function">()=&gt;</span> &#123;</span><br><span class="line">    </span><br><span class="line">&#125;)</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">axios</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.interceptors = &#123;</span><br><span class="line">        request: <span class="keyword">new</span> interceptorsManner(),</span><br><span class="line">        response: <span class="keyword">new</span> interceptorsManner()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">interceptorsManner</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.handlers = [];</span><br><span class="line">&#125;</span><br><span class="line">interceptorsManner.prototype.use(<span class="function">(<span class="params">fullfilled, rejected</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.handler.push(&#123;</span><br><span class="line">        fullfilled: fullfilled;</span><br><span class="line">        rejected: rejectes;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Li Yudong 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Li Yudong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/12/06/%E5%89%8D%E7%AB%AF/vue%E5%88%86%E6%9E%90/" title="vue分析">http://yoursite.com/2020/12/06/前端/vue分析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vue/" rel="tag"># vue</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/06/%E5%89%8D%E7%AB%AF/vue%E7%BB%84%E4%BB%B6%E5%8C%96/" rel="prev" title="vue组件化">
+      <i class="fa fa-chevron-left"></i> vue组件化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/01/09/%E5%89%8D%E7%AB%AF/DOM%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/" rel="next" title="DOM问题汇总">
+      DOM问题汇总 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E6%80%9D%E7%BB%B4"><span class="nav-number">1.</span> <span class="nav-text">源码思维</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%A5%E5%A3%AE%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">健壮性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#defineProperty"><span class="nav-number">1.2.</span> <span class="nav-text">defineProperty</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">架构模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.3.1.</span> <span class="nav-text">工厂模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.3.2.</span> <span class="nav-text">建造者模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%BC%8F"><span class="nav-number">1.3.3.</span> <span class="nav-text">函数式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">设计模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E8%BF%9B%E9%98%B6"><span class="nav-number">2.</span> <span class="nav-text">应用进阶</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E6%9E%B6%E6%9E%84-API"><span class="nav-number">2.1.</span> <span class="nav-text">缓存架构-API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vue%E6%8F%92%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">vue插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8API"><span class="nav-number">2.3.</span> <span class="nav-text">常用API</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#API%E5%B1%82"><span class="nav-number">3.</span> <span class="nav-text">API层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Axios%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">3.1.</span> <span class="nav-text">Axios源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Axios%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E8%AF%B7%E6%B1%82%E6%8B%A6%E6%88%AA%E3%80%81%E5%93%8D%E5%BA%94%E6%8B%A6%E6%88%AA"><span class="nav-number">3.1.1.</span> <span class="nav-text">Axios如何实现请求拦截、响应拦截</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言之前的项目在部署之后首屏加载过慢了，因此最近有想进行简单的优化一下，顺便就想以一个初学者的角度将项目优化的思路有条理的梳理一下，因为水平原因，很多方法可能只能写下思路，没办法应用在自己的项目上，而且可能很多的优化方案已经略有过时。主要还是想做一下有关优化知识的梳理吧，毕竟优化是一个永恒不变的话题。项目是基于vue框架开发的，但优化方法的思路是不拘泥于框架的。 代码层面优化代码层面的优化这一部分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="首屏优化实践">
+<meta property="og:url" content="http://yoursite.com/2021/03/12/%E5%89%8D%E7%AB%AF/%E9%A6%96%E5%B1%8F%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="前言之前的项目在部署之后首屏加载过慢了，因此最近有想进行简单的优化一下，顺便就想以一个初学者的角度将项目优化的思路有条理的梳理一下，因为水平原因，很多方法可能只能写下思路，没办法应用在自己的项目上，而且可能很多的优化方案已经略有过时。主要还是想做一下有关优化知识的梳理吧，毕竟优化是一个永恒不变的话题。项目是基于vue框架开发的，但优化方法的思路是不拘泥于框架的。 代码层面优化代码层面的优化这一部分">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-12T12:02:33.000Z">
+<meta property="article:modified_time" content="2021-03-12T14:51:23.641Z">
+<meta property="article:author" content="Li Yudong">
+<meta property="article:tag" content="浏览器">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2021/03/12/%E5%89%8D%E7%AB%AF/%E9%A6%96%E5%B1%8F%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>首屏优化实践 | Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">34</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/03/12/%E5%89%8D%E7%AB%AF/%E9%A6%96%E5%B1%8F%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          首屏优化实践
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+    
+              <time title="创建时间：2021-03-12 20:02:33 / 修改时间：22:51:23" itemprop="dateCreated datePublished" datetime="2021-03-12T20:02:33+08:00">2021-03-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2/" itemprop="url" rel="index"><span itemprop="name">前端页面</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前的项目在部署之后首屏加载过慢了，因此最近有想进行简单的优化一下，顺便就想以一个初学者的角度将项目优化的思路有条理的梳理一下，因为水平原因，很多方法可能只能写下思路，没办法应用在自己的项目上，而且可能很多的优化方案已经略有过时。主要还是想做一下有关优化知识的梳理吧，毕竟优化是一个永恒不变的话题。项目是基于vue框架开发的，但优化方法的思路是不拘泥于框架的。</p>
+<h1 id="代码层面优化"><a href="#代码层面优化" class="headerlink" title="代码层面优化"></a>代码层面优化</h1><p>代码层面的优化这一部分其实比较杂乱，浅显的意思是要怎么去编写高性能点的代码？emm主要还是讲一下从一个新手的角度，避免出现一些影响性能的操作吧。</p>
+<h2 id="路由、模块懒加载"><a href="#路由、模块懒加载" class="headerlink" title="路由、模块懒加载"></a>路由、模块懒加载</h2><p>很常用的懒加载代码， 不用一次加载所有的路由或者模块，到需要引用时再进行加载，用函数来代替对象进行引入模块与路由，属于用vue框架时的基本操作吧。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//路由懒加载</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">new</span> Router(&#123;</span><br><span class="line">  routes: [</span><br><span class="line">    &#123;</span><br><span class="line">      path: <span class="string">&#x27;/&#x27;</span>,</span><br><span class="line">      name: <span class="string">&#x27;HelloWorld&#x27;</span>,</span><br><span class="line">      <span class="comment">// 方法一：vue异步组件实现</span></span><br><span class="line">      <span class="comment">// component: resolve =&gt; (require([&#x27;@/components/HelloWorld&#x27;], resolve))</span></span><br><span class="line">      <span class="comment">// 方法二：import方法(常用)</span></span><br><span class="line">      component: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;@/components/HelloWorld&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//模块懒加载</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  components: &#123;</span><br><span class="line">      <span class="comment">// 方法一</span></span><br><span class="line">    <span class="string">&#x27;HelloWorld&#x27;</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./HelloWorld&#x27;</span>),</span><br><span class="line">    <span class="comment">// 方法二</span></span><br><span class="line">    <span class="comment">// HelloWorld&#x27;: resolve =&gt; ([&#x27;./HelloWorld&#x27;], resolve)</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="图片懒加载"><a href="#图片懒加载" class="headerlink" title="图片懒加载"></a>图片懒加载</h2><p>图片懒加载其实通常更多地应用于图片较多的网站，我自己的项目上由于图片比较少，就没有用到复杂的长屏懒加载。只是在图片或模块的ajax请求没有返回时，使用一个loading的特效来代替图片、组件进行填充，简单地实现了基础的懒加载？思路很简单：大概就是预设一个div的z-index，让其覆盖图片、组件的上面，默认为show。同时在ajax请求的异步回调上修改其CSS，变为hidden。elementUI等开源组件库上应该有类似的loading组件。</p>
+<p>对于含有多图片的长页面，在你没有滚动到图片所在位置的页面中时，是用空的div来填充代替图片位置的。一旦我们通过滚动使得这个 div 出现在了可见范围内，那么 div 元素的内容就会发生变化，呈现其中的内容，这就是图片的懒加载。</p>
+<p>下面我们简单实现下懒加载：其实该功能的关键在于获取两个值：1、当前可视区域的高度，通常用window.innerHeight 属性获取。</p>
+<p>2、元素距离可视区域顶部的高度，我们这里选用 getBoundingClientRect() 方法来获取返回元素的大小及其相对于视口的位置。该方法的返回值是一个DOMRect。DOMRect 对象包含了一组用于描述边框的只读属性——left、top、right 和 bottom，单位为像素。除了 width 和 height 外的属性都是相对于视口的左上角位置而言的。其中top 属性代表了元素距离可视区域顶部的高度，正好用来实现功能。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;ie=edge&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Lazy-Load<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="selector-class">.img</span> &#123;</span></span><br><span class="line">      width: 200px;</span><br><span class="line"><span class="css">      <span class="selector-tag">height</span><span class="selector-pseudo">:200px</span>;</span></span><br><span class="line">      background-color: gray;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="css">    <span class="selector-class">.pic</span> &#123;</span></span><br><span class="line">      // 必要的img样式</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">      // 注意我们并没有为它引入真实的src</span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/1.png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/2.png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/3.png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/4.png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/5.png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/6.png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/7.png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/8.png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/9.png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;img&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;加载中&quot;</span> <span class="attr">data-src</span>=<span class="string">&quot;./images/10.png&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 获取所有的图片标签</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">const</span> imgs = <span class="built_in">document</span>.getElementsByTagName(<span class="string">&#x27;img&#x27;</span>)</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 获取可视区域的高度</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">const</span> viewHeight = <span class="built_in">window</span>.innerHeight || <span class="built_in">document</span>.documentElement.clientHeight</span></span><br><span class="line"><span class="javascript">    <span class="comment">// num用于统计当前显示到了哪一张图片，避免每次都从第一张图片开始检查是否露出</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> num = <span class="number">0</span></span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">lazyload</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">for</span>(<span class="keyword">let</span> i=num; i&lt;imgs.length; i++) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="comment">// 用可视区域高度减去元素顶部距离可视区域顶部的高度</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">let</span> distance = viewHeight - imgs[i].getBoundingClientRect().top</span></span><br><span class="line"><span class="javascript">            <span class="comment">// 如果可视区域高度大于等于元素顶部距离可视区域顶部的高度，说明元素露出</span></span></span><br><span class="line">            if(distance &gt;= 0 )&#123;</span><br><span class="line"><span class="javascript">                <span class="comment">// 给元素写入真实的src，展示图片</span></span></span><br><span class="line"><span class="javascript">                imgs[i].src = imgs[i].getAttribute(<span class="string">&#x27;data-src&#x27;</span>)</span></span><br><span class="line"><span class="javascript">                <span class="comment">// 前i张图片已经加载完毕，下次从第i+1张开始检查是否露出</span></span></span><br><span class="line">                num = i + 1</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="javascript">    <span class="comment">// 监听Scroll事件</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">window</span>.addEventListener(<span class="string">&#x27;scroll&#x27;</span>, lazyload, <span class="literal">false</span>);</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="ajax请求"><a href="#ajax请求" class="headerlink" title="ajax请求"></a>ajax请求</h2><p>现在项目中通常都不会去手写原生的ajax，毕竟因为异步的回调地狱嘛。我自己的项目用的是axios，定义如下：<code>axios</code> 是一个轻量的 <code>HTTP客户端</code>，它基于 <code>XMLHttpRequest</code> 服务来执行 HTTP 请求，支持丰富的配置，支持 <code>Promise</code>，支持浏览器端和 <code>Node.js</code> 端。但往往我们需要封装一下axios，毕竟如果每发起一次HTTP请求，就要把这些比如设置超时时间、设置请求头、根据项目环境判断使用哪个请求地址、错误处理等等操作都重写一遍就太麻烦了。这里贴一下我自己很简单的axios封装。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&#x27;axios&#x27;</span></span><br><span class="line"><span class="keyword">var</span> service = axios.create(&#123;</span><br><span class="line">    baseURL: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">    <span class="comment">// http://qinghai.free.idcfengye.com/</span></span><br><span class="line">    timeout:<span class="number">400000</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 添加请求拦截器</span></span><br><span class="line">service.interceptors.request.use(<span class="function"><span class="keyword">function</span> (<span class="params">config</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 在发送请求之前做些什么</span></span><br><span class="line">    <span class="keyword">return</span> config;</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 对请求错误做些什么</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.reject(error);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 添加响应拦截器</span></span><br><span class="line">service.interceptors.response.use(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 对响应数据做点什么</span></span><br><span class="line">    <span class="keyword">return</span> response;</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 对响应错误做点什么</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.reject(error);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">Vue.prototype.$http = service;</span><br><span class="line"><span class="comment">//挂载在vue的原型上，这样你后续在vue文件中使用this.$http便可以获取到service。</span></span><br></pre></td></tr></table></figure>
+
+<p>当然，这里ajax的优化其实并不是指简单的axios封装，毕竟这个属于常用操作。这个优化问题也是出自项目的主页，由于某些问题，主页中同一时间进行地ajax请求过多，一次跑过多的异步任务会导致页面的卡顿。开始时，我用的便是上述封装后的axios请求，为解决卡顿问题，开始时我希望能够使用fetch()来代替ajax请求，希望能达到目的；fetch()定义如下：</p>
+<p>Fetch API是新的ajax解决方案 Fetch会返回Promise, fetch不是ajax的进一步封装，而是原生js，没有使用XMLHttpRequest对象。fetch(url, options).then()。</p>
+<p>其实我感觉优点就三个：1、使用promise，这样也支持了async，编写异步时更加方便；2、可自定义是否携带cookie；3、fetch在ServiceWorker中使用。但实际项目中，ajax往往都被封装好了，例如上面的axios，这样前两项其实并没有所谓。但关键就在于第三项了。service work是基于web worker而来。</p>
+<p>众所周知，javaScript 是单线程的，随着web业务的复杂化，开发者逐渐在js中做了许多耗费资源的运算过程，这使得单线程的弊端更加凹显。web worker正是基于此被创造出来，它是脱离在主线程之外的，我们可以将复杂耗费时间的事情交给web worker来做。但是web worker作为一个独立的线程，他的功能应当不仅于此。service work便是在web worker的基础上增加了离线缓存的能力。</p>
+<p>特点：1、必须是https环境，本地调试localhost或者127.0.0.1环境也是可以的，2、依赖于cache api进行实现的3、依赖于h5的fetch Api；4、依赖于promise进行实现。但这里我自己并没有用这么复杂的优化方案，就不赘述了。</p>
+<p>我自己运用基本的处理有：1、使用了axios对多并发请求的处理方案，当页面某个数据来源于多个互不关联的请求时，需要统一处理然后呈现。即使用axios.all(iterable)，参数：请求数组；axios.spread(callback)，参数： 对应请求返回值。API的应用实例如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">methods: &#123;</span><br><span class="line">  getAllTask() &#123;</span><br><span class="line">    <span class="keyword">return</span> axios.get(<span class="string">&#x27;/data.json&#x27;</span>, &#123;</span><br><span class="line">      params: &#123;</span><br><span class="line">        id: <span class="number">10</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line">  getAllCity() &#123;</span><br><span class="line">    <span class="keyword">return</span> axios.get(<span class="string">&#x27;/city.json&#x27;</span>, &#123;</span><br><span class="line">      params: &#123;</span><br><span class="line">        id: <span class="number">11</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line">mounted() &#123;</span><br><span class="line">  axios.all([<span class="built_in">this</span>.getAllTask(), <span class="built_in">this</span>.getAllCity()])</span><br><span class="line">    .then(axios.spread(<span class="function"><span class="keyword">function</span>(<span class="params">allTask, allCity</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;请求1结果&#x27;</span>, allTask)</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;请求2结果&#x27;</span>, allCity)</span><br><span class="line">    &#125;))</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>2、尽量复用ajax请求，当不同模块间可以公用同一接口的同一信息时，不要在两个模块中分别请求两次，而是尽量利用组件间通信来实现信息的共享；</p>
+<p>2、设置HTTP缓存。HTTP 缓存是我们日常开发中最为熟悉的一种缓存机制。它又分为强缓存和协商缓存。</p>
+<h3 id="强缓存"><a href="#强缓存" class="headerlink" title="强缓存"></a>强缓存</h3><p>优先级较高的是强缓存，在命中强缓存失败的情况下，才会走协商缓存。强缓存是利用 http 头中的 Expires 和 Cache-Control 两个字段来控制的。强缓存中，当请求再次发出时，浏览器会根据其中的 expires 和 cache-control 判断目标资源是否“命中”强缓存，若命中则直接从缓存中获取资源，不会再与服务端发生通信。</p>
+<p>当服务器返回响应时，在 Response Headers 中将过期时间写入 expires 字段。接下来如果我们试图再次向服务器请求资源，浏览器就会先对比本地时间和 expires 的时间戳，如果本地时间小于 expires 设定的过期时间，那么就直接去缓存中取这个资源。expires写的是一个绝对的时间戳，例如：xxx年x月x日。而在 Cache-Control 中，我们通过 <code>max-age</code>字段 来控制资源的有效期。max-age 不是一个时间戳，而是一个时间长度。max-age 是一个相对时间，这就意味着它有能力规避掉 expires 可能会带来的时差问题。同样，因此cache-control的优先级比expires更高。Cache-Control 中还有更高优先级的s-maxage：用于表示 cache 服务器上（比如 cache CDN）的缓存的有效时间的，并只对 public 缓存有效。（public 与 private 是针对资源是否能够被代理服务缓存而存在的一组对立概念。）</p>
+<h3 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h3><p>协商缓存依赖于服务端与浏览器之间的通信。在协商缓存机制下，浏览器需要向服务器去询问缓存的相关信息，进而判断是重新发起请求、下载完整的响应，还是从本地获取缓存的资源。在该服务端提示缓存资源未改动（Not Modified），资源会被重定向到浏览器缓存，这种情况下网络请求对应的状态码是 304）。</p>
+<p>实现：<strong>Last-Modified 到 Etag</strong>。Last-Modified 是一个时间戳，如果我们启用了协商缓存，它会在首次请求时随着 Response Headers 返回。随后我们每次请求时，会带上一个叫 If-Modified-Since 的时间戳字段，它的值正是上一次 response 返回给它的 last-modified 值。服务器接收到这个时间戳后，会比对该时间戳和资源在服务器上的最后修改时间是否一致，从而判断资源是否发生了变化。如果发生了变化，就会返回一个完整的响应内容，并在 Response Headers 中添加新的 Last-Modified 值；否则，返回如上图的 304 响应，Response Headers 不会再添加 Last-Modified 字段。</p>
+<p>但是可能会有一个bug：我们编辑文件，但没有修改，服务器可能会以为我们修改了；修改文件的时间过快，服务器可能会感知不到。即：服务器并没有正确感知文件的变化。这样就引出了Etag，Etag 是由服务器为每个资源生成的唯一的<strong>标识字符串</strong>，这个标识字符串是基于文件内容编码的，只要文件内容不同，它们对应的 Etag 就是不同的。Etag 的生成过程需要服务器额外付出开销，会影响服务端的性能，这是它的弊端。同样，优先级方面，Etag高于Last-Modefied。</p>
+<p>HTTP缓存决策流程：当我们的资源内容不可复用时，直接为 Cache-Control 设置 no-store，拒绝一切形式的缓存；否则考虑是否每次都需要向服务器进行缓存有效确认，如果需要，那么设 Cache-Control 的值为 no-cache；否则考虑该资源是否可以被代理服务器缓存，根据其结果决定是设置为 private 还是 public；然后考虑该资源的过期时间，设置对应的 max-age 和 s-maxage 值；最后，配置协商缓存需要用到的 Etag、Last-Modified 等参数。</p>
+<h2 id="组件库按需引入"><a href="#组件库按需引入" class="headerlink" title="组件库按需引入"></a>组件库按需引入</h2><p>这一点其实好理解，例如当你使用elementUI或者echarts这些组件库时，通常并没有用到其提供的全部组件，因此在import的时候，不需要全部引入整体，只需要引入你所用到的部分即可。</p>
+<h2 id="适用于V8引擎的JS代码"><a href="#适用于V8引擎的JS代码" class="headerlink" title="适用于V8引擎的JS代码"></a>适用于V8引擎的JS代码</h2><p>毫无疑问，就又是一个大坑了，关于对这个的理解我也是由他人的博客所看来的，不保证结论的正确性，只是记录下自己的了解。首先我们需要了解以下V8引擎底层的两个特征。</p>
+<h3 id="隐藏类"><a href="#隐藏类" class="headerlink" title="隐藏类"></a>隐藏类</h3><p>在V8引擎中采用了和动态查找完全不同的技术来实现属性的访问：动态地为对象创建隐藏类。每当一个新的属性被添加到对象中时，对象所对应的隐藏类会随之改变。乍一看似乎每次添加一个属性都创建一个新的隐藏类非常低效。实际上，利用类转移信息时，隐藏类可以被重用。即下次创建一个 Point 对象的时候，就可以直接共享由最初那个 Point 对象所创建出来的隐藏类。</p>
+<p>这样的话，相当于一个构造函数中的所有属性都由一个隐藏类的链将他串联在了一起，由该构造函数新建的对象就可以直接共享该隐藏类链。主要的优点有：1、属性访问时不再需要从动态字典中进行查找了；2、为V8使用经典的基于类的优化和内联缓存技术提供了条件。</p>
+<p>内联缓存技术：在第一次执行到访问某个对象的属性的代码时，V8会找出该对象的隐藏类；同时，V8会假设在相同的代码片段中其他所有的对象的属性访问都通过这一隐藏类来实现。只有在预测失败时，V8才会修改内联代码并移除刚才加入的内联优化。当有许多对象共享同一个隐藏类的时候，这样的实现方式下属性的访问速度可以接近大多数动态语言。使用内联缓存代码和隐藏类实现属性访问的方式和动态代码生成和优化的方式结合起来，即：你基于一个构造函数，构建多个实例时，用隐藏类的方法可以加快属性访问速度。</p>
+<p>由隐藏得来的V8代码编写教训：1、在构造函数里初始化所有对象的成员(所以这些实例之后不会改变其隐藏类)；2、总是以相同的次序初始化对象成员；//可以更好利用隐藏类 3、永远不要delete对象的某个属性；4、方法：重复执行相同方法的代码将比仅执行一次的多个不同方法（由于内联缓存）的代码运行得更快。5、数组：避免稀疏数组</p>
+<h3 id="两次编译"><a href="#两次编译" class="headerlink" title="两次编译"></a>两次编译</h3><p>V8有两个不同的运行时编译器：1、“完全”编译器（unoptimized）。一开始，所有的V8代码都运行在unoptimized状态。它的好处是编译速度非常快，它使代码初次执行速度非常快。2、“优化”编译器（optimized）。当V8发现某段代码执行非常热时，它会根据通常的执行路径进行代码优化，生成optimized代码。优化代码的执行速度非常快。</p>
+<p>编译器有可能从“优化”状态退回到“完全”状态， 这就是deoptimized。这是很不幸的过程，优化后的代码没法正确执行，不得不退回到unoptimized版本。当然最不幸的是代码不停地被optimized，然后又被deoptimized， 这会带来很大的性能损耗，例如：for…in遍历对象的属性和try…catch中的代码会让编译器无法到达optimized状态。</p>
+<p>使用教训：1、把for…in 内部的代码单独提出来作为函数，这样V8引擎就能对其进行优化；2、谨慎使用try..catch</p>
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>闭包会使程序逻辑变复杂，有时会看不清楚是否对象内存被释放，因此要注意释放闭包中的大对象， 否则会引起内存泄露。谨慎使用闭包，有时候不当的闭包使用会造成大量的内存占用。</p>
+<h1 id="存储层面的优化"><a href="#存储层面的优化" class="headerlink" title="存储层面的优化"></a>存储层面的优化</h1><p>其实关于缓存方面上面的ajax请求里已经写了好多了，嗯，感觉布局有点问题，不过并不打算改了。这里就主要说说webpack打包方面的修改吧，毕竟算存储内容的优化？不过我是用vuecli构建的项目，其实该有的优化都已经默认配好了？就像tree-shaking？</p>
+<p>在你使用vue-cli构建项目时，webpack的配置会被隐藏在vuecli的框架下面，不过想要自己进行特别的webpack配置也比较容易，根据vuecli官方网站的说明：调整 webpack 配置最简单的方式就是在 <code>vue.config.js</code> 中的 <code>configureWebpack</code> 选项提供一个对象：该对象将会被 <a target="_blank" rel="noopener" href="https://github.com/survivejs/webpack-merge">webpack-merge</a> 合并入最终的 webpack 配置。如果你需要基于环境有条件地配置行为，或者想要直接修改配置，那就换成一个函数 (该函数会在环境变量被设置之后懒执行)。该方法的第一个参数会收到已经解析好的配置。在函数内，你可以直接修改配置，或者返回一个将会被合并的对象。具体的配置方案因为我自己也不太懂，就不赘述了。</p>
+<h2 id="webpack-bundle-analyzer"><a href="#webpack-bundle-analyzer" class="headerlink" title="webpack-bundle-analyzer"></a>webpack-bundle-analyzer</h2><p>如果你是使用vue-cli3构建的项目，则直接vue-cli-service build –report就会生成一个report.html，打开这个html就能看到webpack打包之后的模块与依赖的加载状态。如果不是由vuecli构建的项目，也很简单，直接npm install 安装webpack-bundle-analyzer模块，版本号过高的话可能有意外的错误，推荐安装5.0.0。之后在vue配置中引入该包，并自定义运行命令即可，具体的可参照官网。之后你就可以看到自己项目的打包分析了，针对那些用的比较少的模块，把全局引入修改成针对性引入、使用更轻量级的组件库。总之根据该打包分析图，尽量减少项目的体积即可。</p>
+<h2 id="gzip压缩"><a href="#gzip压缩" class="headerlink" title="gzip压缩"></a>gzip压缩</h2><p>gzip压缩可以说是为了优化首屏加载速度最常用的方法之一了。Gzip 压缩背后的原理，是在一个文本文件中找出一些重复出现的字符串、临时替换它们，从而使整个文件变小。根据这个原理，文件中代码的重复率越高，那么压缩的效率就越高，使用 Gzip 的收益也就越大。反之亦然。主要的实现方法有两个：</p>
+<p>1、项目正常打包部署，直接在服务端对nginx配置进行修改。这样设置时，当你请求时,服务端就会先将对应的文件压缩成.gz格式再发送给你，客户端接收到了.gz文件的格式之后再解压并执行后续操作。相当于用压缩的时间，换取了文件传输的时间，通常都会是正优化，除非项目体积过小。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="attribute">include</span>       mime.types;</span><br><span class="line">    <span class="attribute">default_type</span>  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">sendfile</span>        <span class="literal">on</span>;</span><br><span class="line">    <span class="comment">#tcp_nopush     on;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#keepalive_timeout  0;</span></span><br><span class="line">    <span class="attribute">keepalive_timeout</span>  <span class="number">65</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 开启gzip</span></span><br><span class="line">    <span class="attribute">gzip</span>  <span class="literal">on</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 设置缓冲区大小</span></span><br><span class="line">    <span class="attribute">gzip_buffers</span> <span class="number">4</span> <span class="number">16k</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#压缩级别官网建议是6</span></span><br><span class="line">    <span class="attribute">gzip_comp_level</span> <span class="number">6</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">#压缩的类型</span></span><br><span class="line">    <span class="attribute">gzip_types</span> text/plain application/javascript text/css application/xml text/javascript application/x-httpd-php;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">8462</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  localhost;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">            <span class="attribute">root</span>   dist;</span><br><span class="line">            <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">error_page</span>   <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span>  /50x.html;</span><br><span class="line">        <span class="attribute">location</span> = /50x.html &#123;</span><br><span class="line">            <span class="attribute">root</span>   html;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>2、项目打包时对webpack进行特殊设置，安装插件（compression-webpack-plugin）；打包同时生成成两份文件，第一份为正常的文件，另一个为gz压缩后的文件，部署时将其全部部署至服务端。下面是vuecli构建项目的webpack配置参考，不用vuecli构建的，直接修改webpack配置即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> CompressionPlugin = <span class="built_in">require</span>(<span class="string">&#x27;compression-webpack-plugin&#x27;</span>);</span><br><span class="line"><span class="built_in">module</span>.exports= &#123;</span><br><span class="line">    configureWebpack: &#123;</span><br><span class="line">        plugins: [</span><br><span class="line">            <span class="keyword">new</span> CompressionPlugin(&#123;</span><br><span class="line">                algorithm: <span class="string">&#x27;gzip&#x27;</span>, <span class="comment">// 使用gzip压缩</span></span><br><span class="line">                test: <span class="regexp">/\.js$|\.html$|\.css$/</span>, <span class="comment">// 匹配文件名</span></span><br><span class="line">                filename: <span class="string">&#x27;[path].gz[query]&#x27;</span>, <span class="comment">// 压缩后的文件名(保持原文件名，后缀加.gz)</span></span><br><span class="line">                minRatio: <span class="number">1</span>, <span class="comment">// 压缩率小于1才会压缩</span></span><br><span class="line">                threshold: <span class="number">10240</span>, <span class="comment">// 对超过10k的数据压缩</span></span><br><span class="line">                deleteOriginalAssets: <span class="literal">false</span>, <span class="comment">// 是否删除未压缩的源文件，谨慎设置，如果希望提供非gzip的资源，可不设置或者设置为false（比如删除打包后的gz后还可以加载到原始资源文件）</span></span><br><span class="line">            &#125;)</span><br><span class="line">        ],</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后在nginx配置中使用：gzip_static on，该属性能够静态加载本地的gz文件，这样就完成了gzip。向较于上一种方案，这种方法虽然上传项目文件体积更大，但免去了服务端实时的压缩过程，速度会更快。</p>
+<h2 id="CDN缓存优化"><a href="#CDN缓存优化" class="headerlink" title="CDN缓存优化"></a>CDN缓存优化</h2><p>定义：CDN （Content Delivery Network，即内容分发网络）指的是一组分布在各个地区的服务器。这些服务器存储着数据的副本，因此服务器可以根据哪些服务器与用户距离最近，来满足数据的请求。 CDN 提供快速服务，较少受高流量影响。相较于其他的缓存是为了优化网页流畅程度，CDN缓存更多的是为了优化首屏加载速度。</p>
+<p>CDN 的核心点有两个，一个是<strong>缓存</strong>，一个是<strong>回源</strong>。这两个概念都非常好理解。“缓存”就是说我们把资源 copy 一份到 CDN 服务器上这个过程，“回源”就是说 CDN 发现自己没有这个资源（一般是缓存的数据过期了），转头向根服务器（或者它的上层服务器）去要这个资源的过程。</p>
+<p><strong>CDN 往往被用来存放静态资源</strong>。上文中我们举例所提到的“根服务器”本质上是业务服务器，它的核心任务在于<strong>生成动态页面或返回非纯静态页面</strong>，这两种过程都是需要计算的。业务服务器仿佛一个车间，车间里运转的机器轰鸣着为我们产出所需的资源；相比之下，CDN 服务器则像一个仓库，它只充当资源的“栖息地”和“搬运工”。</p>
+<p>所谓“静态资源”，就是像 JS、CSS、图片等<strong>不需要业务服务器进行计算即得的资源</strong>。而“动态资源”，顾名思义是需要<strong>后端实时动态生成的资源</strong>，较为常见的就是 JSP、ASP 或者依赖服务端渲染得到的 HTML 页面。什么是“非纯静态资源”呢？它是指<strong>需要服务器在页面之外作额外计算的 HTML 页面</strong>。具体来说，当我打开某一网站之前，该网站需要通过权限认证等一系列手段确认我的身份、进而决定是否要把 HTML 页面呈现给我。这种情况下 HTML 确实是静态的，但它<strong>和业务服务器的操作耦合</strong>，我们把它丢到CDN 上显然是不合适的。</p>
+<p>所以简单总结一下：静态资源走CDN便可以实现对静态资源加载的优化。同时静态资源往往并不需要 Cookie 携带什么认证信息，因此把静态资源和主页面置于不同的域名下，完美地避免了不必要的 Cookie 的出现。</p>
+<p>理论的介绍大概就这么多了，在我自己的项目实践中，其实并没有把静态资源均部署在CDN上，毕竟技术力有限。只是将一些引入的公共框架代码，利用了<a target="_blank" rel="noopener" href="https://www.bootcdn.cn/">BootCDN</a>提供的免费资源进行取代。以本项目为例，我将vue、vuex、axios、echarts、elementUI均修改为CDN引入。主要的好处有两个：1、分离了公共库后，项目打包体积小了，打包速度提升了；2、使用CDN加载更加快速，且减轻了服务器压力。</p>
+<p>具体实施步骤如下：1、在index.html中，添加CDN代码</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">&quot;https://cdn.bootcss.com/element-ui/2.7.2/theme-chalk/index.css&quot;</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.bootcdn.net/ajax/libs/vue/3.0.2/vue.cjs.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.bootcdn.net/ajax/libs/vuex/4.0.0-rc.1/vuex.cjs.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.bootcdn.net/ajax/libs/vue-router/3.4.8/vue-router.common.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.bootcss.com/axios/0.18.0/axios.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.0/index.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.bootcdn.net/ajax/libs/vue-echarts/5.0.0-beta.0/vue-echarts.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2.在vue.config.js中加入webpack配置代码，关于webpack配置中的externals，请<a target="_blank" rel="noopener" href="https://webpack.js.org/configuration/externals/">参考地址</a></p>
+<h1 id="渲染层面的优化"><a href="#渲染层面的优化" class="headerlink" title="渲染层面的优化"></a>渲染层面的优化</h1><h2 id="服务端渲染技术"><a href="#服务端渲染技术" class="headerlink" title="服务端渲染技术"></a>服务端渲染技术</h2><p>提到渲染层面的优化就不得不说现在特别火的SSR技术了，其实它是一个相对的概念，其对立面是客户端渲染。客户端渲染就是常用的正常情况，服务端会把渲染需要的静态文件发送给客户端，客户端加载过来之后，自己在浏览器里跑一遍 JS，根据 JS 的运行结果，生成相应的 DOM。这种特性使得客户端渲染的源代码总是特别简洁。<strong>页面上呈现的内容，你在 html 源文件里里找不到</strong>——这正是它的特点。</p>
+<p>服务端渲染的模式下，当用户第一次请求页面时，由服务器把需要的组件或页面渲染成 HTML 字符串，然后把它返回给客户端。客户端拿到手的，是可以直接渲染然后呈现给用户的 HTML 内容，不需要为了生成 DOM 内容自己再去跑一遍 JS 代码。使用服务端渲染的网站，可以说是“所见即所得”，<strong>页面上呈现的内容，我们在 html 源文件里也能找到</strong>。关于服务端渲染的实践方式，已经有nust.js这样的框架可以使用了，不过由于我自己的技术原因，并没有去实践一下这个新潮的技术。这里我就只说一下SSR的优缺点了，很多地方也都会提到这个。</p>
+<p>优点：1、主要是出于效益的原因，因为SSR之后，搜索引擎以及各种爬虫才能够爬取网站的内容，这样才便于网站的推广。</p>
+<p>2、服务端渲染解决了一个非常关键的性能问题——首屏加载速度过慢。在客户端渲染模式下，我们除了加载 HTML，还要等渲染所需的这部分 JS 加载完，之后还得把这部分 JS 在浏览器上再跑一遍。这一切都是发生在用户点击了我们的链接之后的事情，在这个过程结束之前，用户始终见不到我们网页的庐山真面目，也就是说用户一直在等！相比之下，服务端渲染模式下，服务器给到客户端的已经是一个直接可以拿来呈现给用户的网页，中间环节早在服务端就帮我们做掉了。</p>
+<p>缺点：服务端渲染本质上是<strong>本该浏览器做的事情，分担给服务器去做</strong>。这样当资源抵达浏览器时，它呈现的速度就快了。乍一看好像很合理，但其实这样会成倍地增加服务端的压力，造成大量的成本，很有可能得不偿失。</p>
+<h2 id="CSS选择器优化"><a href="#CSS选择器优化" class="headerlink" title="CSS选择器优化"></a>CSS选择器优化</h2><p>CSS 引擎查找样式表，对每条规则都按从右到左的顺序去匹配，与我们正常人的书写习惯刚好相反，因此在使用选择器时如果没有意识到这一点，就写出一些高性能消耗的选择器。例如: #mylist li {}。如果像这样写的话，浏览器必须遍历页面上每个 li 元素，并且每次都要去确认这个 li 元素的父元素 id 是不是 myList，这样会消耗大量性能。可以修改为：.myList_li {}同样，CSS中的通配符#会匹配所有元素，这样你使用时会让浏览器去遍历每一个元素。</p>
+<p>以下为CSS书写时的性能提升方案：1、避免使用通配符，只对需要使用到的元素进行选择；2、关注可以通过继承实现的属性，避免重复匹配、重复定义；3、少使用标签选择器，尽量多使用类选择器。4、不要画蛇添足，id 和 class 选择器不应该被多余的标签选择器拖后腿。5、减少嵌套。后代选择器的开销是最高的，因此我们应该尽量将选择器的深度降到最低（最高不要超过三层），尽可能使用类来关联每一个标签元素。</p>
+<h2 id="DOM优化"><a href="#DOM优化" class="headerlink" title="DOM优化"></a>DOM优化</h2><h3 id="减少回流与重绘"><a href="#减少回流与重绘" class="headerlink" title="减少回流与重绘"></a>减少回流与重绘</h3><p>重绘不一定导致回流，回流一定会导致重绘。硬要比较的话，回流比重绘做的事情更多，带来的开销也更大。定义如下：</p>
+<p>回流：当我们对 DOM 的修改引发了 DOM 几何尺寸的变化（比如修改元素的宽、高或隐藏元素等）时，浏览器需要重新计算元素的几何属性（其他元素的几何属性和位置也会因此受到影响），然后再将计算的结果绘制出来。这个过程就是回流（也叫重排）。</p>
+<p>重绘：当我们对 DOM 的修改导致了样式的变化、却并未影响其几何属性（比如修改了颜色或背景色）时，浏览器不需重新计算元素的几何属性、直接为该元素绘制新的样式（跳过了上图所示的回流环节）。这个过程叫做重绘。</p>
+<p>1、尽量多使用变量来进行缓存跟DOM相关的数据，避免引起DOM变化；</p>
+<p>2、避免逐条改变样式，使用类名去合并样式；</p>
+<p>3、将 DOM “离线”：当我们给元素设置 display: none，将其从页面上“拿掉”，那么我们的后续操作，将无法触发回流与重绘——这个将元素“拿掉”的操作，就叫做 DOM 离线化。拿掉一个元素，再将他放回去，虽然会触发一次回流，但在这期间对其做的任何操作，都不会太大影响性能。</p>
+<h3 id="减少获取DOM次数"><a href="#减少获取DOM次数" class="headerlink" title="减少获取DOM次数"></a>减少获取DOM次数</h3><p>在你需要多次操作并修改某个DOM时，只执行一次获取DOM的操作并将其存在变量中，这样就能节省获取DOM的性能消耗。</p>
+<h3 id="减少修改DOM的次数"><a href="#减少修改DOM的次数" class="headerlink" title="减少修改DOM的次数"></a>减少修改DOM的次数</h3><p>对 DOM 的修改会引发渲染树的改变、进而去走一个（可能的）回流或重绘的过程。由于JS 的运行速度，比 DOM 快得多这个特性。我们减少 DOM 操作的核心思路，就是让 JS 去给 DOM 分压。这其实就是DOM Fragment](<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/DocumentFragment">https://developer.mozilla.org/zh-CN/docs/Web/API/DocumentFragment</a>) 的思路。</p>
+<p>DocumentFragment 接口表示一个没有父级文件的最小文档对象。它被当做一个轻量版的 Document 使用，用于存储已排好版的或尚未打理好格式的XML片段。因为 DocumentFragment 不是真实 DOM 树的一部分，它的变化不会引起 DOM 树的重新渲染的操作（reflow），且不会导致性能等问题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> container = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;container&#x27;</span>)</span><br><span class="line"><span class="comment">// 创建一个DOM Fragment对象作为容器</span></span><br><span class="line"><span class="keyword">let</span> content = <span class="built_in">document</span>.createDocumentFragment()</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> count=<span class="number">0</span>;count&lt;<span class="number">10000</span>;count++)&#123;</span><br><span class="line">  <span class="comment">// span此时可以通过DOM API去创建</span></span><br><span class="line">  <span class="keyword">let</span> oSpan = <span class="built_in">document</span>.createElement(<span class="string">&quot;span&quot;</span>)</span><br><span class="line">  oSpan.innerHTML = <span class="string">&#x27;我是一个小测试&#x27;</span></span><br><span class="line">  <span class="comment">// 像操作真实DOM一样操作DOM Fragment对象</span></span><br><span class="line">  content.appendChild(oSpan)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 内容处理好了,最后再触发真实DOM的更改</span></span><br><span class="line">container.appendChild(content)</span><br></pre></td></tr></table></figure>
+
+<p>DOM Fragment 对象允许我们像操作真实 DOM 一样去调用各种各样的 DOM API，我们的代码质量因此得到了保证。并且它的身份也非常纯粹：当我们试图将其 append 进真实 DOM 时，它会在乖乖交出自身缓存的所有后代节点后全身而退，完美地完成一个容器的使命，而不会出现在真实的 DOM 结构中。这种结构化、干净利落的特性，使得 DOM Fragment 作为经典的性能优化手段大受欢迎，这一点在 jQuery、Vue 等优秀前端框架的源码中均有体现。使用微任务队列，实现异步更新来避免过度渲染，就是用JS给DOM分压。</p>
+
+    </div>
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Li Yudong 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Li Yudong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2021/03/12/%E5%89%8D%E7%AB%AF/%E9%A6%96%E5%B1%8F%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/" title="首屏优化实践">http://yoursite.com/2021/03/12/前端/首屏优化实践/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/" rel="tag"># 浏览器</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/06/%E5%89%8D%E7%AB%AF/%E5%B1%8F%E5%B9%95%E9%80%82%E9%85%8D%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" rel="prev" title="屏幕适配解决方案">
+      <i class="fa fa-chevron-left"></i> 屏幕适配解决方案
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%B1%82%E9%9D%A2%E4%BC%98%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">代码层面优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E3%80%81%E6%A8%A1%E5%9D%97%E6%87%92%E5%8A%A0%E8%BD%BD"><span class="nav-number">2.1.</span> <span class="nav-text">路由、模块懒加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E6%87%92%E5%8A%A0%E8%BD%BD"><span class="nav-number">2.2.</span> <span class="nav-text">图片懒加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ajax%E8%AF%B7%E6%B1%82"><span class="nav-number">2.3.</span> <span class="nav-text">ajax请求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%BA%E7%BC%93%E5%AD%98"><span class="nav-number">2.3.1.</span> <span class="nav-text">强缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E5%95%86%E7%BC%93%E5%AD%98"><span class="nav-number">2.3.2.</span> <span class="nav-text">协商缓存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E5%BA%93%E6%8C%89%E9%9C%80%E5%BC%95%E5%85%A5"><span class="nav-number">2.4.</span> <span class="nav-text">组件库按需引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E4%BA%8EV8%E5%BC%95%E6%93%8E%E7%9A%84JS%E4%BB%A3%E7%A0%81"><span class="nav-number">2.5.</span> <span class="nav-text">适用于V8引擎的JS代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E7%B1%BB"><span class="nav-number">2.5.1.</span> <span class="nav-text">隐藏类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A4%E6%AC%A1%E7%BC%96%E8%AF%91"><span class="nav-number">2.5.2.</span> <span class="nav-text">两次编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AD%E5%8C%85"><span class="nav-number">2.5.3.</span> <span class="nav-text">闭包</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%B1%82%E9%9D%A2%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">存储层面的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack-bundle-analyzer"><span class="nav-number">3.1.</span> <span class="nav-text">webpack-bundle-analyzer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gzip%E5%8E%8B%E7%BC%A9"><span class="nav-number">3.2.</span> <span class="nav-text">gzip压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CDN%E7%BC%93%E5%AD%98%E4%BC%98%E5%8C%96"><span class="nav-number">3.3.</span> <span class="nav-text">CDN缓存优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E5%B1%82%E9%9D%A2%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">渲染层面的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%E6%8A%80%E6%9C%AF"><span class="nav-number">4.1.</span> <span class="nav-text">服务端渲染技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSS%E9%80%89%E6%8B%A9%E5%99%A8%E4%BC%98%E5%8C%96"><span class="nav-number">4.2.</span> <span class="nav-text">CSS选择器优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DOM%E4%BC%98%E5%8C%96"><span class="nav-number">4.3.</span> <span class="nav-text">DOM优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E5%9B%9E%E6%B5%81%E4%B8%8E%E9%87%8D%E7%BB%98"><span class="nav-number">4.3.1.</span> <span class="nav-text">减少回流与重绘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E8%8E%B7%E5%8F%96DOM%E6%AC%A1%E6%95%B0"><span class="nav-number">4.3.2.</span> <span class="nav-text">减少获取DOM次数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E4%BF%AE%E6%94%B9DOM%E7%9A%84%E6%AC%A1%E6%95%B0"><span class="nav-number">4.3.3.</span> <span class="nav-text">减少修改DOM的次数</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+

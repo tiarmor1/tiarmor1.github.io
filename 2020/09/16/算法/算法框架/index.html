@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="动态规划框架动态规划问题的一般形式是求最值；求解动态规划的核心问题是穷举，肯定要把所有可行的答案穷举出来然后在其中找最值；且一般具有重叠子问题，需要备忘录或者DP table来优化。 关键：状态转移方程，明确[状态]-&gt;定义DP数组、函数的含义-&gt;明确[选择]-&gt;明确basecase。 带备忘录的递归，有时候耗时的原因是重复计算，那么可以造备忘录，每次算出某子问题后不急着返回，先">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Technical blog">
+<meta property="og:url" content="http://yoursite.com/2020/09/16/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="动态规划框架动态规划问题的一般形式是求最值；求解动态规划的核心问题是穷举，肯定要把所有可行的答案穷举出来然后在其中找最值；且一般具有重叠子问题，需要备忘录或者DP table来优化。 关键：状态转移方程，明确[状态]-&gt;定义DP数组、函数的含义-&gt;明确[选择]-&gt;明确basecase。 带备忘录的递归，有时候耗时的原因是重复计算，那么可以造备忘录，每次算出某子问题后不急着返回，先">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2020/09/16/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6/%E5%85%A8%E6%8E%92%E5%88%97.png">
+<meta property="article:published_time" content="2020-09-16T15:04:18.000Z">
+<meta property="article:modified_time" content="2021-02-01T09:57:15.204Z">
+<meta property="article:author" content="Li Yudong">
+<meta property="article:tag" content="算法框架">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/09/16/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6/%E5%85%A8%E6%8E%92%E5%88%97.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/16/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">34</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/16/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-09-16 23:04:18" itemprop="dateCreated datePublished" datetime="2020-09-16T23:04:18+08:00">2020-09-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-01 17:57:15" itemprop="dateModified" datetime="2021-02-01T17:57:15+08:00">2021-02-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="动态规划框架"><a href="#动态规划框架" class="headerlink" title="动态规划框架"></a>动态规划框架</h1><p>动态规划问题的一般形式是求最值；求解动态规划的核心问题是穷举，肯定要把所有可行的答案穷举出来然后在其中找最值；且一般具有重叠子问题，需要备忘录或者DP table来优化。</p>
+<p>关键：状态转移方程，<strong>明确[状态]-&gt;定义DP数组、函数的含义-&gt;明确[选择]-&gt;明确basecase</strong>。</p>
+<p>带备忘录的递归，有时候耗时的原因是重复计算，那么可以造备忘录，每次算出某子问题后不急着返回，先记到备忘录中；每次遇到一个子问题时，先去备忘录查一查，如果发现已经解决过，就直接拿出来用。</p>
+<p>一般使用一个数组充当备忘录，当然也可以使用hash表，思想是一样的。</p>
+<p>斐波那契数列问题：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fit = <span class="function">(<span class="params">N</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (N &lt; <span class="number">1</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">var</span> memo = <span class="keyword">new</span> <span class="built_in">Array</span>(N + <span class="number">1</span>);</span><br><span class="line">    memo[<span class="number">1</span>] = memo[<span class="number">2</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">3</span>; i &lt;= N; i++)</span><br><span class="line">        memo[i] = memo[i<span class="number">-1</span>] + memo[i - <span class="number">2</span>];</span><br><span class="line">    <span class="keyword">return</span> memo[N];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>带备忘录的递归解法和迭代的动态规划解法其实一样，递归自顶向下，迭代递归自底向上；</p>
+<p>动态规划的另一个重要特性：最优子结构；凑零钱问题：给你k种面值的硬币，面值分别为C1、C2、…Ck；再给一个总金额amount，问最少需要多少硬币凑出，如果不能凑出则返回-1。</p>
+<p>要符合最优子结构，子问题之间必须相互独立，状态转移方程的步骤</p>
+<p>1、确定状态，也就是原问题和子问题变化的变量，唯一状态为目标金额amount；</p>
+<p>2、确定dp函数的定义：当前目标金额为n，则至少需要dp(n)个硬币；</p>
+<p>3、确定选择并择优：对于每个状态，可以做出选择改变当前状态；具体至当前，无论目标金额多少，选择就是从面额列表coins种选择一个硬币，然后目标金额就会减少。</p>
+<p>4、最后明确base case，显然目标金额为0时，所需硬币数量为0；当目标金额小于0时，无解，返回-1。</p>
+<p>一般这种题需要使用备忘录来消除子问题，减少其冗余从而节省时间。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> coinChange = (coins, amount)&#123;</span><br><span class="line">    <span class="keyword">let</span> memo = [];</span><br><span class="line">    <span class="keyword">const</span> dp = <span class="function">(<span class="params">n</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (memo[n] != <span class="literal">null</span>) <span class="keyword">return</span> memo[n];</span><br><span class="line">        <span class="comment">//先查备忘录，避免重复计算</span></span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (n &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        res = MAX_VALUE;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; coins.length; i++)&#123;</span><br><span class="line">            <span class="keyword">let</span> subproblem == dp(n - coins[i]);</span><br><span class="line">            <span class="keyword">if</span> (subproblem == <span class="number">-1</span>) <span class="keyword">continue</span>;</span><br><span class="line">            res = min(res, <span class="number">1</span> + subproblem);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (res != MAX_VALUE)&#123;</span><br><span class="line">            memo[n] = res;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> memo[n] = <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">return</span> memo[n];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp(amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了这种自顶向下的带备忘录递归，自底向上的dp数组迭代也一样可以消除子问题：dp[i] = x，表示当目标金额为i时，至少需要x枚硬币。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> coinChange = <span class="function">(<span class="params">coins, amount</span>) =&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>(amount + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; amount + <span class="number">1</span>; i++)&#123;</span><br><span class="line">        dp[i] = amount + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//先初始化dp数组，长度与初始值</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; dp.length; i++)&#123;</span><br><span class="line">        <span class="comment">//内层for在求所有子问题+1的最小值</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; coins.length; j++)&#123;</span><br><span class="line">            <span class="comment">//子问题无解则跳过</span></span><br><span class="line">            <span class="keyword">if</span> (i - coins[j] &lt; <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">            dp[i] = min(dp[i], <span class="number">1</span> + dp[i - coin]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (dp[amount] == amount + <span class="number">1</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> dp[amount];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="动态规划之背包问题"><a href="#动态规划之背包问题" class="headerlink" title="动态规划之背包问题"></a>动态规划之背包问题</h2><p>给你一个则装载重量为W的背包和N个物品，每个物品有重量和价值两个属性，其中第i个物品重量为wt[i]，价值为val[i]，求使用该背包装物品的最大价值。</p>
+<p>典型动态规划：物品不可分割，要么装进包里，要么不装，不可能切分。解决这种问题没有排序的巧妙方法，只能穷举所有可能，根据动态规划套路走流程：</p>
+<p>1、明确状态与选择；状态：背包容量与可选择的物品；选择：装进背包或不装进背包。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> 状态<span class="number">1</span> <span class="keyword">in</span> 状态<span class="number">1</span>的所有取值：</span><br><span class="line">    <span class="keyword">for</span> 状态<span class="number">2</span> <span class="keyword">in</span> 状态<span class="number">2</span>的所有取值：</span><br><span class="line">        <span class="keyword">for</span> ....</span><br><span class="line">            dp[状态<span class="number">1</span>][状态<span class="number">2</span>][...] = 择优(选择<span class="number">1</span>， 选择<span class="number">2</span>， ...)</span><br></pre></td></tr></table></figure>
+
+<p>2、明确DP数组：描述当前问题局面，需要使用DP数组把状态表示出来，而状态有2个，因此为二维数组dp[i] [w] :对于前i个物品，当前背包的容量为w，这种情况下可以装的最大价值为dp[i] [w]。且base case 就是dp[0] [..] = dp[..] [0] = 0。</p>
+<p>3、根据选择，思考状态转移的逻辑：即把物品i装不装进背包的代码逻辑怎么体现。如果不装：dp[i] [w] = dp[i-1] [w]，即继承以前的结果；如果装：dp[i] [w] = dp[i-1] [w - wt[i-1]] + val[i-1]，在装第i个的前提下该如何最大价值，应寻求剩余重量w - wt[i-1]限制下的最大重量，再加上确定的第i个物品价值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> knapsack = <span class="function">(<span class="params">W, N, wt, val</span>) =&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; N + <span class="number">1</span>; i++)&#123;</span><br><span class="line">        dp[i] = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; W + <span class="number">1</span>; j++)&#123;</span><br><span class="line">            dp[i][j] = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="comment">//先定义二维数组，并均初始化为0</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt;= N; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (w = <span class="number">1</span>; w &lt;= W; W++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (w - wt[i - <span class="number">1</span>] &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="comment">//当前背包容量放不下时，只能选择不装入背包</span></span><br><span class="line">                dp[i][w] = dp[i - <span class="number">1</span>][w];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//装入或不装入背包的择优</span></span><br><span class="line">                dp[i][w] = max(dp[i - <span class="number">1</span>][w - wt[i - <span class="number">1</span>]] + val[i - <span class="number">1</span>], dp[i - <span class="number">1</span>][w]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[N][W];</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//使用动态规划遍历时，同时择优并用DP表来存储已经计算完的数据。</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="动态规划之子集背包分割"><a href="#动态规划之子集背包分割" class="headerlink" title="动态规划之子集背包分割"></a>动态规划之子集背包分割</h2><p>怎么将⼆维动态规划压缩成⼀维动态规划吗？这就是状态压缩，很容易的，</p>
+<p>题目：给定一个只包含正整数的非空数组，是否可以将该数组分割成两个子集，使两个子集的元素和相等：</p>
+<p>对于这个问题，看起来和背包没有任何关系，为什么说它是背包问题呢？ ⾸先回忆⼀下背包问题⼤致的描述是什么： 给你⼀个可装载重量为 W 的背包和 N 个物品，每个物品有重量和价值两 个属性。其中第 i 个物品的重量为 wt[i] ，价值为 val[i] ，现在让你⽤ 这个背包装物品，最多能装的价值是多少？</p>
+<p> 那么对于这个问题，我们可以先对集合求和，得出 sum ，把问题转化为背 包问题：<strong>给⼀个可装载重量为</strong> <strong>sum / 2</strong> <strong>的背包和</strong> <strong>N</strong> <strong>个物品，每个物品的重量为</strong> <strong>nums[i]</strong> <strong>。现在让你装物品，是否存在⼀种装法，能够恰好将背包装满</strong>？ </p>
+<p>你看，这就是背包问题的模型，甚⾄⽐我们之前的经典背包问题还要简单⼀ 些，<strong>下⾯我们就直接转换成背包问题</strong>，开始套前⽂讲过的背包问题框架即就可。</p>
+<p>1、明确状态与选择；状态：背包容量、可选择的物品；选择：是否装进背包</p>
+<p>2、dp数组定义：dp[ i ] [ j ]= x 表⽰，对于前 i 个物品，当前背包的容量为 j 时，若 x 为 true ，则说明可以恰好将背包装满，若 x 为 false ，则说明不能恰 好将背包装满。 </p>
+<p>3、根据选择来思考状态转移的逻辑，恰好把背包装满的条件，其实刚好又取决于其上一个状态；换句话说，如果 j - nums[i-1] 的重量可以被恰好装满，那么只要把第 i 个物品装进去，也可恰好装满 j 的重量；否则的话，重量 j 肯定是装不满的。 </p>
+<p>4、basecase：想求的最终答案是dp[N] [sum/2]，因此初始条件为dp[…] [0] = true和dp[0] […] = false；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> canPartition = <span class="function">(<span class="params">nums</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; nums.length; i++)&#123;</span><br><span class="line">        sum += nums[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (sum % <span class="number">2</span> != <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">let</span> len = nums.length;</span><br><span class="line">    sum = sum / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//根据初始条件来初始化</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;= len + <span class="number">1</span>; i++) &#123;</span><br><span class="line">        dp[i] = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt;= sum + <span class="number">1</span>; j++)&#123;</span><br><span class="line">            dp[i][j] = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        dp[i] [<span class="number">0</span>] = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt;= sum; j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (j - nums[i - <span class="number">1</span>] &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="comment">//背包不足，不能装入第i个物品</span></span><br><span class="line">                dp[i] [j] = dp[i - <span class="number">1</span>] [j];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//装入或不装入的选择</span></span><br><span class="line">                dp[i][j] = dp[i - <span class="number">1</span>] [j] | dp[i - <span class="number">1</span>] [j - nums[i - <span class="number">1</span>]];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[n] [sum];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="动态规划之零钱兑换（完全背包问题）"><a href="#动态规划之零钱兑换（完全背包问题）" class="headerlink" title="动态规划之零钱兑换（完全背包问题）"></a>动态规划之零钱兑换（完全背包问题）</h2><p>题目：给定不同面额的硬币和一个总金额，假设每种硬币有无数个，写出函数来计算能凑成总金额的硬币总和数。</p>
+<p>有⼀个背包，最⼤容量为 amount ，有⼀系列物品 coins ，每个物品的重量为 coins[i] ，<strong>每个物品的数量⽆限</strong>。请问有多少种⽅法，能够把背包恰 好装满？ </p>
+<p>这个问题和我们前⾯讲过的两个背包问题，有⼀个最⼤的区别就是，每个物 品的数量是⽆限的，这也就是传说中的「<strong>完全背包问题</strong>」，没啥⾼⼤上的， ⽆⾮就是状态转移⽅程有⼀点变化⽽已。</p>
+<p>1、状态与选择；状态：背包的容量，可选择的物品；选择：是否装进背包；</p>
+<p>2、dp数组：若只使用前i个物品，当背包容量为j时，有dp[i] [j]种方法可以装满背包；</p>
+<p>3、base case为dp[0] [..] = 0;dp[..] [0] = 1;不使用任何面值则无法完成，背包容量为0则仅有一种。</p>
+<p>4、状态转移方程的逻辑：如果不把第i个物品装进背包，则凑出面额j的方法数dp[i] [j]等于dp[i - 1] [j]，继承之前的结果；如果你把第i个物品装进了背包，则说明使用了coins[i - 1] 这个面额，那么dp[i] [j] = dp [i] [j-coins[i - 1]]</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> change = <span class="function">(<span class="params">amount, coins</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> len = coins.length;</span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//根据初始条件来初始化</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= len + <span class="number">1</span>; i++) &#123;</span><br><span class="line">        dp[i] = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt;= sum + <span class="number">1</span>; j++)&#123;</span><br><span class="line">            dp[i][j] = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        dp[i] [<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt;=n; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">1</span>; j &lt;= amount; j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (j - coins[i - <span class="number">1</span>] &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                dp[i][j] = dp[i - <span class="number">1</span>][j] + dp[i][j - coins[i - <span class="number">1</span>]];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                dp[i][j] = dp[i - <span class="number">1</span>][j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[n][amount];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="动态规划最长递增子序列"><a href="#动态规划最长递增子序列" class="headerlink" title="动态规划最长递增子序列"></a>动态规划最长递增子序列</h2><p>动态规划的通用技巧：数学归纳思想；最长递增子序列LIS；子串与子序列名词的区别：字串一定是连续的，而子序列不一定是连续的。</p>
+<p>1、明确状态与选择：状态，序列nums的所有字母；选择：更新子序列还是</p>
+<p>2、用dp数组来描述状态，dp[i]表示以nums[i]这个数结尾的最长递增子序列的长度；后续的动态规划子序列解题模板总结了常见的套路:</p>
+<p>3、根据选择思考动态转移方程的逻辑：已知dp[0..n-1]，根据nums[n]的值，便能够判断如何更新，找到结尾比nums[n]小的子序列，然后把nums[n]接到最后，形成新子序列，其长度为原子序列+1；且由于未知之前子序列的大小关系，需要使用遍历将前面的dp值全部遍历一遍；</p>
+<p>4、base case: dp[i]初始值为1，因为以nums[i]结尾的LIS最少要包含它自己。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> lengthOfLIS = <span class="function">(<span class="params">nums</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; nums.length; i++)&#123;</span><br><span class="line">        dp[i] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nums.length; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; i; j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] &gt; nums[j])&#123;</span><br><span class="line">                dp[i] = max.(dp[i], dp[j] + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//将每个以nums[i]结尾的LIS长度存到dp之后，遍历一遍找出最大的那个</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; dp.length; i++)&#123;</span><br><span class="line">        res = max.(res, dp[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="动态规划：最长公共子序列LCS"><a href="#动态规划：最长公共子序列LCS" class="headerlink" title="动态规划：最长公共子序列LCS"></a>动态规划：最长公共子序列LCS</h2><p>LCS是典型的二维动态规划，目的是求两个字符串的LCS长度，子序列问题基本都用动态规划来实现，穷举加剪枝。</p>
+<p>1、明确状态与选择：状态，两个字符串；选择，是否添加该元素作为最长公共子序列。</p>
+<p>2、确定dp数组的含义： 两字符串数组的通用套路，dp[i] [j]代表s1[1…i]和s2[1…j]的LCS长度。</p>
+<p>3、找状态转移方程：其实字符串问题的状态转移套路都差不多，都是判断字符在还是不在的问题，只有2种选择；如果某字符在LCS中，则其肯定同时存在于s1和s2中。</p>
+<p>思路为：用2个指针从后往前遍历s1、s2，若相等则该字符一定在lcs中，否则这两个字符至少有一个不在lcs中，需要丢弃一个；</p>
+<p>4、base case：均初始化为0，最短可以没有公共元素。</p>
+<p>暴力的递归写法如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> longestCommonSubsequence = <span class="function">(<span class="params">str1, str2</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> dp = <span class="function">(<span class="params"><span class="keyword">let</span> i , <span class="keyword">let</span> j</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (i === <span class="number">-1</span> || j === <span class="number">-1</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="comment">//先初始化空串的base case</span></span><br><span class="line">        <span class="keyword">if</span> (str1[i] === str[j])&#123;</span><br><span class="line">            <span class="comment">//找到一个lcs的元素则继续往前找</span></span><br><span class="line">            <span class="keyword">return</span> dp(i - <span class="number">1</span>, j - <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//否则，则找出让lcs最长的</span></span><br><span class="line">            <span class="keyword">return</span> max(dp(i - <span class="number">1</span>, j), dp(i, j - <span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp(str1.length - <span class="number">1</span>, str2.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以通过备忘录或者DPtable来优化时间复杂度，</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> longestCommonSubsequencr = <span class="function">(<span class="params">str1, str2</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> m = str1.length, n = str2.length;</span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; m; i++)&#123;</span><br><span class="line">        dp[i] = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; n; j++)&#123;</span><br><span class="line">            dp[i][j] = <span class="number">0</span>; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//构建DPtable并初始化</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; m; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (str[i] === str[j])&#123;</span><br><span class="line">                dp[i][j] = <span class="number">1</span> + dp[i - <span class="number">1</span>][j - <span class="number">1</span>];</span><br><span class="line">            &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">                dp[i][j] = max(dp[i - <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[m - <span class="number">1</span>][n - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于str1[i]与str2[j]不等的情况，是否可能两个字符都不在，但其实因为后面的选择max始终选择最大的，因此不用考虑，必然被排除在外。先像文本一样写出伪代码来定义DPtable理清逻辑，思考每个状态有哪些选择，用正确逻辑作出正确判断就能做出正确选择。</p>
+<h2 id="经典动态规划：编辑距离"><a href="#经典动态规划：编辑距离" class="headerlink" title="经典动态规划：编辑距离"></a>经典动态规划：编辑距离</h2><p>给定两个字符串s1和s2，计算出将s1转换成s2所使用的最少操作数，可用操作只有插入、删除、替换一个字符。</p>
+<p>思路：解决两个字符串的动态规划问题，一般都是用2个指针i、j分别指向两个字符串的最后，然后一步步往前走，缩小问题的规模；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*base case:当i走完s1或者j走完s2时，可以直接返回另一个字符串剩下的长度；</span></span><br><span class="line"><span class="comment">if s1[i] == s2[j]:</span></span><br><span class="line"><span class="comment">    啥也不做(skip)</span></span><br><span class="line"><span class="comment">    i、j同时移动</span></span><br><span class="line"><span class="comment">else:</span></span><br><span class="line"><span class="comment">    三选一：</span></span><br><span class="line"><span class="comment">        插入、删除、替换</span></span><br><span class="line"><span class="comment">三选一选择的标准是：均尝试一遍，哪个操作最后得到的编辑距离最小。*/</span></span><br><span class="line"><span class="keyword">const</span> minDistance = <span class="function">(<span class="params">s1, s2</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> dp = <span class="function">(<span class="params">i, j</span>) =&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">-1</span>) <span class="keyword">return</span> j + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (j == <span class="number">-1</span>) <span class="keyword">return</span> i + <span class="number">1</span>;</span><br><span class="line">        <span class="comment">//定义base case</span></span><br><span class="line">        <span class="keyword">if</span> (s1[i] == s2[j]) <span class="keyword">return</span> dp(i - <span class="number">1</span>, j - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> min(dp(i, j - <span class="number">1</span>) + <span class="number">1</span>，dp(i - <span class="number">1</span>, j) + <span class="number">1</span>, dp(i - <span class="number">1</span>, j - <span class="number">1</span>) + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp(s1.length - <span class="number">1</span>, s2.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>dp(i, j)返回s1[0..i]和s2[0..j]的最小编辑距离；同样，上述的解法属于暴力破解，需要使用动态规划技巧来优化重叠子问题</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> minDistance = <span class="function">(<span class="params">s1, s2</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> m = str1.length, n = str2.length;</span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; m; i++)&#123;</span><br><span class="line">        dp[i] = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; n; j++)&#123;</span><br><span class="line">            dp[i][j] = <span class="number">0</span>; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//构建DPtable并初始化</span></span><br><span class="line">    <span class="keyword">for</span> (int i = <span class="number">1</span>; i &lt;= m; i++)&#123;</span><br><span class="line">        dp[i][<span class="number">0</span>] = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (int j = <span class="number">1</span>; j &lt;= n; j++)&#123;</span><br><span class="line">        dp[<span class="number">0</span>][j] = j;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//进行合适的DPtable初始化，DPtable自底向上求解，递归从上至下</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt;= m; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">1</span>; j &lt;= n; j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (s1[i] === s2[j])&#123;</span><br><span class="line">                dp[i][j] = dp[i - <span class="number">1</span>][j - <span class="number">1</span>];</span><br><span class="line">            &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">                dp[i][j] = min(dp[i - <span class="number">1</span>][j] + <span class="number">1</span>, dp[i][j - <span class="number">1</span>] + <span class="number">1</span>, dp[i - <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[m][n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一般来说，处理两个字符串的动态规划问题，均按照本文思路处理，建立DPtable；但这里仅给出了最小编辑距离，具体如何修改则需要给dp数组增加额外的信息。则使用JS中的对象数组，dp[i] [j]中存储的是一个对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arrayObj = [&#123;&#125;];<span class="comment">//定义对象数组</span></span><br><span class="line"><span class="keyword">let</span> m = str1.length, n = str2.length;</span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; m; i++)&#123;</span><br><span class="line">        dp[i] = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; n; j++)&#123;</span><br><span class="line">            dp[i][j] = &#123;</span><br><span class="line">                <span class="string">&#x27;val&#x27;</span> : <span class="number">0</span>,</span><br><span class="line">                <span class="string">&#x27;choice&#x27;</span> : <span class="number">0</span>,</span><br><span class="line">                <span class="comment">//val为其原本dp数组值，choice为操作，0代表什么也不做，1代表插入，2代表删除，3代表替换</span></span><br><span class="line">            &#125;; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//最终结果为dp[m][n]，后续则一步步反推，插入=&gt;左移、替换=&gt;左移并上移、删除=&gt;上移,形成一条路径；这样一步步走回来了。</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="动态规划的子序列模板（最长回文子序列）"><a href="#动态规划的子序列模板（最长回文子序列）" class="headerlink" title="动态规划的子序列模板（最长回文子序列）"></a>动态规划的子序列模板（最长回文子序列）</h2><p>子序列通常涉及两个字符串，例如：两个字符串的最长公共子序列；既然要用动态规划，关键在于dp数组的定义与寻找状态转移关系，不同问题需要使用不同的dp数组定义。</p>
+<h3 id="一、一维的dp数组"><a href="#一、一维的dp数组" class="headerlink" title="一、一维的dp数组"></a>一、一维的dp数组</h3><p>最长递增子序列LIS：<strong>在子数组array[0…i]中，以array[i]为结尾的目标子序列的长度是dp[i]。</strong></p>
+<p>目的：符合归纳法，能够从前n-1个的结果中推断出来第n个的结果</p>
+<h3 id="二、二维的dp数组"><a href="#二、二维的dp数组" class="headerlink" title="二、二维的dp数组"></a>二、二维的dp数组</h3><h4 id="涉及两个字符串、数组时："><a href="#涉及两个字符串、数组时：" class="headerlink" title="涉及两个字符串、数组时："></a>涉及两个字符串、数组时：</h4><p><strong>在子数组arr1[0…i]和子数组arr2[0…j]中，我们要求的子序列(最长公共子序列)长度为dp[i] [j];</strong></p>
+<h4 id="只涉及一个字符串、数组："><a href="#只涉及一个字符串、数组：" class="headerlink" title="只涉及一个字符串、数组："></a>只涉及一个字符串、数组：</h4><p>在子数组array[i…j]中，我们要求的子序列(最长回文子序列)的长度为dp[i] [j]。</p>
+<h3 id="最长回文子序列"><a href="#最长回文子序列" class="headerlink" title="最长回文子序列"></a>最长回文子序列</h3><p>DPtable的定义：在子串s[i…j]中，最长回文子序列的长度为dp[i] [j]；找状态转移方程的关键在于归纳思维，即如何从已知的结果推断出未知的部分。</p>
+<p>具体来说，如果我们想求dp[i] [j]，假设已经知道子问题dp[i + 1] [j - 1]的结果，是否能想办法算出dp[i] [j]的值。可以，取决于s[i]和s[j]的字符。1、如果他两相等则它们加上便就是当前的最大回文子序列；2、如果她两不相等，说明两者不可能同时出现在最长回文子序列中，于是把它们分别加入s[i+1…j-1]中，看看哪个子串产生的回文子序列更长即可。</p>
+<p>base case：dp[i] [j] = 1;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> longestPalindromeSubseq = <span class="function">(<span class="params">str1</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> m = str1.length;</span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; m; i++)&#123;</span><br><span class="line">        dp[i] = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; n; j++)&#123;</span><br><span class="line">            dp[i][j] = <span class="number">0</span>; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">        dp[i][i] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//根据上面的状态转移方程，为保证每次计算dp[i][j]，左、下、左下三个方向的位置均被计算出来，只能斜着遍历或反着遍历。</span></span><br><span class="line">    <span class="keyword">for</span> (i = n - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = i + <span class="number">1</span>; j &lt; n; j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (s[i] == s[j])&#123;</span><br><span class="line">                dp[i][j] = dp[i + <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">2</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">                dp[i][j] = max(dp[i + <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[<span class="number">0</span>][n - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="动态规划的正则表达式"><a href="#动态规划的正则表达式" class="headerlink" title="动态规划的正则表达式"></a>动态规划的正则表达式</h2><p>算法的设计是⼀个螺旋上升、逐步求精 的过程，绝不是⼀步到位就能写出正确算法。</p>
+<p><strong>写递归的技巧是管好当下，之后的事抛给递归</strong></p>
+<h2 id="动态规划答疑篇"><a href="#动态规划答疑篇" class="headerlink" title="动态规划答疑篇"></a>动态规划答疑篇</h2><h3 id="最优子结构"><a href="#最优子结构" class="headerlink" title="最优子结构"></a>最优子结构</h3><p>最优子结构：从子问题的最优结果能够推断出更大规模问题的最优结果；想要满足最优子结构，子问题之间必须相互独立。遇到这种最优子结构失效的情况，策略是改造问题。等价转化：最大分数差&lt;=&gt;最高分数和最低分数的差&lt;=&gt;求最高与最低分数。</p>
+<p>最优子结构并不是动态规划独有的性质，但反过来，动态规划一定是要求的求最值的。动态规划就是通过base case一步步反推往上，只有符合最优子结构的问题才有发生这种链式反应的性质。</p>
+<p>找寻最优子结构的过程其实就是证明状态转移方程正确性的过程，方程符合最优子结构就可以写暴力解了，写出暴力解就能看出有没有重叠子问题，有则优化。</p>
+<h3 id="dp数组的遍历方向"><a href="#dp数组的遍历方向" class="headerlink" title="dp数组的遍历方向"></a>dp数组的遍历方向</h3><p>对dp数组的遍历方向有所困惑，可以正向、反向遍历，乃至斜向遍历；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//斜着遍历</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> l = <span class="number">2</span>; l &lt;= n; l++)&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= n - <span class="number">1</span>; i++)&#123;</span><br><span class="line">        <span class="keyword">let</span> j = l + i - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>dp遍历设置的两大原则：1、遍历的过程中，所需的状态必须是已经计算出来的；2、遍历的终点必须是存储结果的那个位置；</p>
+<p>即根据base case处于的位置来判断dp数组计算的起步，根据递推关系来判断dp数组递推的方向。</p>
+<h2 id="动态规划二维变一维"><a href="#动态规划二维变一维" class="headerlink" title="动态规划二维变一维"></a>动态规划二维变一维</h2><h2 id="动态规划之股票买卖"><a href="#动态规划之股票买卖" class="headerlink" title="动态规划之股票买卖"></a>动态规划之股票买卖</h2><p>题目：给定一个数组，它的第i个元素是一支给定的股票在第i天的价格，设计一个算法来计算你所能获取的最大利润，且你最多可以完成k笔交易。（你不能同时参与多笔交易，必须在再次购买之前出售）</p>
+<h3 id="穷举框架"><a href="#穷举框架" class="headerlink" title="穷举框架"></a>穷举框架</h3><p>这⾥，我们不⽤递归思想进⾏穷举，⽽是利⽤「状态」进⾏穷举。我们具 体到每⼀天，看看总共有⼏种可能的「状态」，再找出每个「状态」对应的 「选择」。我们要穷举所有「状态」，穷举的⽬的是根据对应的「选择」更 新状态。</p>
+<p>⽐如说这个问题，<strong>每天都有三种「选择」</strong>：买⼊、卖出、⽆操作，我们⽤ buy, sell, rest 表⽰这三种选择。但问题是，并不是每天都可以任意选择这三 种选择的，因为 sell 必须在 buy 之后，buy 必须在 sell 之后。那么 rest 操作 还应该分两种状态，⼀种是 buy 之后的 rest（持有了股票），⼀种是 sell 之 后的 rest（没有持有股票）。⽽且别忘了，我们还有交易次数 k 的限制，就 是说你 buy 还只能在 k &gt; 0 的前提下操作。</p>
+<p><strong>这个问题的「状态」有三个</strong>，第⼀个是天 数，第⼆个是允许交易的最⼤次数，第三个是当前的持有状态（即之前说的 rest 的状态，我们不妨⽤ 1 表⽰持有，0 表⽰没有持有）。然后我们⽤⼀个 三维数组就可以装下这⼏种状态的全部组合： </p>
+<p>⽽且我们可以⽤⾃然语⾔描述出每⼀个状态的含义，⽐如说 dp[3][2][1] 的含义就是：今天是第三天，我现在⼿上持有着股票，⾄今最多进⾏ 2 次交 易。再⽐如 dp [2] [3] [0] 的含义：今天是第⼆天，我现在⼿上没有持有股 票，⾄今最多进⾏ 3 次交易。很容易理解，对吧？ </p>
+<p>我们想求的最终答案是 dp [n - 1] [K] [0]，即最后⼀天，最多允许 K 次交易， 最多获得多少利润。读者可能问为什么不是 dp[n - 1] [K] [1]？因为 [1] 代表⼿ 上还持有股票，[0] 表⽰⼿上的股票已经卖出去了，很显然后者得到的利润 ⼀定⼤于前者。 </p>
+<p>记住如何解释「状态」，⼀旦你觉得哪⾥不好理解，把它翻译成⾃然语⾔就 容易理解了。 </p>
+<h3 id="状态转移框架"><a href="#状态转移框架" class="headerlink" title="状态转移框架"></a>状态转移框架</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dp[i][k][<span class="number">0</span>] = max(dp[i<span class="number">-1</span>][k][<span class="number">0</span>], dp[i<span class="number">-1</span>][k][<span class="number">1</span>] + prices[i]) </span><br><span class="line">max( 选择 rest , 选择 sell ) </span><br><span class="line">解释：今天我没有持有股票，有两种可能： 要么是我昨天就没有持有，然后今天选择 rest，所以我今天还是没有持有； 要么是我昨天持有股票，但是今天我 sell 了，所以我今天没有持有股票了。 </span><br><span class="line"></span><br><span class="line">dp[i][k][<span class="number">1</span>] = max(dp[i<span class="number">-1</span>][k][<span class="number">1</span>], dp[i<span class="number">-1</span>][k<span class="number">-1</span>][<span class="number">0</span>] - prices[i]) </span><br><span class="line">max( 选择 rest , 选择 buy ) </span><br><span class="line">解释：今天我持有着股票，有两种可能： 要么我昨天就持有着股票，然后今天选择 rest，所以我今天还持有着股票； 要么我昨天本没有持有，但今天我选择 buy，所以今天我就持有股票了</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们已经完成了动态规划中最困难的⼀步：状态转移⽅程。<strong>如果之前</strong> <strong>的内容你都可以理解，那么你已经可以秒杀所有问题了，只要套这个框架就</strong> <strong>⾏了。</strong>不过还差最后⼀点点，就是定义 base case，即最简单的情况</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">dp[<span class="number">-1</span>][k][<span class="number">0</span>] = <span class="number">0</span> </span><br><span class="line">解释：因为 i 是从 <span class="number">0</span> 开始的，所以 i = <span class="number">-1</span> 意味着还没有开始，这时候的利润当然是 <span class="number">0</span> 。</span><br><span class="line">dp[<span class="number">-1</span>][k][<span class="number">1</span>] = -infinity </span><br><span class="line">解释：还没开始的时候，是不可能持有股票的，⽤负⽆穷表⽰这种不可能。 </span><br><span class="line">dp[i][<span class="number">0</span>][<span class="number">0</span>] = <span class="number">0</span> </span><br><span class="line">解释：因为 k 是从 <span class="number">1</span> 开始的，所以 k = <span class="number">0</span> 意味着根本不允许交易，这时候利润当然是 <span class="number">0</span> 。</span><br><span class="line">dp[i][<span class="number">0</span>][<span class="number">1</span>] = -infinity </span><br><span class="line">解释：不允许交易的情况下，是不可能持有股票的，⽤负⽆穷表⽰这种不可能</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>总结一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">base case:</span><br><span class="line">    dp[<span class="number">-1</span>][k][<span class="number">0</span>] = dp[i][<span class="number">0</span>][<span class="number">0</span>]</span><br><span class="line">    dp[<span class="number">-1</span>][k][<span class="number">0</span>] = dp[i][<span class="number">0</span>][<span class="number">1</span>] = -infinity</span><br><span class="line">    </span><br><span class="line">状态转移方程:</span><br><span class="line">    dp[i][k][<span class="number">0</span>] = max(dp[i<span class="number">-1</span>][k][<span class="number">0</span>], dp[i<span class="number">-1</span>][k][<span class="number">1</span>] + prices[i])</span><br><span class="line">    dp[i][k][<span class="number">1</span>] = max(dp[i<span class="number">-1</span>][k][<span class="number">1</span>], dp[i<span class="number">-1</span>][k<span class="number">-1</span>][<span class="number">0</span>] - prices[i])</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="k-1时"><a href="#k-1时" class="headerlink" title="k=1时"></a>k=1时</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123; </span><br><span class="line">    <span class="keyword">if</span> (i - <span class="number">1</span> == <span class="number">-1</span>)&#123; </span><br><span class="line">        dp[i][<span class="number">0</span>] = <span class="number">0</span>; </span><br><span class="line">        <span class="comment">// 解释： </span></span><br><span class="line">        <span class="comment">// dp[i][0] </span></span><br><span class="line">        <span class="comment">// = max(dp[-1][0], dp[-1][1] + prices[i]) </span></span><br><span class="line">        <span class="comment">// = max(0, -infinity + prices[i]) = 0 </span></span><br><span class="line">        dp[i][<span class="number">1</span>] = -prices[i]; </span><br><span class="line">        <span class="comment">//解释： </span></span><br><span class="line">        <span class="comment">// dp[i][1] </span></span><br><span class="line">        <span class="comment">// = max(dp[-1][1], dp[-1][0] - prices[i]) </span></span><br><span class="line">        <span class="comment">// = max(-infinity, 0 - prices[i]) </span></span><br><span class="line">        <span class="comment">// = -prices[i] </span></span><br><span class="line">        <span class="keyword">continue</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    dp[i][<span class="number">0</span>] = Math.<span class="built_in">max</span>(dp[i<span class="number">-1</span>][<span class="number">0</span>], dp[i<span class="number">-1</span>][<span class="number">1</span>] + prices[i]); </span><br><span class="line">    dp[i][<span class="number">1</span>] = Math.<span class="built_in">max</span>(dp[i<span class="number">-1</span>][<span class="number">1</span>], -prices[i]); </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> dp[n - <span class="number">1</span>][<span class="number">0</span>];</span><br></pre></td></tr></table></figure>
+
+<p>第⼀题就解决了，但是这样处理 base case 很⿇烦，⽽且注意⼀下状态转移 ⽅程，新状态只和相邻的⼀个状态有关，其实不⽤整个 dp 数组，只需要⼀ 个变量储存相邻的那个状态就⾜够了，这样可以把空间复杂度降到 O(1):</p>
+<h2 id="k-infinity"><a href="#k-infinity" class="headerlink" title="k= +infinity"></a>k= +infinity</h2><p>k为正无穷，则可以把k、k-1看作一样，同样可以改写框架，数组中k已经不会改变，则不需要记录k。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxProfit_k_inf</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = prices.length; </span><br><span class="line">    <span class="keyword">int</span> dp_i_0 = <span class="number">0</span>, dp_i_1 = Integer.MIN_VALUE; </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123; </span><br><span class="line">        <span class="keyword">int</span> temp = dp_i_0; </span><br><span class="line">        dp_i_0 = Math.<span class="built_in">max</span>(dp_i_0, dp_i_1 + prices[i]); </span><br><span class="line">        dp_i_1 = Math.<span class="built_in">max</span>(dp_i_1, temp - prices[i]); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp_i_0; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="k-infinity-coldDown"><a href="#k-infinity-coldDown" class="headerlink" title="k = infinity + coldDown"></a>k = infinity + coldDown</h2><p>每次 sell 之后要等⼀天才能继续交易。只要把这个特点融⼊上⼀题的状态转 移⽅程即可： </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">dp[i][<span class="number">0</span>] = <span class="built_in">max</span>(dp[i<span class="number">-1</span>][<span class="number">0</span>], dp[i<span class="number">-1</span>][<span class="number">1</span>] + prices[i]) ;</span><br><span class="line">dp[i][<span class="number">1</span>] = <span class="built_in">max</span>(dp[i<span class="number">-1</span>][<span class="number">1</span>], dp[i<span class="number">-2</span>][<span class="number">0</span>] - prices[i]);</span><br><span class="line"><span class="comment">//解释：第 i 天选择 buy 的时候，要从 i-2 的状态转移，⽽不是 i-1 。</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxProfit_with_cool</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">int</span> n = prices.length; </span><br><span class="line">    <span class="keyword">int</span> dp_i_0 = <span class="number">0</span>, dp_i_1 = Integer.MIN_VALUE; </span><br><span class="line">    <span class="keyword">int</span> dp_pre_0 = <span class="number">0</span>; </span><br><span class="line">    <span class="comment">// 代表 dp[i-2][0] </span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123; </span><br><span class="line">        <span class="keyword">int</span> temp = dp_i_0; </span><br><span class="line">        dp_i_0 = Math.<span class="built_in">max</span>(dp_i_0, dp_i_1 + prices[i]); </span><br><span class="line">        dp_i_1 = Math.<span class="built_in">max</span>(dp_i_1, dp_pre_0 - prices[i]); </span><br><span class="line">        dp_pre_0 = temp; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp_i_0; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="k-infinity-with-fee"><a href="#k-infinity-with-fee" class="headerlink" title="k = +infinity with fee"></a>k = +infinity with fee</h2><p>每次交易要⽀付⼿续费，只要把⼿续费从利润中减去即可。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">dp[i][<span class="number">0</span>] = <span class="built_in">max</span>(dp[i<span class="number">-1</span>][<span class="number">0</span>], dp[i<span class="number">-1</span>][<span class="number">1</span>] + prices[i]) ;</span><br><span class="line">dp[i][<span class="number">1</span>] = <span class="built_in">max</span>(dp[i<span class="number">-1</span>][<span class="number">1</span>], dp[i<span class="number">-1</span>][<span class="number">0</span>] - prices[i] - fee); </span><br><span class="line"><span class="comment">//解释：相当于买⼊股票的价格升⾼了。 在第⼀个式⼦⾥减也是⼀样的，相当于卖出股票的价格减⼩了。</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxProfit_with_fee</span><span class="params">(<span class="keyword">int</span>[] prices, <span class="keyword">int</span> fee)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">int</span> n = prices.length; </span><br><span class="line">    <span class="keyword">int</span> dp_i_0 = <span class="number">0</span>, </span><br><span class="line">    dp_i_1 = Integer.MIN_VALUE; </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123; </span><br><span class="line">        <span class="keyword">int</span> temp = dp_i_0; </span><br><span class="line">        dp_i_0 = Math.<span class="built_in">max</span>(dp_i_0, dp_i_1 + prices[i]); </span><br><span class="line">        dp_i_1 = Math.<span class="built_in">max</span>(dp_i_1, temp - prices[i] - fee); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp_i_0; &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="k-2"><a href="#k-2" class="headerlink" title="k = 2"></a><strong>k = 2</strong></h2><p>k = 2 和前⾯题⽬的情况稍微不同，因为上⾯的情况都和 k 的关系不太⼤。 要么 k 是正⽆穷，状态转移和 k 没关系了；要么 k = 1，跟 k = 0 这个 base case 挨得近，最后也没有存在感。 这道题 k = 2 和后⾯要讲的 k 是任意正整数的情况中，对 k 的处理就凸显出 来了。</p>
+<p>这道题由于没有消掉 k 的影响，所以必须要对 k 进⾏穷举：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> max_k = <span class="number">2</span>; </span><br><span class="line"><span class="keyword">int</span>[][][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n][max_k + <span class="number">1</span>][<span class="number">2</span>]; </span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123; </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = max_k; k &gt;= <span class="number">1</span>; k--) &#123; </span><br><span class="line">        <span class="keyword">if</span> (i - <span class="number">1</span> == <span class="number">-1</span>) &#123; </span><br><span class="line">            <span class="comment">/*处理 base case */</span> </span><br><span class="line">        &#125; </span><br><span class="line">        dp[i][k][<span class="number">0</span>] = <span class="built_in">max</span>(dp[i<span class="number">-1</span>][k][<span class="number">0</span>], dp[i<span class="number">-1</span>][k][<span class="number">1</span>] + prices[i]); </span><br><span class="line">        dp[i][k][<span class="number">1</span>] = <span class="built_in">max</span>(dp[i<span class="number">-1</span>][k][<span class="number">1</span>], dp[i<span class="number">-1</span>][k<span class="number">-1</span>][<span class="number">0</span>] - prices[i]); </span><br><span class="line">    &#125; </span><br><span class="line">&#125;<span class="comment">// 穷举了 n × max_k × 2 个状态，正确。 </span></span><br><span class="line"><span class="keyword">return</span> dp[n - <span class="number">1</span>][max_k][<span class="number">0</span>];</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="k-any-integer"><a href="#k-any-integer" class="headerlink" title="k = any integer"></a><strong>k = any integer</strong></h2><p>有了上⼀题 k = 2 的铺垫，这题应该和上⼀题的第⼀个解法没啥区别。但是 出现了⼀个超内存的错误，原来是传⼊的 k 值会⾮常⼤，dp 数组太⼤了。 现在想想，交易次数 k 最多有多⼤呢？ ⼀次交易由买⼊和卖出构成，⾄少需要两天。所以说有效的限制 k 应该不超 过 n/2，如果超过，就没有约束作⽤了，相当于 k = +infinity。这种情况是之 前解决过的。 直接把之前的代码重⽤： </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxProfit_k_any</span><span class="params">(<span class="keyword">int</span> max_k, <span class="keyword">int</span>[] prices)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">int</span> n = prices.length; </span><br><span class="line">    <span class="keyword">if</span> (max_k &gt; n / <span class="number">2</span>) </span><br><span class="line">        <span class="keyword">return</span> maxProfit_k_inf(prices); </span><br><span class="line">    <span class="keyword">int</span>[][][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n][max_k + <span class="number">1</span>][<span class="number">2</span>]; </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = max_k; k &gt;= <span class="number">1</span>; k--) &#123; </span><br><span class="line">            <span class="keyword">if</span> (i - <span class="number">1</span> == <span class="number">-1</span>) &#123; </span><br><span class="line">                <span class="comment">/* 处理 base case */</span> </span><br><span class="line">            &#125; </span><br><span class="line">            dp[i][k][<span class="number">0</span>] = <span class="built_in">max</span>(dp[i<span class="number">-1</span>][k][<span class="number">0</span>], dp[i<span class="number">-1</span>][k][<span class="number">1</span>] + prices[i0]); </span><br><span class="line">            dp[i][k][<span class="number">1</span>] = <span class="built_in">max</span>(dp[i<span class="number">-1</span>][k][<span class="number">1</span>], dp[i<span class="number">-1</span>][k<span class="number">-1</span>][<span class="number">0</span>] - prices; </span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="动态规划与回溯对比"><a href="#动态规划与回溯对比" class="headerlink" title="动态规划与回溯对比"></a>动态规划与回溯对比</h1><p>题目：给定一个非负整数组，a1,a2,…an和一个目标数，S。现在你有两个符号+和-；对于数组中的任意一个整数，你都可以添加一个符号到前面，返回可以使最终数组和为目标数S的所有添加符号的方法数。</p>
+<h2 id="回溯思路"><a href="#回溯思路" class="headerlink" title="回溯思路"></a>回溯思路</h2><p>回溯算法就是一个暴力穷举算法；关键在于1、路径（即已经做出的选择），2、选择列表（当前可以做的选择），3、结束条件（到达决策树底层，无法再做选择的条件）。</p>
+<p>1、路径：之前已经给前面的数字写出的正负号；2、选择列表：即每个数字可以选择给出正号或者负号；3、结束条件：即已经走到了最后一个数字；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> result = <span class="number">0</span>;</span><br><span class="line"><span class="comment">//主函数</span></span><br><span class="line"><span class="keyword">const</span> findTargetSumWays = <span class="function">(<span class="params">nums, target</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (nums.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    backtrack(nums, <span class="number">0</span>, target);</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">const</span> backtrack = (nums, i, rest)&#123;</span><br><span class="line">        <span class="comment">//base case</span></span><br><span class="line">        <span class="keyword">if</span> (i == nums.length)&#123;</span><br><span class="line">            <span class="keyword">if</span> (rest == <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="comment">//说明恰好凑出target</span></span><br><span class="line">                result++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//给nums[i]选择-号</span></span><br><span class="line">        rest += nums[i];</span><br><span class="line">        <span class="comment">//递归来穷举nums[i+1]的可能性</span></span><br><span class="line">        backtrack(nums, i + <span class="number">1</span>, rest);</span><br><span class="line">        <span class="comment">//撤销选择</span></span><br><span class="line">        rest -= nums[i];</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//给nums[i]选择+号</span></span><br><span class="line">        rest -= nums[i];</span><br><span class="line">        <span class="comment">//穷举nums[i+1]</span></span><br><span class="line">        backtrack(nums, i + <span class="number">1</span>, rest);</span><br><span class="line">        <span class="comment">//撤销选择</span></span><br><span class="line">        rest += nums[i];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度为O(2^N)，N为nums的大小，其实这个回溯算法就是个二叉树的遍历问题，树的高度就是nums的长度，故时间复杂度就是这棵二叉树的节点数，其实比较低效。</p>
+<h2 id="消除重叠子问题"><a href="#消除重叠子问题" class="headerlink" title="消除重叠子问题"></a>消除重叠子问题</h2><p>动态规划快的原因就是消除了重叠子问题，关键在于看是否可能出现重复的状态；对于递归函数来说，函数参数中会变得参数就是状态，对于backtrack函数即i和rest。那么怎么一眼看出存在重叠子问题？</p>
+<p>1、先抽象出算法得递归框架；</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dp</span>(<span class="params">i, j</span>):</span></span><br><span class="line">    dp(i - <span class="number">1</span>, j - <span class="number">1</span>)<span class="comment">#1</span></span><br><span class="line">    dp(i, j - <span class="number">1</span>)<span class="comment">#2</span></span><br><span class="line">    dp(i - <span class="number">1</span>, j)<span class="comment">#4</span></span><br></pre></td></tr></table></figure>
+
+<p>2、对于子问题dp(i-1, j-1)，如何通过原问题dp(i, j)来得到呢？有多种不同路径:比如dp(i,j)=&gt;#1，和dp(i, j)=&gt;#2 =&gt;#3。一旦发现一条重复路径就说明存在巨量重复路径，也就是重叠子问题。</p>
+<p>对于上题：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> backtrack(int i, int rest)&#123;</span><br><span class="line">    backtrack(i + <span class="number">1</span>，rest - nums[i]);</span><br><span class="line">    backtrack(i + <span class="number">1</span>, rest + nums[i]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//当nums[i]=0时，出现两种状态完全相同得递归函数，这就是重叠子问题</span></span><br><span class="line"><span class="comment">//因此状态(i, rest)可以用备忘录来优化</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> fingTargetSumWays = <span class="function">(<span class="params">nums, target</span>) =&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> dp(nums, <span class="number">0</span>, target);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//备忘录</span></span><br><span class="line"><span class="keyword">const</span> memo = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line"><span class="keyword">const</span> dp = <span class="function">(<span class="params">nums, i, rest</span>) =&gt;</span>&#123;</span><br><span class="line">    <span class="comment">//base case</span></span><br><span class="line">    <span class="keyword">if</span> (i == nums.length) &#123;</span><br><span class="line">        <span class="keyword">if</span> (rest == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//避免重复计算,转换成字符串从而作为Map的键来存储</span></span><br><span class="line">    <span class="keyword">let</span> key = i.toString() + <span class="string">&quot;,&quot;</span> + rest.toString；</span><br><span class="line">    <span class="keyword">if</span> (memo.has(key)) &#123;</span><br><span class="line">        <span class="keyword">return</span> memo.get(key);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//还是穷举</span></span><br><span class="line">    <span class="keyword">let</span> result = dp(nums, i + <span class="number">1</span>, rest - nums[i]) + dp(nums, i + <span class="number">1</span>, rest + nums[i]);</span><br><span class="line">    <span class="comment">//这两种情况，&quot;+&quot;或者&quot;-&quot;号</span></span><br><span class="line">    memo.set(key, result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h2><p>上述的消除重叠子问题的方案，在最坏情况下的时间复杂度仍为O(2^N)，因为底层逻辑没变，暴力穷举，加上顺手进行了剪枝，提升了算法在某些情况的效率，但不算质的飞跃。其实，这个问题可以转化成一个子集划分的问题，而子集划分问题又是一个典型的背包问题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//我们把nums划分为两个子集A、B，分别代表分配+的数和分配-的数，则它们跟target存在如下关系：</span></span><br><span class="line">sum(A) - sum(B) = target</span><br><span class="line">sum(A) = target + sum(B)</span><br><span class="line">sum(A) + sum(A) = target + sum(B) + sum(A)</span><br><span class="line"><span class="number">2</span> * sum(A) = target + sum(nums)</span><br><span class="line"><span class="comment">//因此可以把问题转化为：nums中存在几个子集A，使得A中元素的和为(target + sum(nums)) / 2。</span></span><br><span class="line"><span class="comment">//这样就变成了经典的背包问题</span></span><br><span class="line"><span class="comment">//dp[i][j]代表前i个数构成结果为j的方法个数</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> fingTargetSumWays = <span class="function">(<span class="params">nums, target</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; nums.length; i++)&#123;</span><br><span class="line">        sum += nums[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> len = nums.length;</span><br><span class="line">    sum = (sum + target) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">    <span class="comment">//根据初始条件来初始化</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;= len + <span class="number">1</span>; i++) &#123;</span><br><span class="line">        dp[i] = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt;= sum + <span class="number">1</span>; j++)&#123;</span><br><span class="line">            dp[i][j] = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt;= n; i++)&#123;</span><br><span class="line">        dp[<span class="number">0</span>][j] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//没有物品则没办法装背包，则为0</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        dp[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//背包的最大载重为0，则只有一种方法，即什么都不装</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt;= nums.length; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">1</span>; j &lt;= sum; j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (j - nums[i - <span class="number">1</span>] &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="comment">//背包不足，不能装入第i个物品</span></span><br><span class="line">                dp[i][j] = dp[i - <span class="number">1</span>] [j];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//装入或不装入的选择</span></span><br><span class="line">                dp[i] [j] = dp[i - <span class="number">1</span>] [j] + dp[i - <span class="number">1</span>] [j - nums[i - <span class="number">1</span>]];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[nums.length][sum];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总结一下：回溯算法虽好，但是复杂度很高，即使消除一些冗杂计算也只是剪枝，没有本质的改变；而动态规划则比较玄学，经过各种改造后，从一个加减法问题变成了子集问题，又变成背包问题，经过各种套路写出解法，还得使用状态压缩，加上反向遍历。</p>
+<h1 id="回溯算法框架"><a href="#回溯算法框架" class="headerlink" title="回溯算法框架"></a>回溯算法框架</h1><p>解决一个回溯问题，其实即使一个决策树的遍历过程，只需要思考3个问题，1、路径：就是已经做出的选择；2、选择列表：就是你当前可以做的选择；3、结束条件：到达决策树底层，无法再做选择的条件。</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="class">result</span></span> = []</span><br><span class="line"><span class="variable">def</span> <span class="function"><span class="title">backtrack</span>(路径，选择列表)</span></span><br><span class="line">    <span class="variable"><span class="keyword">if</span></span> 满足结束条件：</span><br><span class="line">        <span class="variable"><span class="class">result</span>.add</span>(路径)</span><br><span class="line">        <span class="variable">return</span></span><br><span class="line">    </span><br><span class="line">    <span class="variable">for</span> 选择 <span class="variable"><span class="keyword">in</span></span> 选择列表:</span><br><span class="line">        做选择</span><br><span class="line">        <span class="function"><span class="title">backtrack</span>(路径，选择列表)</span></span><br><span class="line">        撤销选择</span><br></pre></td></tr></table></figure>
+
+<p>核心其实就是for循环里面的递归，在递归调用前做选择，递归调用之后撤销选择。</p>
+<h2 id="回溯之全排列问题"><a href="#回溯之全排列问题" class="headerlink" title="回溯之全排列问题"></a>回溯之全排列问题</h2><p>穷举n个不重复数的全排列，求有多少个。</p>
+<p>则可以画出该算法的决策树如下，每个节点都在做决策。[2]就是路径，记录你已经做过的选择；[1，3]是选择列表，表示当前可以做出的选择；[结束条件]就是遍历到树的底层，即选择列表为空的时候。</p>
+<p>我们定义的backtrack函数其实就像一个指针，在这棵树上游走同时正确维护每个节点的属性，每当走到树的底层，其路径就是一个全排列。</p>
+<p><img src="/2020/09/16/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6/%E5%85%A8%E6%8E%92%E5%88%97.png" alt="全排列"></p>
+<p>树的遍历问题：前序遍历、后序遍历。前序遍历代码在进入某一个节点之前的那个时间点执行，后序遍历代码在离开某个节点之后的那个时间点执行；函数在树上游走，正确维护其属性就是要在这两个特殊时间点搞动作。我们只要在递归之前做出选择，递归之后撤销选择，就能得到每个节点的选择列表、路径。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> LinkedList&lt;&gt;(); </span><br><span class="line"><span class="comment">/* 主函数，输⼊⼀组不重复的数字，返回它们的全排列 */</span> </span><br><span class="line"><span class="function">List&lt;List&lt;Integer&gt;&gt; <span class="title">permute</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123; </span><br><span class="line">    <span class="comment">// 记录「路径」 </span></span><br><span class="line">    LinkedList&lt;Integer&gt; track = <span class="keyword">new</span> LinkedList&lt;&gt;(); </span><br><span class="line">    backtrack(nums, track); </span><br><span class="line">    <span class="keyword">return</span> res; </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 路径：记录在 track 中 </span></span><br><span class="line"><span class="comment">// 选择列表：nums 中不存在于 track 的那些元素 </span></span><br><span class="line"><span class="comment">// 结束条件：nums 中的元素全都在 track 中出现 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">backtrack</span><span class="params">(<span class="keyword">int</span>[] nums, LinkedList&lt;Integer&gt; track)</span> </span>&#123; </span><br><span class="line">    <span class="comment">// 触发结束条件 </span></span><br><span class="line">    <span class="keyword">if</span> (track.<span class="built_in">size</span>() == nums.length) &#123; </span><br><span class="line">        res.add(<span class="keyword">new</span> LinkedList(track)); </span><br><span class="line">        <span class="keyword">return</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123; </span><br><span class="line">        <span class="comment">// 排除不合法的选择 </span></span><br><span class="line">        <span class="keyword">if</span> (track.contains(nums[i])) </span><br><span class="line">            <span class="keyword">continue</span>; </span><br><span class="line">        <span class="comment">// 做选择 </span></span><br><span class="line">        track.add(nums[i]); </span><br><span class="line">        <span class="comment">// 进⼊下⼀层决策树 </span></span><br><span class="line">        backtrack(nums, track); </span><br><span class="line">        <span class="comment">// 取消选择</span></span><br><span class="line">        track.removeLast(); </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们这⾥稍微做了些变通，没有显式记录「选择列表」，⽽是通过 nums 和 track 推导出当前的选择列表：因为穷举整棵决策树是⽆法避免的。<strong>这也是回溯算法的⼀</strong> 个特点，不像动态规划存在重叠⼦问题可以优化，回溯算法就是纯暴⼒穷*举，复杂度⼀般都很⾼。 </p>
+<h2 id="回溯之N皇后问题"><a href="#回溯之N皇后问题" class="headerlink" title="回溯之N皇后问题"></a>回溯之N皇后问题</h2><p>给你⼀个 N×N 的棋盘，让你放置 N 个 皇后，使得它们不能互相攻击。 这个问题本质上跟全排列问题差不多，决策树的每⼀层表⽰棋盘上的每⼀ ⾏；每个节点可以做出的选择是，在该⾏的任意⼀列放置⼀个皇后。 </p>
+<p>则可以直接套用框架：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&gt; res; </span><br><span class="line"><span class="comment">/* 输⼊棋盘边⻓ n，返回所有合法的放置 */</span> </span><br><span class="line"><span class="function"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&gt; <span class="title">solveNQueens</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123; </span><br><span class="line">    <span class="comment">// &#x27;.&#x27; 表⽰空，&#x27;Q&#x27; 表⽰皇后，初始化空棋盘。 </span></span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title">board</span><span class="params">(n, <span class="built_in">string</span>(n, <span class="string">&#x27;.&#x27;</span>))</span></span>; </span><br><span class="line">    backtrack(board, <span class="number">0</span>); </span><br><span class="line">    <span class="keyword">return</span> res; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 路径：board 中⼩于 row 的那些⾏都已经成功放置了皇后 </span></span><br><span class="line"><span class="comment">// 选择列表：第 row ⾏的所有列都是放置皇后的选择</span></span><br><span class="line"><span class="comment">// 结束条件：row 超过 board 的最后⼀⾏ </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">backtrack</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&amp; board, <span class="keyword">int</span> row)</span> </span>&#123; </span><br><span class="line">    <span class="comment">// 触发结束条件 </span></span><br><span class="line">    <span class="keyword">if</span> (row == board.<span class="built_in">size</span>()) &#123; </span><br><span class="line">        res.push_back(board); </span><br><span class="line">        <span class="keyword">return</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> n = board[row].<span class="built_in">size</span>(); </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> col = <span class="number">0</span>; col &lt; n; col++) &#123; </span><br><span class="line">        <span class="comment">// 排除不合法选择 </span></span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">isValid</span>(board, row, col)) </span><br><span class="line">            <span class="keyword">continue</span>; </span><br><span class="line">        <span class="comment">// 做选择 </span></span><br><span class="line">        board[row][col] = <span class="string">&#x27;Q&#x27;</span>; </span><br><span class="line">        <span class="comment">// 进⼊下⼀⾏决策 </span></span><br><span class="line">        backtrack(board, row + <span class="number">1</span>); </span><br><span class="line">        <span class="comment">// 撤销选择 </span></span><br><span class="line">        board[row][col] = <span class="string">&#x27;.&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//这部分的主要代码其实跟全排列差不多，都是遍历的思想，先检查是否合理，再进行决策并递归进下一层，下一层递归遍历完之后再撤销选择。</span></span><br><span class="line"><span class="comment">/* 是否可以在 board[row][col] 放置皇后？ */</span> </span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isValid</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&amp; board, <span class="keyword">int</span> row, <span class="keyword">int</span> col)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">int</span> n = board.<span class="built_in">size</span>(); </span><br><span class="line">    <span class="comment">// 检查列是否有皇后互相冲突 </span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123; </span><br><span class="line">        <span class="keyword">if</span> (board[i][col] == <span class="string">&#x27;Q&#x27;</span>) </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 检查右上⽅是否有皇后互相冲突 </span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = row - <span class="number">1</span>, j = col + <span class="number">1</span>; </span><br><span class="line">         i &gt;= <span class="number">0</span> &amp;&amp; j &lt; n; i--, j++) &#123; </span><br><span class="line">        <span class="keyword">if</span> (board[i][j] == <span class="string">&#x27;Q&#x27;</span>) </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 检查左上⽅是否有皇后互相冲突 </span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = row - <span class="number">1</span>, j = col - <span class="number">1</span>; </span><br><span class="line">         i &gt;= <span class="number">0</span> &amp;&amp; j &gt;= <span class="number">0</span>; i--, j--) &#123; </span><br><span class="line">        <span class="keyword">if</span> (board[i][j] == <span class="string">&#x27;Q&#x27;</span>) </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数 backtrack 依然像个在决策树上游⾛的指针，通过 row 和 col 就可 以表⽰函数遍历到的位置，通过 isValid 函数可以将不符合条件的情况剪枝： </p>
+<p>这个问题的复杂度确实⾮常⾼，看看我们的决策树，虽 然有 isValid 函数剪枝，但是最坏时间复杂度仍然是 O(N^(N+1))，⽽且⽆ 法优化。如果 N = 10 的时候，计算就已经很耗时了。 <strong>有的时候，我们并不想得到所有合法的答案，只想要⼀个答案，怎么办呢</strong>其实特别简单，只要稍微修改⼀下回溯算法的代码即可：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 函数找到⼀个答案后就返回 </span></span><br><span class="line"><span class="function"><span class="literal">true</span> <span class="keyword">bool</span> <span class="title">backtrack</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&amp; board, <span class="keyword">int</span> row)</span> </span>&#123; </span><br><span class="line">    <span class="comment">// 触发结束条件 </span></span><br><span class="line">    <span class="keyword">if</span> (row == board.<span class="built_in">size</span>()) &#123; </span><br><span class="line">        res.push_back(board); </span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> col = <span class="number">0</span>; col &lt; n; col++) &#123;</span><br><span class="line">        ... </span><br><span class="line">        board[row][col] = <span class="string">&#x27;Q&#x27;</span>; </span><br><span class="line">        <span class="keyword">if</span> (backtrack(board, row + <span class="number">1</span>)) </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>; </span><br><span class="line">        board[row][col] = <span class="string">&#x27;.&#x27;</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回溯算法就是个多叉树的遍历问题，关键就是在前序遍历和后序遍历的位置 做⼀些操作，算法框架如下： <strong>写</strong> <strong>backtrack</strong> <strong>函数时，需要维护⾛过的「路径」和当前可以做的「选择列</strong> <strong>表」，当触发「结束条件」时，将「路径」记⼊结果集</strong></p>
+<p>动态规划的三个需要明确的点就是「状态」「选择」和 「base case」，是不是就对应着⾛过的「路径」，当前的「选择列表」和 「结束条件」某种程度上说，动态规划的暴⼒求解阶段就是回溯算法。只是有的问题具有 重叠⼦问题性质，可以⽤ dp table 或者备忘录优化，将递归树⼤幅剪枝，这 就变成了动态规划。⽽今天的两个问题，都没有重叠⼦问题，也就是回溯算 法问题了，复杂度⾮常⾼是不可避免的。 </p>
+<h1 id="DFS与BFS详解"><a href="#DFS与BFS详解" class="headerlink" title="DFS与BFS详解"></a>DFS与BFS详解</h1><h2 id="DFS的简要说明"><a href="#DFS的简要说明" class="headerlink" title="DFS的简要说明"></a>DFS的简要说明</h2><p>(1)：深度优先搜索（Depth-First-Search）是搜索算法的一种。是沿着树的深度遍历树的节点，尽可能深的搜索树的分支。当节点v的所有边都己被探寻过，搜索将回溯到发现节点v的那条边的起始节点。这一过程一直进行到已发现从源节点可达的所有节点为止。如果还存在未被发现的节点，则选择其中一个作为源节点并重复以上过程，整个进程反复进行直到所有节点都被访问为止。属于盲目搜索。</p>
+<p>(2)：DFS是图论里面的一种搜索算法，他可以由一个根节点出发，遍历所有的子节点，进而把图中所有的可以构成树的集合都搜索一遍，达到全局搜索的目的。所以很多问题都可以用dfs来遍历每一种情况，从而得出最优解，但由于时间复杂度太高，我们也叫做<strong>暴力搜索</strong>。</p>
+<p>(3)：DFS如同数据结构中的栈结构，是属于一种后进先出的结构，比如说一个羽毛球筒，把它装满之后，我们开始使用时，拿的总是最后放进去的那一个。所以这就导致了所有的点进入栈时有一个顺序，我们称之为 ：<strong>DFS序</strong>。</p>
+<p>(4)：根据dfs的英文全写，我们可以知道这是一种深度优先搜索的搜索算法，什么叫做深度优先？意思就是它搜索一颗子树时，它要遍历到底才会 “回头” ，比如说：上有向图中的 搜索模式 为(以DFS序来描述)：a-&gt;b-&gt;e-&gt;b-&gt;f-&gt;c-&gt;f-&gt;b-&gt;c-&gt;b-&gt;a-&gt;c-&gt;a-&gt;d-&gt;g-&gt;d-&gt;a，有人就会问为什么搜索到c的时候不搜索a呢？因为我们假设的这是一个有向图。而且我们可以看到如果 你面对的图是一个 无向图，这个时候这个树将会持续搜索因为可能会形成环路，使得栈的结构一直进进出出，导致程序崩溃，所以我们也因该注意，在写DFS时，如果面对的是一个无向图的话我们需要进行标记。一般的标记方法有:①这个点的父节点被标记，使得子节点不能回到父节点造成循环②访问过的节点被标记。这两种方法视情况而定。</p>
+<p>(5)：对于暴搜来说，因其复杂度太高，我们就会想去优化它的复杂度，这一过程称为剪枝，剪纸分为可行性剪枝和最优化剪枝，关于剪枝引申出一种名为记忆化搜索的方法，该方法与动态规划类似。</p>
+<h2 id="BFS简要说明"><a href="#BFS简要说明" class="headerlink" title="BFS简要说明"></a>BFS简要说明</h2><p>(1)：与DFS相对的那就是BFS了，BFS称为宽度优先搜索也叫做广度优先搜索，他是按层遍历每一种状态的下一种状态。</p>
+<p>搞不懂？没关系我们来看一下一个例题：给你一个整数X，问是否存在一个这样一个数字A：①这个数字是X的倍数②这个数字仅由0与1这两种数字组成 例如 X=2，A=10。这个题当然可以用 DFS来做，我们以1为起点 这样就成了一个 0 1 二叉树，意思就是说每一种 情况 我们都可以 有两种选择 要么 添0，要么在后面 添1。所以我们可以写出代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> start)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(A%X==<span class="number">0</span>)<span class="comment">//这是我们搜索结束的条件</span></span><br><span class="line">    &#123;</span><br><span class="line">        ans=A;<span class="comment">//让ans记录答案开始return</span></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">    dfs(start*<span class="number">10</span>);</span><br><span class="line">    dfs(start*<span class="number">10</span>+<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以我们开始试例子：输入 2按照dfs序的话，首先不符合条件，然后进入下一步搜索，X*10=10，发现10%2==0，然后开始返回ans记录A，这就是最后答案，但是你会发现程序崩溃了。<br>我们分析一下原因：DFS为深度优先搜索，所以我们的左子树可以看作是在末尾加0，然后右子树可以看作在末尾加1，所以这样就形成了一棵树。按照DFS我们的意图是让他搜索左子树，所以在左子树中找到了 满足条件的 数 ：10。但是为什么程序会崩溃呢？</p>
+<p>(2）因为搜索到树之后，按照我们刚刚的DFS序，这个树遍开始回溯(你可以想象成这棵树开始回缩)，每回溯到一个节点，因为这个节点的 右子树还没有搜索，所以会再去搜索这个节点的右子树，但是这个节点的右子树是在末尾进行加1，而末尾是1绝对不可能是 2 的倍数 所以这个树会一直按照 往右子树 搜索的趋势 进行下去，导致程序崩溃。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//那是不是这个问题只能枚举了呢？其实DFS是可以的，在网络大神的果断判断之下这个问题出了一个新解：当搜索的深度为19时，此时的答案一定会出现，这时候回溯就好了。所以说我们加一个step记录深度就可以了：</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> start,<span class="keyword">int</span> <span class="built_in">step</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(A%X==<span class="number">0</span>&amp;&amp;<span class="built_in">step</span>==<span class="number">19</span>)<span class="comment">//这是我们搜索结束的条件</span></span><br><span class="line">    &#123;</span><br><span class="line">        ans=A;<span class="comment">//让ans记录答案开始return</span></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">    dfs(start*<span class="number">10</span>,<span class="built_in">step</span>+<span class="number">1</span>);</span><br><span class="line">    dfs(start*<span class="number">10</span>+<span class="number">1</span>,<span class="built_in">step</span>+<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>(3)：还有没有更好的方法呢？在考虑这个问题的时候我们回顾一下刚刚为什么程序崩溃，原因就是因为DFS是一个深度优先搜索，他每次必须要 深搜到底 ，所以对于末尾是1来说永远没有结束条件所以它一直会搜索下去！这个时候我们可不可以想有没有这样一种搜索模式，出现A=10这个情况之后我们立刻停止就可以了呢？当然是有的，那就是BFS。</p>
+<p>(4)：弄完上面这个例题，也就真正的引出了BFS也发现了DFS的一些小缺点。下面说一下上面留下的定义：<strong>按层遍历每一种的状态的下一种状态</strong>。首先BFS是与数据结构中的 队列 相似，队列是一种 先进先出的结构，这又比如说 你把一些水果按时间一天一个放进一个箱子里，但这些水果时间长了会变质，我们假设变质日期是一样的，那么你每次拿都是拿的最早放进去的那个。</p>
+<p>所以说对于刚刚那个题目而言，我们如果按层遍历就不会出现程序崩溃的现象，比如说 第二层有10 11，那我们就不必搜索下一层了</p>
+<h2 id="DFS应用"><a href="#DFS应用" class="headerlink" title="DFS应用"></a>DFS应用</h2><p>(1).DFS由于有回溯的步骤，所以我们可以对其进行更新，比如并查集合并时的状态压缩都是使用DFS，还有图论中的 tarjan算法，lca等等。</p>
+<p>(2)：搜索 有状态约束的 问题，比如说：N皇后问题；</p>
+<h2 id="BFS应用"><a href="#BFS应用" class="headerlink" title="BFS应用"></a>BFS应用</h2><p>(1)：求最短路，这个是图论里面的一种应用被称为SPFA算法，在我之前的博客中有总结过，所以在这里不再提。</p>
+<p>(2)：求迷宫最短路，这种题目用DFS也是可以解的，用 DFS的思路:有许多条路可以到达终点我们求一下 到达终点的最小值。这样是非常耗时间的 而BFS不一样因为BFS是按层遍历，所以 每一层对于根节点来说距离一定是最小的，不需要再次更新，我们到达终点时这个距离一定一定是最小的，比如说：</p>
+<p>（3)：同时移动性题目问题，火山在喷发，你在跑问是否可以跑出去。详情之前解释过这个问题：</p>
+<p>(4)：倒水问题，每次倒水状态之间的转移，之前也有过例题：&amp;&amp;POJ341<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43857314/article/details/87926470">pots</a></p>
+<p>(5)：路径还原，问从一个点到另一个点 的最短路径是多少，而题目不要求你输入最短距离，而是要求你还原路径这种时候通常需要加一个结构体数组来记录，其实上面的例题pots也是一个路径还原的问题，用一个简单的例题总结一下路径还原：</p>
+
+    </div>
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Li Yudong 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Li Yudong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/09/16/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6/" title="">http://yoursite.com/2020/09/16/算法/算法框架/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6/" rel="tag"># 算法框架</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/16/%E7%AE%97%E6%B3%95/%E6%B5%B7%E8%B4%BC%E7%8F%AD%E7%AE%97%E6%B3%95/" rel="prev" title="算法入门">
+      <i class="fa fa-chevron-left"></i> 算法入门
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/23/%E5%89%8D%E7%AB%AF/AJAX%E8%AF%B7%E6%B1%82/" rel="next" title="AJAX与Json">
+      AJAX与Json <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">动态规划框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%B9%8B%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text">动态规划之背包问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%B9%8B%E5%AD%90%E9%9B%86%E8%83%8C%E5%8C%85%E5%88%86%E5%89%B2"><span class="nav-number">1.2.</span> <span class="nav-text">动态规划之子集背包分割</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%B9%8B%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2%EF%BC%88%E5%AE%8C%E5%85%A8%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">动态规划之零钱兑换（完全背包问题）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97"><span class="nav-number">1.4.</span> <span class="nav-text">动态规划最长递增子序列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%EF%BC%9A%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E5%BA%8F%E5%88%97LCS"><span class="nav-number">1.5.</span> <span class="nav-text">动态规划：最长公共子序列LCS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%EF%BC%9A%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB"><span class="nav-number">1.6.</span> <span class="nav-text">经典动态规划：编辑距离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E5%AD%90%E5%BA%8F%E5%88%97%E6%A8%A1%E6%9D%BF%EF%BC%88%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E5%BA%8F%E5%88%97%EF%BC%89"><span class="nav-number">1.7.</span> <span class="nav-text">动态规划的子序列模板（最长回文子序列）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%B8%80%E7%BB%B4%E7%9A%84dp%E6%95%B0%E7%BB%84"><span class="nav-number">1.7.1.</span> <span class="nav-text">一、一维的dp数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BA%8C%E7%BB%B4%E7%9A%84dp%E6%95%B0%E7%BB%84"><span class="nav-number">1.7.2.</span> <span class="nav-text">二、二维的dp数组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%89%E5%8F%8A%E4%B8%A4%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E3%80%81%E6%95%B0%E7%BB%84%E6%97%B6%EF%BC%9A"><span class="nav-number">1.7.2.1.</span> <span class="nav-text">涉及两个字符串、数组时：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AA%E6%B6%89%E5%8F%8A%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E3%80%81%E6%95%B0%E7%BB%84%EF%BC%9A"><span class="nav-number">1.7.2.2.</span> <span class="nav-text">只涉及一个字符串、数组：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E5%BA%8F%E5%88%97"><span class="nav-number">1.7.3.</span> <span class="nav-text">最长回文子序列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.8.</span> <span class="nav-text">动态规划的正则表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AD%94%E7%96%91%E7%AF%87"><span class="nav-number">1.9.</span> <span class="nav-text">动态规划答疑篇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E5%AD%90%E7%BB%93%E6%9E%84"><span class="nav-number">1.9.1.</span> <span class="nav-text">最优子结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dp%E6%95%B0%E7%BB%84%E7%9A%84%E9%81%8D%E5%8E%86%E6%96%B9%E5%90%91"><span class="nav-number">1.9.2.</span> <span class="nav-text">dp数组的遍历方向</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%BA%8C%E7%BB%B4%E5%8F%98%E4%B8%80%E7%BB%B4"><span class="nav-number">1.10.</span> <span class="nav-text">动态规划二维变一维</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%B9%8B%E8%82%A1%E7%A5%A8%E4%B9%B0%E5%8D%96"><span class="nav-number">1.11.</span> <span class="nav-text">动态规划之股票买卖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%B7%E4%B8%BE%E6%A1%86%E6%9E%B6"><span class="nav-number">1.11.1.</span> <span class="nav-text">穷举框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%E6%A1%86%E6%9E%B6"><span class="nav-number">1.11.2.</span> <span class="nav-text">状态转移框架</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-1%E6%97%B6"><span class="nav-number">1.12.</span> <span class="nav-text">k&#x3D;1时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-infinity"><span class="nav-number">1.13.</span> <span class="nav-text">k&#x3D; +infinity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-infinity-coldDown"><span class="nav-number">1.14.</span> <span class="nav-text">k &#x3D; infinity + coldDown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-infinity-with-fee"><span class="nav-number">1.15.</span> <span class="nav-text">k &#x3D; +infinity with fee</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-2"><span class="nav-number">1.16.</span> <span class="nav-text">k &#x3D; 2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-any-integer"><span class="nav-number">1.17.</span> <span class="nav-text">k &#x3D; any integer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%B8%8E%E5%9B%9E%E6%BA%AF%E5%AF%B9%E6%AF%94"><span class="nav-number">2.</span> <span class="nav-text">动态规划与回溯对比</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF%E6%80%9D%E8%B7%AF"><span class="nav-number">2.1.</span> <span class="nav-text">回溯思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E9%99%A4%E9%87%8D%E5%8F%A0%E5%AD%90%E9%97%AE%E9%A2%98"><span class="nav-number">2.2.</span> <span class="nav-text">消除重叠子问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">2.3.</span> <span class="nav-text">动态规划</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6"><span class="nav-number">3.</span> <span class="nav-text">回溯算法框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF%E4%B9%8B%E5%85%A8%E6%8E%92%E5%88%97%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">回溯之全排列问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF%E4%B9%8BN%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98"><span class="nav-number">3.2.</span> <span class="nav-text">回溯之N皇后问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DFS%E4%B8%8EBFS%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.</span> <span class="nav-text">DFS与BFS详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DFS%E7%9A%84%E7%AE%80%E8%A6%81%E8%AF%B4%E6%98%8E"><span class="nav-number">4.1.</span> <span class="nav-text">DFS的简要说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFS%E7%AE%80%E8%A6%81%E8%AF%B4%E6%98%8E"><span class="nav-number">4.2.</span> <span class="nav-text">BFS简要说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DFS%E5%BA%94%E7%94%A8"><span class="nav-number">4.3.</span> <span class="nav-text">DFS应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFS%E5%BA%94%E7%94%A8"><span class="nav-number">4.4.</span> <span class="nav-text">BFS应用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+

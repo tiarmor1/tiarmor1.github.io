@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="表单组件简单地自己造一下轮子，实现一下vue的自定组件，这里主要先从form组件开始实践。 form组件需求分析：1、指定数据、校验规则；高内聚、低耦合； 2、这里为了实现form组件的输入功能，我们自定义一个input组件来实现；为保证低耦合性，仅使用并实现双向绑定基本功能。 3、校验的实现跟input分开，再自定义一个KFormItem组件来实现校验的功能。执行校验的组件为KFormItem组">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue组件化">
+<meta property="og:url" content="http://yoursite.com/2020/11/06/%E5%89%8D%E7%AB%AF/vue%E7%BB%84%E4%BB%B6%E5%8C%96/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="表单组件简单地自己造一下轮子，实现一下vue的自定组件，这里主要先从form组件开始实践。 form组件需求分析：1、指定数据、校验规则；高内聚、低耦合； 2、这里为了实现form组件的输入功能，我们自定义一个input组件来实现；为保证低耦合性，仅使用并实现双向绑定基本功能。 3、校验的实现跟input分开，再自定义一个KFormItem组件来实现校验的功能。执行校验的组件为KFormItem组">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-06T13:28:16.000Z">
+<meta property="article:modified_time" content="2021-03-12T14:52:02.518Z">
+<meta property="article:author" content="Li Yudong">
+<meta property="article:tag" content="vue">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/11/06/%E5%89%8D%E7%AB%AF/vue%E7%BB%84%E4%BB%B6%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>vue组件化 | Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">34</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/06/%E5%89%8D%E7%AB%AF/vue%E7%BB%84%E4%BB%B6%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vue组件化
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-11-06 21:28:16" itemprop="dateCreated datePublished" datetime="2020-11-06T21:28:16+08:00">2020-11-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-12 22:52:02" itemprop="dateModified" datetime="2021-03-12T22:52:02+08:00">2021-03-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2/" itemprop="url" rel="index"><span itemprop="name">前端页面</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="表单组件"><a href="#表单组件" class="headerlink" title="表单组件"></a>表单组件</h1><p>简单地自己造一下轮子，实现一下vue的自定组件，这里主要先从form组件开始实践。</p>
+<p>form组件需求分析：1、指定数据、校验规则；高内聚、低耦合；</p>
+<p>2、这里为了实现form组件的输入功能，我们自定义一个input组件来实现；为保证低耦合性，仅使用并实现双向绑定基本功能。</p>
+<p>3、校验的实现跟input分开，再自定义一个KFormItem组件来实现校验的功能。执行校验的组件为KFormItem组件，但通知父组件执行校验的是其子组件KINput，由于事件是谁派发谁监听，不能用this.$emit，需要用this.parent.$emit。之后，在KFormItrm组件上监听校验事件，执行具体校验。</p>
+<h2 id="Input"><a href="#Input" class="headerlink" title="Input"></a>Input</h2><p>实现功能：维护数据；</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 自定义组件双向绑定：:value  @input --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- v-bind=&quot;$attrs&quot;展开$attrs </span></span><br><span class="line"><span class="comment">$attrs/$listeners包含了父作用域中不作为 prop 被识别 (且获取) 的特性绑定 ( class 和 style 除外)。当一个组件没有</span></span><br><span class="line"><span class="comment">声明任何 prop 时，这里会包含所有父作用域的绑定 ( class 和 style 除外)，并且可以通过 v-bind=&quot;$attrs&quot; 传入内部组件——在创建高级别的组件时非常有用。--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">:type</span>=<span class="string">&quot;type&quot;</span> <span class="attr">:value</span>=<span class="string">&quot;value&quot;</span> @<span class="attr">input</span>=<span class="string">&quot;onInput&quot;</span> <span class="attr">v-bind</span>=<span class="string">&quot;$attrs&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">    inheritAttrs: <span class="literal">false</span>, <span class="comment">// 设置为false避免设置到根元素上，</span></span></span><br><span class="line">    props: &#123;</span><br><span class="line">      value: &#123;</span><br><span class="line"><span class="javascript">        type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">&#x27;&#x27;</span></span></span><br><span class="line">      &#125;,</span><br><span class="line">      type: &#123;</span><br><span class="line"><span class="javascript">        type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">&#x27;text&#x27;</span></span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">      onInput(e) &#123;</span><br><span class="line"><span class="javascript">        <span class="comment">// 派发一个input事件即可，相当于在原生input上面再封装一个实现了双向绑定的input</span></span></span><br><span class="line"><span class="javascript">        <span class="built_in">this</span>.$emit(<span class="string">&#x27;input&#x27;</span>, e.target.value)</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="comment">// 通知父级执行校验</span></span></span><br><span class="line"><span class="javascript">        <span class="built_in">this</span>.$parent.$emit(<span class="string">&#x27;validate&#x27;</span>)</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">scoped</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="KFormItem"><a href="#KFormItem" class="headerlink" title="KFormItem"></a>KFormItem</h2><p>KformItem组件包裹Input组件，同时在前面添加label标签；</p>
+<p>实现功能：1、执行校验2、显示错误信息</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- label --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">v-if</span>=<span class="string">&quot;label&quot;</span>&gt;</span>&#123;&#123;label&#125;&#125;<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">slot</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 校验信息显示 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">v-if</span>=<span class="string">&quot;error&quot;</span>&gt;</span>&#123;&#123;error&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="comment">// Asyc-validator</span></span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> Schema <span class="keyword">from</span> <span class="string">&quot;async-validator&quot;</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">  inject: [<span class="string">&quot;form&quot;</span>],</span></span><br><span class="line">  data() &#123;</span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">      error: <span class="string">&quot;&quot;</span> <span class="comment">// error是空说明校验通过</span></span></span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  props: &#123;</span><br><span class="line">    label: &#123;</span><br><span class="line"><span class="javascript">      type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="keyword">default</span>: <span class="string">&quot;&quot;</span></span></span><br><span class="line">    &#125;,</span><br><span class="line">    prop: &#123;</span><br><span class="line"><span class="javascript">      type: <span class="built_in">String</span></span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted() &#123;</span><br><span class="line"><span class="javascript">    <span class="built_in">this</span>.$on(<span class="string">&quot;validate&quot;</span>, <span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">      <span class="built_in">this</span>.validate();</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    validate() &#123;</span><br><span class="line"><span class="javascript">      <span class="comment">// 规则</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> rules = <span class="built_in">this</span>.form.rules[<span class="built_in">this</span>.prop];</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 当前值</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> value = <span class="built_in">this</span>.form.model[<span class="built_in">this</span>.prop];</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// 校验描述对象</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> desc = &#123; [<span class="built_in">this</span>.prop]: rules &#125;;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 创建Schema实例</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> schema = <span class="keyword">new</span> Schema(desc);</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> schema.validate(&#123; [<span class="built_in">this</span>.prop]: value &#125;, <span class="function"><span class="params">errors</span> =&gt;</span> &#123;</span></span><br><span class="line">        if (errors) &#123;</span><br><span class="line"><span class="javascript">          <span class="built_in">this</span>.error = errors[<span class="number">0</span>].message;</span></span><br><span class="line"><span class="javascript">        &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="comment">// 校验通过</span></span></span><br><span class="line"><span class="javascript">          <span class="built_in">this</span>.error = <span class="string">&quot;&quot;</span>;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">scoped</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="KForm"><a href="#KForm" class="headerlink" title="KForm"></a>KForm</h2><p>一层层地往上面的层级进行靠近，在KForm的层级，除了实现slot将下面的层级包裹，同样也要接受数据并处理。</p>
+<p>最终目的是在KForm上除了接受数据模型model以外，还要声明校验规则rules，因此声明数据model、rules。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">slot</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line">  provide() &#123;</span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">      form: <span class="built_in">this</span></span></span><br><span class="line"><span class="javascript">    &#125;;<span class="comment">//直接将组件自己传递出去，这样就能够在下面子组件拿到model、rules</span></span></span><br><span class="line">  &#125;,</span><br><span class="line">  props: &#123;</span><br><span class="line">    model: &#123;</span><br><span class="line"><span class="javascript">      type: <span class="built_in">Object</span>,</span></span><br><span class="line"><span class="javascript">      required: <span class="literal">true</span></span></span><br><span class="line">    &#125;,</span><br><span class="line">    rules: &#123;</span><br><span class="line"><span class="javascript">      type: <span class="built_in">Object</span></span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    validate(cb) &#123;</span><br><span class="line"><span class="javascript">      <span class="comment">// 获取所有孩子KFormItem</span></span></span><br><span class="line"><span class="javascript">      <span class="comment">// [resultPromise]</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> tasks = <span class="built_in">this</span>.$children</span></span><br><span class="line"><span class="javascript">        .filter(<span class="function"><span class="params">item</span> =&gt;</span> item.prop) <span class="comment">// 过滤掉没有prop属性的Item</span></span></span><br><span class="line"><span class="javascript">        .map(<span class="function"><span class="params">item</span> =&gt;</span> item.validate());</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// 统一处理所有Promise结果</span></span></span><br><span class="line"><span class="javascript">      <span class="built_in">Promise</span>.all(tasks)</span></span><br><span class="line"><span class="javascript">        .then(<span class="function">() =&gt;</span> cb(<span class="literal">true</span>))</span></span><br><span class="line"><span class="javascript">        .catch(<span class="function">() =&gt;</span> cb(<span class="literal">false</span>));</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">scoped</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Index"><a href="#Index" class="headerlink" title="Index"></a>Index</h2><p>这样，在index层级里面，我们将所有的自定义组件封装起来，</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- &lt;ElementTest&gt;&lt;/ElementTest&gt; --&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- KForm --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">KForm</span> <span class="attr">:model</span>=<span class="string">&quot;userInfo&quot;</span> <span class="attr">:rules</span>=<span class="string">&quot;rules&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;loginForm&quot;</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 用户名 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">KFormItem</span> <span class="attr">label</span>=<span class="string">&quot;用户名&quot;</span> <span class="attr">prop</span>=<span class="string">&quot;username&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">KInput</span> <span class="attr">v-model</span>=<span class="string">&quot;userInfo.username&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;请输入用户名&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">KInput</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">KFormItem</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 密码 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">KFormItem</span> <span class="attr">label</span>=<span class="string">&quot;密码&quot;</span> <span class="attr">prop</span>=<span class="string">&quot;password&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">KInput</span> <span class="attr">type</span>=<span class="string">&quot;password&quot;</span> <span class="attr">v-model</span>=<span class="string">&quot;userInfo.password&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;请输入密码&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">KInput</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">KFormItem</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 提交按钮 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">KFormItem</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">&quot;login&quot;</span>&gt;</span>登录<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">KFormItem</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">KForm</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> ElementTest <span class="keyword">from</span> <span class="string">&quot;@/components/form/ElementTest.vue&quot;</span>;</span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> KInput <span class="keyword">from</span> <span class="string">&quot;@/components/form/KInput.vue&quot;</span>;</span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> KFormItem <span class="keyword">from</span> <span class="string">&quot;@/components/form/KFormItem.vue&quot;</span>;</span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> KForm <span class="keyword">from</span> <span class="string">&quot;@/components/form/KForm.vue&quot;</span>;</span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> Notice <span class="keyword">from</span> <span class="string">&quot;@/components/Notice.vue&quot;</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line">  data() &#123;</span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line">      userInfo: &#123;</span><br><span class="line"><span class="javascript">        username: <span class="string">&quot;tom&quot;</span>,</span></span><br><span class="line"><span class="javascript">        password: <span class="string">&quot;&quot;</span></span></span><br><span class="line">      &#125;,</span><br><span class="line">      rules: &#123;</span><br><span class="line"><span class="javascript">        username: [&#123; <span class="attr">required</span>: <span class="literal">true</span>, <span class="attr">message</span>: <span class="string">&quot;请输入用户名称&quot;</span> &#125;],</span></span><br><span class="line"><span class="javascript">        password: [&#123; <span class="attr">required</span>: <span class="literal">true</span>, <span class="attr">message</span>: <span class="string">&quot;请输入密码&quot;</span> &#125;]</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  components: &#123;</span><br><span class="line">    ElementTest,</span><br><span class="line">    KInput,</span><br><span class="line">    KFormItem,</span><br><span class="line">    KForm</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    login() &#123;</span><br><span class="line"><span class="javascript">      <span class="built_in">this</span>.$refs[<span class="string">&quot;loginForm&quot;</span>].validate(<span class="function"><span class="params">valid</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> notice = <span class="built_in">this</span>.$create(Notice, &#123;</span></span><br><span class="line"><span class="javascript">          title: <span class="string">&quot;&quot;</span>,</span></span><br><span class="line"><span class="javascript">          message: valid ? <span class="string">&quot;请求登录!&quot;</span> : <span class="string">&quot;校验失败!&quot;</span>,</span></span><br><span class="line">          duration: 2000</span><br><span class="line">        &#125;);</span><br><span class="line">        notice.show();</span><br><span class="line"><span class="javascript">        <span class="comment">// if (valid) &#123;</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">//   alert(&quot;submit&quot;);</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">// &#125; else &#123;</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">//   console.log(&quot;error submit!&quot;);</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">//   return false;</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">// &#125;</span></span></span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">scoped</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="VueRouter"><a href="#VueRouter" class="headerlink" title="VueRouter"></a>VueRouter</h1><h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><p>1、作为一个插件存在：实现VueRouter类和install方法</p>
+<p>2、实现两个全局组件：router-view用于显示匹配组件内容，router-link用于跳转</p>
+<p>3、监控url变化：监听hashchange或popstate事件</p>
+<p>4、响应最新url：创建一个响应式的属性current，当它改变时获取对应组件并显示</p>
+<h2 id="实现VueRouter插件"><a href="#实现VueRouter插件" class="headerlink" title="实现VueRouter插件"></a>实现VueRouter插件</h2><p>在toyRouter.js里面，我们需要实现一个插件，先创建VueRouter类，并且实现其install方法，该方法会在当前的Vue原型链上挂载$router。使用vue.mixin来混入生命周期中，保证每个vue均能实现。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KVueRouter</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(options) &#123;</span><br><span class="line">    <span class="built_in">this</span>.$options = options</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.$options);</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">KVueRouter.install = <span class="function"><span class="keyword">function</span> (<span class="params">_Vue</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 保存构造函数，在KVueRouter里面使用</span></span><br><span class="line">  Vue = _Vue;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 挂载$router</span></span><br><span class="line">  <span class="comment">// 怎么获取根实例中的router选项,混入生命周期钩子即可，该生命周期钩子会在所有组件都执行一遍</span></span><br><span class="line">  <span class="comment">//为什么要用混入方式写？主要原因是Vue.use(VueRouter)代码在前，Router实例创建在后，而install逻辑又需要用到该实例</span></span><br><span class="line">  Vue.mixin(&#123;</span><br><span class="line">    beforeCreate() &#123;</span><br><span class="line">      <span class="comment">// 确保根实例的时候才执行，只有根实例有router选项</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.$options.router) &#123;</span><br><span class="line">        Vue.prototype.$router = <span class="built_in">this</span>.$options.router</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> KVueRouter</span><br></pre></td></tr></table></figure>
+
+<h2 id="router-link"><a href="#router-link" class="headerlink" title="router-link"></a>router-link</h2><p>为实现功能，将其写成独立的组件，并在vueRouter的install方法中再将其引入。</p>
+<p>router-link实现的功能是：解析用户输入的路由值，并重新渲染一个输入路由值对应的a标签。且在纯运行时的环境，不能使用template而需要用render函数来渲染页面，这里我们需要渲染一个a标签。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    to: &#123;</span><br><span class="line">      type: <span class="built_in">String</span>,</span><br><span class="line">      required: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  render(h) &#123;</span><br><span class="line">    <span class="comment">// &lt;a href=&quot;#/about&quot;&gt;abc&lt;/a&gt;</span></span><br><span class="line">    <span class="comment">// &lt;router-link to=&quot;/about&quot;&gt;xxx&lt;/router-link&gt;，值是用户通过props传进来的，因此直接用this.to，前面拼上#为了使用方便</span></span><br><span class="line">    <span class="comment">// h(tag, data, children)</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.$slots);</span><br><span class="line">    <span class="keyword">return</span> h(<span class="string">&#x27;a&#x27;</span>, &#123; <span class="attr">attrs</span>: &#123; <span class="attr">href</span>: <span class="string">&#x27;#&#x27;</span> + <span class="built_in">this</span>.to &#125; &#125;, <span class="built_in">this</span>.$slots.default)</span><br><span class="line">    <span class="comment">// return &lt;a href=&#123;&#x27;#&#x27; + this.to&#125;&gt;&#123;this.$slots.default&#125;&lt;/a&gt;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="router-view"><a href="#router-view" class="headerlink" title="router-view"></a>router-view</h2><p>router-view实现的功能基本上是：根据当前的路由值，获取对应的component并渲染在当前位置。</p>
+<p>1、需要监控路由的变化，且为了实现路由改变时，便实时刷新页面，因此需要设置当前路由值为响应式数据。</p>
+<p>2、为了确保查找的快速，在新建VueRouter时就应该以用户输入路由配置，初始化一个hash表，这样每次获取当前路由值的component时，只用O(1)时间即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//上述两点应该在VueRouter类中实现，因此VueRouter更新为：</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KVueRouter</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(options) &#123;</span><br><span class="line">    <span class="built_in">this</span>.$options = options</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.$options);</span><br><span class="line">    <span class="comment">// 需要创建响应式的current属性，当当前路由路径发生变化时，则页面就会重新渲染，这就是响应式</span></span><br><span class="line">    <span class="comment">// 利用Vue提供的defineReactive做响应化</span></span><br><span class="line">    <span class="comment">// 这样将来current变化的时候，依赖的组件会重新render</span></span><br><span class="line">    Vue.util.defineReactive(<span class="built_in">this</span>, <span class="string">&#x27;current&#x27;</span>, <span class="string">&#x27;/&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// this.app = new Vue(&#123;</span></span><br><span class="line">    <span class="comment">//   data() &#123;</span></span><br><span class="line">    <span class="comment">//     return &#123;</span></span><br><span class="line">    <span class="comment">//       current: &#x27;/&#x27;</span></span><br><span class="line">    <span class="comment">//     &#125;</span></span><br><span class="line">    <span class="comment">//   &#125;</span></span><br><span class="line">    <span class="comment">// &#125;)</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 监控url变化，利用bind锁定this，避免你使用的onHashChange函数的this变成后面的window</span></span><br><span class="line">    <span class="built_in">window</span>.addEventListener(<span class="string">&#x27;hashchange&#x27;</span>, <span class="built_in">this</span>.onHashChange.bind(<span class="built_in">this</span>))</span><br><span class="line">    <span class="built_in">window</span>.addEventListener(<span class="string">&#x27;load&#x27;</span>, <span class="built_in">this</span>.onHashChange.bind(<span class="built_in">this</span>))<span class="comment">//除了路由修改以外，用户刷新页面也要有重新渲染</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建一个路由映射表</span></span><br><span class="line">    <span class="built_in">this</span>.routeMap = &#123;&#125;</span><br><span class="line">    options.routes.forEach(<span class="function"><span class="params">route</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.routeMap[route.path] = route</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  onHashChange() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">window</span>.location.hash);</span><br><span class="line">    <span class="built_in">this</span>.current = <span class="built_in">window</span>.location.hash.slice(<span class="number">1</span>);<span class="comment">//由于前面还有#号，因此需要slice切割一下</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而在router-view页面要实现的功能就要简单些了，主要是从路由映射hsahMap中获取对应组件，这里同样要用render函数来渲染。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  render(h) &#123;</span><br><span class="line">    <span class="comment">//获取path对应的component</span></span><br><span class="line">    <span class="keyword">const</span> &#123;routeMap, current&#125; = <span class="built_in">this</span>.$router;<span class="comment">//从路由映射中找到对应的路由，用hash表来查找，快速找到结果</span></span><br><span class="line">    <span class="built_in">console</span>.log(routeMap,current);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">const</span> component = routeMap[current].component || <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> h(component)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Vuex"><a href="#Vuex" class="headerlink" title="Vuex"></a>Vuex</h1><p>目的：集中管理数据、可预测的改变数据；类似于整个项目数据的大管家，确保整个程序的状态、数据能够保持同步的状态，维持稳定。</p>
+<h2 id="需求分析-1"><a href="#需求分析-1" class="headerlink" title="需求分析"></a>需求分析</h2><p>1、实现一个插件：声明Store类，挂载$store</p>
+<p>2、：创建响应式的state，保存mutations、actions和getters</p>
+<p>3、实现commit根据用户传入type执行对应mutation</p>
+<p>4、实现dispatch根据用户传入type执行对应action，同时传递上下文</p>
+<p>5、实现getters，按照getters定义对state做派生</p>
+<h2 id="实现store插件"><a href="#实现store插件" class="headerlink" title="实现store插件"></a>实现store插件</h2><p>声明Store、install方法，并创建一个响应式的state。同时利用存取器，避免用户直接去取state</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 保存构造函数引用，避免import</span></span><br><span class="line"><span class="keyword">let</span> Vue;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Store</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(options) &#123;</span><br><span class="line">    <span class="comment">// this.$options = options;</span></span><br><span class="line">    <span class="built_in">this</span>._mutations = options.mutations;</span><br><span class="line">    <span class="built_in">this</span>._actions = options.actions;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 响应化处理state</span></span><br><span class="line">    <span class="comment">// this.state = new Vue(&#123;</span></span><br><span class="line">    <span class="comment">//   data: options.state</span></span><br><span class="line">    <span class="comment">// &#125;)</span></span><br><span class="line">    <span class="built_in">this</span>._vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">      data: &#123;</span><br><span class="line">        <span class="comment">// 加两个$，Vue不做代理，因此对外部是隐藏的，不能直接去访问。</span></span><br><span class="line">        $$state: options.state</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绑定commit、dispatch的上下文问store实例</span></span><br><span class="line">    <span class="built_in">this</span>.commit = <span class="built_in">this</span>.commit.bind(<span class="built_in">this</span>)</span><br><span class="line">    <span class="built_in">this</span>.dispatch = <span class="built_in">this</span>.dispatch.bind(<span class="built_in">this</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 存取器， 用户通过store.state的方式来访问，这样避免用户直接修改state。</span></span><br><span class="line">    <span class="comment">//官方的实现是：使用一个watch去监听任何修改，一旦用户尝试修改，则直接报错。</span></span><br><span class="line">  <span class="keyword">get</span> <span class="title">state</span>() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>._vm);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>._vm._data.$$state</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">set</span> <span class="title">state</span>(<span class="params">v</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.error(<span class="string">&#x27;无法修改！&#x27;</span>);</span><br><span class="line">    </span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">install</span>(<span class="params">_Vue</span>) </span>&#123;</span><br><span class="line">  Vue = _Vue;</span><br><span class="line"></span><br><span class="line">  Vue.mixin(&#123;</span><br><span class="line">    beforeCreate() &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.$options.store) &#123;</span><br><span class="line">        Vue.prototype.$store = <span class="built_in">this</span>.$options.store</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Vuex</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  Store,</span><br><span class="line">  install</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现commit、dispatch方法"><a href="#实现commit、dispatch方法" class="headerlink" title="实现commit、dispatch方法"></a>实现commit、dispatch方法</h2><p>在写方法之前需要将this.commit、this.dispatch绑定为该store实例，在构造函数上加上：this.commit = this.commit.bind(this)；this.dispatch = this.dispatch.bind(this)。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Store</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    在写方法之前需要将this.commit、this.dispatch绑定为该store实例，在构造函数上加上：</span></span><br><span class="line"><span class="comment">    this.commit = this.commit.bind(this);</span></span><br><span class="line"><span class="comment">    this.dispatch = this.dispatch.bind(this);</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   </span><br><span class="line">  <span class="comment">// store.commit(&#x27;add&#x27;, 1)</span></span><br><span class="line">  <span class="comment">// type: mutation的类型</span></span><br><span class="line">  <span class="comment">// payload：载荷，是参数</span></span><br><span class="line">  commit(type, payload) &#123;</span><br><span class="line">    <span class="keyword">const</span> entry = <span class="built_in">this</span>._mutations[type]</span><br><span class="line">    <span class="keyword">if</span> (entry) &#123;</span><br><span class="line">      entry(<span class="built_in">this</span>.state, payload)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  dispatch(type, payload) &#123;</span><br><span class="line">    <span class="keyword">const</span> entry = <span class="built_in">this</span>._actions[type]</span><br><span class="line">    <span class="keyword">if</span> (entry) &#123;</span><br><span class="line">      entry(<span class="built_in">this</span>, payload)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现getters"><a href="#实现getters" class="headerlink" title="实现getters"></a>实现getters</h2>
+    </div>
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Li Yudong 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Li Yudong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/11/06/%E5%89%8D%E7%AB%AF/vue%E7%BB%84%E4%BB%B6%E5%8C%96/" title="vue组件化">http://yoursite.com/2020/11/06/前端/vue组件化/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vue/" rel="tag"># vue</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/08/%E7%AE%97%E6%B3%95/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AE%97%E6%B3%95/" rel="prev" title="数据结构算法">
+      <i class="fa fa-chevron-left"></i> 数据结构算法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/12/06/%E5%89%8D%E7%AB%AF/vue%E5%88%86%E6%9E%90/" rel="next" title="vue分析">
+      vue分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A8%E5%8D%95%E7%BB%84%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">表单组件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Input"><span class="nav-number">1.1.</span> <span class="nav-text">Input</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KFormItem"><span class="nav-number">1.2.</span> <span class="nav-text">KFormItem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KForm"><span class="nav-number">1.3.</span> <span class="nav-text">KForm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Index"><span class="nav-number">1.4.</span> <span class="nav-text">Index</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VueRouter"><span class="nav-number">2.</span> <span class="nav-text">VueRouter</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="nav-number">2.1.</span> <span class="nav-text">需求分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0VueRouter%E6%8F%92%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">实现VueRouter插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#router-link"><span class="nav-number">2.3.</span> <span class="nav-text">router-link</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#router-view"><span class="nav-number">2.4.</span> <span class="nav-text">router-view</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vuex"><span class="nav-number">3.</span> <span class="nav-text">Vuex</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90-1"><span class="nav-number">3.1.</span> <span class="nav-text">需求分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0store%E6%8F%92%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">实现store插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0commit%E3%80%81dispatch%E6%96%B9%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">实现commit、dispatch方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0getters"><span class="nav-number">3.4.</span> <span class="nav-text">实现getters</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1、二维卷积层二维卷积层：有高和宽两个空间维度用于处理图像数据，通常使用更直观的互相关运算来代替卷积运算。将输出与卷积核做互相关，并加上一个标量偏差来得到输出。 在训练模型时，通常先对卷积核初始化，然后不断迭代卷积核与偏差。使用corr2d函数来实现： 1234567def corr2d(X,K):    h,w &#x3D; K.shape    Y &#x3D; nd.zeros((X.shape[0] - h">
+<meta property="og:type" content="article">
+<meta property="og:title" content="卷积神经网络">
+<meta property="og:url" content="http://yoursite.com/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="1、二维卷积层二维卷积层：有高和宽两个空间维度用于处理图像数据，通常使用更直观的互相关运算来代替卷积运算。将输出与卷积核做互相关，并加上一个标量偏差来得到输出。 在训练模型时，通常先对卷积核初始化，然后不断迭代卷积核与偏差。使用corr2d函数来实现： 1234567def corr2d(X,K):    h,w &#x3D; K.shape    Y &#x3D; nd.zeros((X.shape[0] - h">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/NIN.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/GooLeNet.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/ResNet.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/DenseNet.png">
+<meta property="article:published_time" content="2020-08-20T13:42:51.000Z">
+<meta property="article:modified_time" content="2020-08-21T14:22:34.739Z">
+<meta property="article:author" content="Li Yudong">
+<meta property="article:tag" content="初学者">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/NIN.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>卷积神经网络 | Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">34</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          卷积神经网络
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-08-20 21:42:51" itemprop="dateCreated datePublished" datetime="2020-08-20T21:42:51+08:00">2020-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-21 22:22:34" itemprop="dateModified" datetime="2020-08-21T22:22:34+08:00">2020-08-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h2 id="1、二维卷积层"><a href="#1、二维卷积层" class="headerlink" title="1、二维卷积层"></a>1、二维卷积层</h2><p>二维卷积层：有高和宽两个空间维度用于处理图像数据，通常使用更直观的互相关运算来代替卷积运算。将输出与卷积核做互相关，并加上一个标量偏差来得到输出。</p>
+<p>在训练模型时，通常先对卷积核初始化，然后不断迭代卷积核与偏差。使用corr2d函数来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr2d</span>(<span class="params">X,K</span>):</span></span><br><span class="line">    h,w = K.shape</span><br><span class="line">    Y = nd.zeros((X.shape[<span class="number">0</span>] - h + <span class="number">1</span>,X.shape[<span class="number">1</span>] - w + <span class="number">1</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(Y.shape[<span class="number">0</span>]):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(Y.shape[<span class="number">1</span>]):</span><br><span class="line">            Y[i,j] = (X[ i:i+h , j: j+w]*K).sum()</span><br><span class="line">    <span class="keyword">return</span> Y</span><br></pre></td></tr></table></figure>
+
+<p>在构造函数中声明了weight和bias，并在forward中利用corr2d函数来实现卷积核。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self,kernel_size,**kwargs</span>):</span></span><br><span class="line">    super(Conv2D,self).__init__(**kwargs)</span><br><span class="line">    self.weight = self.params.get(<span class="string">&#x27;weight&#x27;</span>,shape=kernel_size)</span><br><span class="line">    self.bias = self.params.get(<span class="string">&#x27;bias&#x27;</span>,shape=(<span class="number">1</span>,))</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self,x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> corr2d(x, self.weight.data()) + self.bias.data()</span><br></pre></td></tr></table></figure>
+
+<p>一般通过数据学习得到核数组：首先构造一个卷积层，将其卷积核初始化为随机数组，并在每一次迭代中，使用平方误差来比较输出Y和卷积层的输出，并计算梯度来更新权重。</p>
+<p>由于核数组都是学习出来的，所以卷积层使用互相关运算还是卷积运算都不影响模型预测时的输出。</p>
+<p>特征图：输出可看作输入在空间维度上的表征。</p>
+<p>影响X的前向计算的所有可能输入区域，叫做X的感受野。</p>
+<h2 id="2、填充与步幅"><a href="#2、填充与步幅" class="headerlink" title="2、填充与步幅"></a>2、填充与步幅</h2><p>填充：在输入高、宽的两侧填充元素；用于增加输出的高、宽。</p>
+<p>步幅：卷积窗口从输入窗口左上方开始，依次滑动，每次滑行的行数和列数称为步幅，用于减少输出的高、宽。</p>
+<h2 id="3、多输入、多输出通道"><a href="#3、多输入、多输出通道" class="headerlink" title="3、多输入、多输出通道"></a>3、多输入、多输出通道</h2><p>1、多输入时，构造输入通道数与输入数据的通道数相同的卷积核，从而能够互相关运算，对每个通道做互相关，然后通过add_n函数来进行累加</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr2d_multi_in</span>(<span class="params">X,K</span>):</span></span><br><span class="line">    <span class="comment">#首先沿X和K的第0维（通道维）遍历，然后用*将结果列表变为add_n函数的位置参数（positional argument）来相加</span></span><br><span class="line">    <span class="keyword">return</span> nd.add_n(*[d2l.corr2d(x,k) <span class="keyword">for</span> x , k <span class="keyword">in</span> zip(X,K)]<span class="number">13</span></span><br></pre></td></tr></table></figure>
+
+<p>2、卷积核输入、输出通道数为Ci、Co，高和宽分别为Kh和Kw。若希望有多输出时，为每个通道分别创建核数组Ci x Kh x Kw，并将其在输出通道维上连结，卷积核形状为C0 X Ci x Kh x Kw，互相关时每个输出通道结果由卷积核在该通道核数组与整个输入数组计算得来。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr2d_multi_in_out</span>(<span class="params">X,K</span>):</span></span><br><span class="line">    <span class="comment">#对K的第0维遍历，每次同输入X做互相关运算，所有结果用stack函数合并在一起</span></span><br><span class="line">    <span class="keyword">return</span> nd.stack(*[corr2d_multi_in(X,K) <span class="keyword">for</span> k <span class="keyword">in</span> k])</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4、1-x-1-卷积层"><a href="#4、1-x-1-卷积层" class="headerlink" title="4、1 x 1 卷积层"></a>4、1 x 1 卷积层</h2><p>1 X 1 卷积主要发生在通道维上,输入与输出具有相同的高宽，输出中每个元素来自输入中在高、宽上相同位置的元素在不同通道之间的按权重累加。将通道维作为特征维，将高、宽上的元素当成数据样本，则其作用与全连接层等价。</p>
+<p>1 X 1卷积层通常用来调整网络层之间的通道数，并控制模型复杂度。</p>
+<h2 id="5、池化层"><a href="#5、池化层" class="headerlink" title="5、池化层"></a>5、池化层</h2><p>目的：为了缓解卷积层对位置的过度敏感性。</p>
+<p>池化层：每次对输入数据的一个固定形状窗口中的元素计算输出，直接计算池化窗口内的元素最大值或平均值，也叫最大池化或者平均池化。p  X  q 池化层</p>
+<p>同样池化层也能设置填充和步幅。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pool2d = nn.MxaPool2D(<span class="number">1</span>, kernel_size=(<span class="number">5</span>,<span class="number">3</span>),padding=(<span class="number">2</span>,<span class="number">1</span>),strides=(<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line"><span class="comment">#使用高、宽分别为5，3的卷积核；在高宽上的填充数分别为2，1；高宽上步幅分别为3，4</span></span><br></pre></td></tr></table></figure>
+
+<p>在处理多通道输入数据时，池化层会对每个输入通道分别池化，而不是像卷积层那样将各通道输入按通道相加。因此，池化层的输出通道数与输入通道数相等。</p>
+<h2 id="6、卷积神经网络"><a href="#6、卷积神经网络" class="headerlink" title="6、卷积神经网络"></a>6、卷积神经网络</h2><p>单隐藏层的多层感知机分类图像：将图像像素逐行展开，得到长为28*28=784的向量，并输入进全连接层中。局限性:1、同一列像素相隔远；2、对于大尺寸图像，全连接层可能导致模型过大。</p>
+<p>卷积层如何解决：1、保留输入形状，使像素在高、宽两个方向的相关性均能被有效识别；2、通过滑动窗口将同一卷积核与不同位置的输入重复计算，从而避免参数尺寸过大。</p>
+<h3 id="LeNet模型"><a href="#LeNet模型" class="headerlink" title="LeNet模型"></a>LeNet模型</h3><p>分为卷积层块与全连接层块。</p>
+<p>卷积层基本单位：卷积层+最大池化层。卷积层用于识别图像中空间模式，最大池化层用于降低卷积层对位置的敏感性。</p>
+<p>卷积层输出形状为（批量大小，通道，高，宽）；当其输出传入全连接层块时，全连接层会将小批量中的每个样本变平。形状将改变为二维，第一维是小批量中的样本，第二维是每个样本变平后的向量表示，且向量长度为通道*高 *宽。</p>
+<h3 id="AlexNet模型"><a href="#AlexNet模型" class="headerlink" title="AlexNet模型"></a>AlexNet模型</h3><p>1、包含8层变换，其中有5层卷积和2层全连接隐藏层，全连接输出个数为4096；</p>
+<p>2、将激活函数由sigmoid改成了更简单的Relu，在不同参数初始化方法下使模型更容易训练，且在正区间的梯度恒为1;</p>
+<p>3、利用丢弃法来控制全连接层的模型复杂度；</p>
+<p>4、引入大量的图像增广，从而进一步扩充数据集来缓解过拟合；</p>
+<p>5、利用了更多的卷积层和更大的参数空间来拟合大规模数据集ImageNet，是浅层网络与深度神经网络的分界线。</p>
+<h3 id="VGG模型"><a href="#VGG模型" class="headerlink" title="VGG模型"></a>VGG模型</h3><p>VGG提出了可以通过重复使用简单的基础块来构建深度模型的思路；其组成规律是：连续使用数个相同的填充为1、窗口形状为3X3的卷积层后接上一个步幅为2、窗口形状为2X2的最大池化层。卷积层保持输入的高、宽不变，而池化层则对其减半。使用vgg_block函数来实现基础的VGG卷积层模块，可指定卷积层数量num_convs和输出通道数num_channels。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">vgg_block</span>(<span class="params">num_convs, num_channels</span>):</span></span><br><span class="line">    blk = nn.Sequential()</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> range(num_convs):</span><br><span class="line">        blk.add(nn.Conv2D(num_channels, kernel_size=<span class="number">3</span>,padding=<span class="number">1</span>,activation=<span class="string">&#x27;relu&#x27;</span>))</span><br><span class="line">    blk.add(nn.MaxPool2D(pool_size=<span class="number">2</span>, strides=<span class="number">2</span>))</span><br><span class="line">    <span class="keyword">return</span> blk</span><br></pre></td></tr></table></figure>
+
+<p>VGG由卷积模块后接全连接层模块构成，卷积层串联数个vgg_block，其超参数由变量conv_arch定义，指定了VGG块中卷积层个数与输出通道数。下面构造VGG，5个卷积块，前2块用单卷积层，后3块用双卷积层。第一块输出通道为64，之后每次输出通道数翻倍，直至512。总共8个卷积，3个全连接，因此称为VGG-11。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">conv_arch = ((<span class="number">1</span>,<span class="number">64</span>),(<span class="number">1</span>,<span class="number">128</span>),(<span class="number">2</span>,<span class="number">256</span>),(<span class="number">2</span>,<span class="number">512</span>),(<span class="number">2</span>,<span class="number">512</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">vgg</span>(<span class="params">conv_arch</span>):</span></span><br><span class="line">    net = nn.Sequential()</span><br><span class="line">    <span class="comment">#卷积层部分</span></span><br><span class="line">    <span class="keyword">for</span> (num_convs, num_channels) <span class="keyword">in</span> conv_arch:</span><br><span class="line">        net.add(vgg_block(num_convs, num_channels))</span><br><span class="line">    <span class="comment">#全连接层部分</span></span><br><span class="line">    net.add(nn.Dense(<span class="number">4096</span>, activation=<span class="string">&#x27;relu&#x27;</span>), nn.Dropout(<span class="number">0.5</span>), </span><br><span class="line">            nn.Dense(<span class="number">4096</span>, activation=<span class="string">&#x27;relu&#x27;</span>), nn.Dropout(<span class="number">0.5</span>), </span><br><span class="line">            nn.Dense(<span class="number">10</span>))</span><br><span class="line">    <span class="keyword">return</span> net</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="NIN模型"><a href="#NIN模型" class="headerlink" title="NIN模型"></a>NIN模型</h3><p>上述模型共通处均是：先以卷积层构成的模块充分抽取空间特征，再以全连接层构成的模块来输出分类结果。</p>
+<p>NIN则提出了另外一个思路：串联多个由卷积层和全连接层构成的小网络来构建深层网络。</p>
+<p>卷积层通常输入、输出：四维数组（样本、通道、高、宽）；全连接层输入输出：二维数组（样本、特征）。故利用1 X 1卷积层来代替全连接层，从而使空间信息自然传递至后面层。</p>
+<p>NIN块：由一个卷积层和两个充当全连接层的1 X 1卷积层串联而来，可自由设置第一个卷积层超参数。</p>
+<p><img src="/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/NIN.png" alt="NIN"></p>
+<p>NIN设计:除了使用NIN块以外，NIN去掉了AlexNet最后的3个全连接层，并使用输出通道数等于标签类别数的NIN块，然后使用全局平均池化层对每个通道中所有元素求平均，并直接进行分类。NIN这个设计的好处：显著减少模型参数尺寸，从而缓解过拟合。</p>
+<h3 id="GoogLeNet模型"><a href="#GoogLeNet模型" class="headerlink" title="GoogLeNet模型"></a>GoogLeNet模型</h3><p>GoolLeNet中的基础卷积块为Inception块，有4条并行的线路，前3条线路使用窗口分别为1X1,3X3,5X5的卷积层来抽取不同的空间尺寸下的信息，且中间2条线路会对输入先做1X1卷积来减少输入通道数，以降低模型复杂度；第四条线路则用3X3池化层后接1X1卷积层来改变通道数；且均使用了合适的填充来使输入、输出高宽一致。</p>
+<p><img src="/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/GooLeNet.png" alt="GooLeNet"></p>
+<p>GooLeNet跟VGG一样，在主体卷积部分使用5个模块，每个模块之前使用步幅为2的3 X 3最大池化层来减小输出高宽。</p>
+<p>模块一：使用一个64通道的7X7卷积层；</p>
+<p>模块二：使用2个卷积层，64通道的1X1卷积层，然后是将通道增大3倍的3X3卷积层，对应Inception的线路二；</p>
+<p>模块三：串联2个完整的Inception块；</p>
+<p>模块四：串联5个Inception块；</p>
+<p>模块五：2个Inception块，其后紧跟输出层，故同NIN一样使用全局平均池化层来将每个通道的高、宽变成1</p>
+<h2 id="7、批量归一化"><a href="#7、批量归一化" class="headerlink" title="7、批量归一化"></a>7、批量归一化</h2><p>数据标准化处理：任一特征在数据集所有样本上的均值为0、标准差为1，可以使各个特征的分布相近。对于浅层模型，数据标准化预处理已经足够了，但对于深层网络，模型参数更新仍容易造成剧烈变化。</p>
+<p>批量归一化层（batch normalization）：为应对深层模型的挑战，在训练时，利用小批量上的均值和标准差，不断调整神经网络中间输出，从而使整个神经网络在各层的中间输出数值更稳定。</p>
+<h3 id="全连接层的批量归一化"><a href="#全连接层的批量归一化" class="headerlink" title="全连接层的批量归一化"></a>全连接层的批量归一化</h3><p>对于全连接层：将批量归一化层放在全连接层的仿射交换与激活函数之间。</p>
+<h3 id="对卷积层做批量归一化"><a href="#对卷积层做批量归一化" class="headerlink" title="对卷积层做批量归一化"></a>对卷积层做批量归一化</h3><p>对于卷积层：批量归一化发生在卷积计算之后、应用激活函数之前。</p>
+<h2 id="8、残差网络ResNet"><a href="#8、残差网络ResNet" class="headerlink" title="8、残差网络ResNet"></a>8、残差网络ResNet</h2><p>实践中，添加过多层后训练误差往往不降反升，即使利用批量归一化使训练深层模型更加容易，该问题仍存在。</p>
+<p>残差块：当理想映射f(x)极接近恒等映射时，残差映射也易于捕捉恒等映射的细微波动。</p>
+<p><img src="/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/ResNet.png" alt="ResNet块"></p>
+<p>ResNet沿用了VGG全3X3卷积层的设计，残差块中首先由2个相同输出通道数的3X3卷积层，每个卷积层之后接一个批量归一化层和RELU激活函数，然后将输入跳过这2个卷积运算后再加在最后的RELU激活函数前。这样设计要求2个卷积层的输入、输出形状一样，从而可以相加。</p>
+<p>ResNet的前两层跟GoogLeNet一样，在输出通道为64、步幅为2的7X7卷积层后接步幅为2的3X3最大池化层。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">net = nn.Sequential()</span><br><span class="line">net.add(nn.Conv2D(<span class="number">64</span>,kernel_size=<span class="number">7</span>,strides=<span class="number">2</span>,padding=<span class="number">3</span>),</span><br><span class="line">       nn.BatchNoem(),nn.Activation(<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">       nn.MaxPool2D(pool_size=<span class="number">3</span>,strides=<span class="number">2</span>,padding=<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+
+<p>不同在于其每个卷积层后增加的批量归一层,GoogLeNet在后面会接4个Inception组成的模块，而ResNet则使用4个由残差块组成的模块，每个模块使用若干个同样输出通道数的残差块。我们用resnet_block函数来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">resnet_block</span>(<span class="params">num_channels, num_residuals, first_block=False</span>):</span></span><br><span class="line">    blk = nn.Sequential()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(num_residuals):</span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">0</span> <span class="keyword">and</span> <span class="keyword">not</span> first_block:</span><br><span class="line">            blk.add(Residual(num_channels, use_1x1conv=<span class="literal">True</span>, strides=<span class="number">2</span>))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            blk.add(Residual(num_channels))</span><br><span class="line">    <span class="keyword">return</span> blk</span><br></pre></td></tr></table></figure>
+
+<p>接着使用ResNet加入所有残差块，这里每个模块使用2个残差块</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">net.add(resnet_block(<span class="number">64</span>, <span class="number">2</span>, first_block=<span class="literal">True</span>),</span><br><span class="line">       resnet_block(<span class="number">128</span>,<span class="number">2</span>),</span><br><span class="line">       resnet_block(<span class="number">256</span>,<span class="number">2</span>),</span><br><span class="line">       resnet_block(<span class="number">512</span>,<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">net.add(nn.GlobalAvgPool2D(), nn.Dense(<span class="number">10</span>))</span><br><span class="line"><span class="comment">#加入全局平均池化层后接上全连接层输出</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="9、稠密连接网络DenseNet"><a href="#9、稠密连接网络DenseNet" class="headerlink" title="9、稠密连接网络DenseNet"></a>9、稠密连接网络DenseNet</h2><p><img src="/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/DenseNet.png" alt="DenseNet"></p>
+<p>DenseNet主要构建模块时稠密块和过渡层，前者定义了输入、输出是如何连结的，后者则用来控制通道数，使之不过大。</p>
+<p>由于每个稠密块都会带来通道数的增加，使用过多则会带来过于复杂的模型，过度层用来控制模型复杂度。它通过1X1卷积层来减少通道数，并使用步幅为2的的平均池化层减半高、宽，从而进一步降低模型复杂度。</p>
+
+    </div>
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Li Yudong 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Li Yudong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/08/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="卷积神经网络">http://yoursite.com/2020/08/20/机器学习/卷积神经网络/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%88%9D%E5%AD%A6%E8%80%85/" rel="tag"># 初学者</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/19/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%88%9D%E8%A7%81/" rel="prev" title="MXNET机器学习初见">
+      <i class="fa fa-chevron-left"></i> MXNET机器学习初见
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="next" title="循环神经网络">
+      循环神经网络 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E4%BA%8C%E7%BB%B4%E5%8D%B7%E7%A7%AF%E5%B1%82"><span class="nav-number">1.</span> <span class="nav-text">1、二维卷积层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%A1%AB%E5%85%85%E4%B8%8E%E6%AD%A5%E5%B9%85"><span class="nav-number">2.</span> <span class="nav-text">2、填充与步幅</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E5%A4%9A%E8%BE%93%E5%85%A5%E3%80%81%E5%A4%9A%E8%BE%93%E5%87%BA%E9%80%9A%E9%81%93"><span class="nav-number">3.</span> <span class="nav-text">3、多输入、多输出通道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%811-x-1-%E5%8D%B7%E7%A7%AF%E5%B1%82"><span class="nav-number">4.</span> <span class="nav-text">4、1 x 1 卷积层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E6%B1%A0%E5%8C%96%E5%B1%82"><span class="nav-number">5.</span> <span class="nav-text">5、池化层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">6.</span> <span class="nav-text">6、卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LeNet%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.1.</span> <span class="nav-text">LeNet模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AlexNet%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.2.</span> <span class="nav-text">AlexNet模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VGG%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.3.</span> <span class="nav-text">VGG模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NIN%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.4.</span> <span class="nav-text">NIN模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GoogLeNet%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.5.</span> <span class="nav-text">GoogLeNet模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7%E3%80%81%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">7、批量归一化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E8%BF%9E%E6%8E%A5%E5%B1%82%E7%9A%84%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">7.1.</span> <span class="nav-text">全连接层的批量归一化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%8D%B7%E7%A7%AF%E5%B1%82%E5%81%9A%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">7.2.</span> <span class="nav-text">对卷积层做批量归一化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8%E3%80%81%E6%AE%8B%E5%B7%AE%E7%BD%91%E7%BB%9CResNet"><span class="nav-number">8.</span> <span class="nav-text">8、残差网络ResNet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9%E3%80%81%E7%A8%A0%E5%AF%86%E8%BF%9E%E6%8E%A5%E7%BD%91%E7%BB%9CDenseNet"><span class="nav-number">9.</span> <span class="nav-text">9、稠密连接网络DenseNet</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+

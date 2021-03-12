@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="使用堆的数据结构来对数组进行排序，找出第k大的数据，时间复杂度为O(n) 堆（英语：heap)是计算机科学中一类特殊的数据结构的统称。堆通常是一个可以被看做一棵树的数组对象。堆总是满足下列性质：  堆中某个节点的值总是不大于或不小于其父节点的值； 堆总是一棵完全二叉树。  将根节点最大的堆叫做最大堆或大根堆，根节点最小的堆叫做最小堆或小根堆。常见的堆有二叉堆、斐波那契堆等。 堆是非线性数据结构，相">
+<meta property="og:type" content="article">
+<meta property="og:title" content="html">
+<meta property="og:url" content="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="使用堆的数据结构来对数组进行排序，找出第k大的数据，时间复杂度为O(n) 堆（英语：heap)是计算机科学中一类特殊的数据结构的统称。堆通常是一个可以被看做一棵树的数组对象。堆总是满足下列性质：  堆中某个节点的值总是不大于或不小于其父节点的值； 堆总是一棵完全二叉树。  将根节点最大的堆叫做最大堆或大根堆，根节点最小的堆叫做最小堆或小根堆。常见的堆有二叉堆、斐波那契堆等。 堆是非线性数据结构，相">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A81.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A82.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A83.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A84.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A85.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A86.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/SVG%E4%B8%8ECanvas.png">
+<meta property="article:published_time" content="2020-09-02T03:17:52.000Z">
+<meta property="article:modified_time" content="2020-09-02T13:57:20.272Z">
+<meta property="article:author" content="Li Yudong">
+<meta property="article:tag" content="初学者">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A81.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>html | Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">34</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          html
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+    
+              <time title="创建时间：2020-09-02 11:17:52 / 修改时间：21:57:20" itemprop="dateCreated datePublished" datetime="2020-09-02T11:17:52+08:00">2020-09-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2/" itemprop="url" rel="index"><span itemprop="name">前端页面</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <p>使用堆的数据结构来对数组进行排序，找出第k大的数据，时间复杂度为O(n)</p>
+<p>堆（英语：heap)是计算机科学中一类特殊的数据结构的统称。堆通常是一个可以被看做一棵树的数组对象。堆总是满足下列性质：</p>
+<ul>
+<li>堆中某个节点的值总是不大于或不小于其父节点的值；</li>
+<li>堆总是一棵完全二叉树。</li>
+</ul>
+<p>将根节点最大的堆叫做最大堆或大根堆，根节点最小的堆叫做最小堆或小根堆。常见的堆有二叉堆、斐波那契堆等。</p>
+<p>堆是非线性数据结构，相当于一维数组，有两个直接后继。</p>
+<h2 id="1、基础知识"><a href="#1、基础知识" class="headerlink" title="1、基础知识"></a>1、基础知识</h2><p>可视化的html页面结构中，只有&lt; body &gt;区域才会在浏览器中显示。</p>
+<p>目前在大部分浏览器中，直接输出中文会出现中文乱码的情况，需要在头部将字符声明为UTF-8或GBK。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="html元素语法："><a href="#html元素语法：" class="headerlink" title="html元素语法："></a>html元素语法：</h3><p>1、HTML元素以开始标签起始，以结束标签终止；2、元素的内容是开始标签与结束标签之间的内容；3、某些HTML元素具有空内容，空内容在开始标签中进行关闭，以开始标签的结束而结束；4、大多数HTML可拥有属性</p>
+<h3 id="嵌套的HTML元素"><a href="#嵌套的HTML元素" class="headerlink" title="嵌套的HTML元素"></a>嵌套的HTML元素</h3><p>大多数HTML元素可以嵌套，HTML元素可包含其他HTML元素，且HTML文档由相互嵌套的HTML元素组成。</p>
+<p>通常不要忘了用结束标签，虽然可以正确显示，但忘记使用结束标签往往会产生不可预料的结果或错误。</p>
+<p>HTML标签对大小写不敏感，请一般使用小写标签。</p>
+<h3 id="HTML属性"><a href="#HTML属性" class="headerlink" title="HTML属性"></a>HTML属性</h3><p>元素可设置属性；属性可以在元素中添加附加信息；属性一般描述于开始标签；属性总是以名称、值对的形式出现。比如：name=”value”。</p>
+<p>HTML链接由&lt; a &gt;标签定义，链接地址在href属性中指定。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;http://www.runoob.com&quot;</span>&gt;</span>这是一个链接<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="HTML格式"><a href="#HTML格式" class="headerlink" title="HTML格式"></a>HTML格式</h3><p>&lt; hr &gt;标签在HTML页面中创建水平线，用于分隔内容；</p>
+<p>HTML注释：在开始括号之后紧跟一个叹号，结束括号前不需要</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 这是一个注释 --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>&lt; br &gt;使用br标签：在不产生一个新段落的情况下进行换行；</p>
+<p>&lt; p &gt;定义一个段落</p>
+<p>HTML使用标签&lt; b &gt;与&lt; i &gt;对输出的文本进行格式</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">b</span>&gt;</span>加粗文本<span class="tag">&lt;/<span class="name">b</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">i</span>&gt;</span>斜体文本<span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">code</span>&gt;</span>电脑自动输出<span class="tag">&lt;/<span class="name">code</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">这是 <span class="tag">&lt;<span class="name">sub</span>&gt;</span> 下标<span class="tag">&lt;/<span class="name">sub</span>&gt;</span> 和 <span class="tag">&lt;<span class="name">sup</span>&gt;</span> 上标<span class="tag">&lt;/<span class="name">sup</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>HTML链接由&lt; a &gt;标签定义，链接地址在href属性中指定。</p>
+<p>target属性：定义被链接的文档在何处显示；id属性：创建一个在HTML文档书签的标记；</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;http://www.runoob.com&quot;</span>&gt;</span>这是一个链接<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="HTML头部"><a href="#HTML头部" class="headerlink" title="HTML头部"></a>HTML头部</h3><p>&lt; head &gt;元素包含了所有的头部标签元素，可以插入脚本、CSS（样式文件）以及各种meta信息</p>
+<p>&lt; title &gt; 定义不同文档的标题；</p>
+<p>&lt; base &gt; 描述了基本的链接地址、链接目标，作为默认链接；</p>
+<p>&lt; link &gt; 定义了文档与外部资源之间的关系，用于链接到样式表；</p>
+<p>&lt; style &gt;元素：定义了HTML文档的样式文件引用地址，在该元素中直接添加样式来渲染HTML；</p>
+<p>&lt; meta &gt;元素：描述了一些基本的元数据，通常用于指定网页的描述，关键词，文件最后的修改时间，作者和其他元数据。</p>
+<p>&lt; script &gt; 用于加载脚本文件，如javascript</p>
+<h3 id="HTML样式-CSS"><a href="#HTML样式-CSS" class="headerlink" title="HTML样式 CSS"></a>HTML样式 CSS</h3><p>用于渲染HTML元素标签的样式，三种方式添加到HTML中：1、内联样式：在HTML元素中使用style属性；2、内部样式表：在HTML文档头部使用&lt; style &gt; 来包含CSS；3、外部引用：使用外部CSS文件。</p>
+<p>最好的方式是外部引用；当特殊的样式需要应用到个别元素时，就可以使用内联样式，在相关标签中使用样式属性。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">style</span>=<span class="string">&quot;font-family:verdana;&quot;</span>&gt;</span>一个标题<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">&quot;font-family:arial;color:red;font-size:20px;&quot;</span>&gt;</span>一个段落。<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>内部样式表：当单个文件需要特别样式时，在&lt; head &gt;部分通过&lt; style &gt;标签定义。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">&quot;text/css&quot;</span>&gt;</span></span><br><span class="line"><span class="css"><span class="selector-tag">body</span> &#123;<span class="attribute">background-color</span>:yellow;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-tag">p</span> &#123;<span class="attribute">color</span>:blue;&#125;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>当样式被应用到很多页面时，外部样式表是理想选择，使用外部样式表，可以通过更改一个文件来修改一整个站点的外观。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/css&quot;</span> <span class="attr">href</span>=<span class="string">&quot;mystyle.css&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="HTML图像"><a href="#HTML图像" class="headerlink" title="HTML图像"></a>HTML图像</h3><p>图像由&lt; img &gt; 标签定义，为空标签，只有属性而无闭合标签，可使用源属性src，其值是图像的URL地址。alt属性用来为图像定义一串预备的可替换文本，在浏览器无法载入图像时，替换文本告诉读者他们失去的信息。</p>
+<p>height、width属性用于设置图像的高度与宽度；</p>
+<h3 id="HTML表格"><a href="#HTML表格" class="headerlink" title="HTML表格"></a>HTML表格</h3><p>表格由&lt; table &gt;标签来定义，每个表格有若干行（由&lt; tr &gt;标签定义），每行被分割为若干单元格（由&lt; td &gt;标签定义），td指表格数据即数据单元格的内容，border属性来定义表格的边框。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">table</span> <span class="attr">border</span>=<span class="string">&quot;1&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tr</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>row 1, cell 1<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>row 1, cell 2<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tr</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>row 2, cell 1<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>row 2, cell 2<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="HTML列表"><a href="#HTML列表" class="headerlink" title="HTML列表"></a>HTML列表</h3><p>无序列表用&lt; ul &gt;标签</p>
+<p>有序列表始于&lt; ol &gt;标签，每个列表项始于&lt; li &gt;标签，且列表各项会自动使用数字来标记。</p>
+<p>自定义列表：项目及其注释的组合；以&lt; dl &gt;标签开始，每个自定义列表项从&lt; dt &gt;开始，每个自定义列表的定义以 &lt; dd &gt;开始。</p>
+<h3 id="HTML区块"><a href="#HTML区块" class="headerlink" title="HTML区块"></a>HTML区块</h3><p>可通过 &lt; div &gt;和&lt; span &gt;将元素组合起来</p>
+<p>大多数HTML元素被定义为块级元素、内联元素；块级元素，通常以新行开始和结束，内联元素：显示时不会以新行开始；</p>
+<p>&lt; div &gt;元素是块级元素，可用于组合其他元素的容器，无特定含义，与CSS一同使用时，可用于对大的内容块设置样式属性；&lt; div &gt;元素的另一个常见作用是文档布局，用table显示表格化数据，用div进行表格定义布局。</p>
+<p>&lt; span &gt;元素是内联元素，可用作文本的容器</p>
+<h3 id="HTML布局"><a href="#HTML布局" class="headerlink" title="HTML布局"></a>HTML布局</h3><p>使用div、table元素来创建多列，CSS用于元素定位或为页面创建背景以及色彩丰富的外观。</p>
+<p>使用CSS最大的好处是，如果将带啊存放到外部样式表中，那么站点更易于维护，通过编辑单一的文件就可以改变所有页面的布局。</p>
+<h3 id="HTML表单"><a href="#HTML表单" class="headerlink" title="HTML表单"></a>HTML表单</h3><p>用于收集不同类型的用户输入，表单是一个包含表单元素的区域，表单元素允许用户在表单中输入内容，表单标签用&lt; form &gt;来设置。</p>
+<p>输入元素input，输入类型由类型属性type定义。text：文本域；password：密码字段；radio：单选按钮；checkbox：复选框；submit：提交按钮</p>
+<h3 id="HTML框架、"><a href="#HTML框架、" class="headerlink" title="HTML框架、"></a>HTML框架、</h3><p>通过使用框架可以在同一个浏览器窗口显示不止一个页面；</p>
+<p>iframe语法：&lt; iframe src=”URL” &gt;&lt; /iframe &gt;</p>
+<p>使用height、width来设置高宽，frameborder属性用于定义iframe表示是否显示边框</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>菜鸟教程(runoob.com)<span class="tag">&lt;/<span class="name">title</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;demo_iframe.htm&quot;</span> <span class="attr">name</span>=<span class="string">&quot;iframe_a&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;//www.runoob.com&quot;</span> <span class="attr">target</span>=<span class="string">&quot;iframe_a&quot;</span>&gt;</span>RUNOOB.COM<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">b</span>&gt;</span>注意：<span class="tag">&lt;/<span class="name">b</span>&gt;</span> 因为 a 标签的 target 属性是名为 iframe_a 的 iframe 框架，所以在点击链接时页面会显示在 iframe框架中。<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>因为 a 标签的 target 属性是名为 iframe_a 的 iframe 框架，所以在点击链接时页面会显示在 iframe框架中</p>
+<h3 id="HTML颜色"><a href="#HTML颜色" class="headerlink" title="HTML颜色"></a>HTML颜色</h3><p>由16进制符号来定义，RGB三向通道，FF FF FF</p>
+<p>141个颜色名称是在HTML和CSS颜色规范定义的，17中表针颜色，124种非标准。</p>
+<h3 id="HTML脚本"><a href="#HTML脚本" class="headerlink" title="HTML脚本"></a>HTML脚本</h3><p>script标签用于定义客户端脚本，比如JavaScript，script元素即可包含脚本语句，也可以通过src属性指向外部脚本文件。JavaScript最常用与图片操作、表单验证以及内容·动态更新。</p>
+<p>noscript提供无法使用脚本时的替代内容，可包含普通HTML页面的body元素中能够找到的所有元素。</p>
+<h3 id="HTML字符实体"><a href="#HTML字符实体" class="headerlink" title="HTML字符实体"></a>HTML字符实体</h3><p>其中，某些字符是预留的，比如&gt; 、&lt;；因此需要在源代码中使用字符实体；常用字符实体是不间断空格&amp;nbsp，由于浏览器总会截断HTML页面的空格，只留下一个，因此如果需要在页面中增加空格数量，需要用到&amp;nbsp。</p>
+<p>字符实体的名称对大小写敏感。</p>
+<h3 id="HTML-URL"><a href="#HTML-URL" class="headerlink" title="HTML URL"></a>HTML URL</h3><p>URL是一个网页地址，Web浏览器通过URL从Web服务器请求页面，当点击页面上链接时，对应标签指向万维网上地址。</p>
+<p>一个网页地址实例: <a target="_blank" rel="noopener" href="http://www.runoob.com/html/html-tutorial.html">http://www.runoob.com/html/html-tutorial.html</a> 语法规则:</p>
+<p><strong>scheme<code>://</code>host.domain<code>:</code>port<code>/</code>path<code>/</code>filename</strong></p>
+<p>说明:</p>
+<ul>
+<li><ul>
+<li>scheme - 定义因特网服务的类型。最常见的类型是 http</li>
+<li>host - 定义域主机（http 的默认主机是 www）</li>
+<li>domain - 定义因特网域名，比如 runoob.com</li>
+<li>:port - 定义主机上的端口号（http 的默认端口号是 80）</li>
+<li>path - 定义服务器上的路径（如果省略，则文档必须位于网站的根目录中）。</li>
+<li>filename - 定义文档/资源的名称</li>
+</ul>
+</li>
+</ul>
+<p>http：超文本传输协议；https:安全超文本传输协议；ftp：文件传输协议；file：自己计算机上文件。</p>
+<p>URL 只能使用 <a target="_blank" rel="noopener" href="https://www.runoob.com/tags/html-ascii.html">ASCII 字符集</a>.</p>
+<p>来通过因特网进行发送。由于 URL 常常会包含 ASCII 集合之外的字符，URL 必须转换为有效的 ASCII 格式。</p>
+<p>URL 编码使用 “%” 其后跟随两位的十六进制数来替换非 ASCII 字符。</p>
+<p>URL 不能包含空格。URL 编码通常使用 + 来替换空格。</p>
+<h3 id="HTML速查列表"><a href="#HTML速查列表" class="headerlink" title="HTML速查列表"></a>HTML速查列表</h3><p><img src="/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A81.png" alt="速查列表1"></p>
+<p><img src="/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A82.png" alt="速查列表1"></p>
+<p><img src="/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A83.png" alt="速查列表3"><img src="/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A84.png" alt="速查列表4"><img src="/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A85.png" alt="速查列表5"><img src="/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A86.png" alt="速查列表6"></p>
+<h2 id="2、H5前端开发"><a href="#2、H5前端开发" class="headerlink" title="2、H5前端开发"></a>2、H5前端开发</h2><p>为了更好地处理今天的互联网应用，HTML5添加了很多新元素及功能，比如: 图形的绘制，多媒体内容，更好的页面结构，更好的形式 处理，和几个api拖放元素，定位，包括网页 应用程序缓存，存储，网络工作者，等。</p>
+<h3 id="HTML5-Canvas"><a href="#HTML5-Canvas" class="headerlink" title="HTML5 Canvas"></a>HTML5 Canvas</h3><p>canvas标签定义图形，只是图形的容器，必须使用脚本来绘制图形。</p>
+<p>一个画布在网页中是一个矩形框，通过canvas元素来绘制，指定id属性，height、width属性来定义画布大小，使用style属性来添加边框。</p>
+<h3 id="H5内联SVG"><a href="#H5内联SVG" class="headerlink" title="H5内联SVG"></a>H5内联SVG</h3><p>SVG指可伸缩矢量图形，用于定义用于网络的基于矢量的图形；使用XML格式定义图形，SVG图像在放大或改变尺寸的情况下其图形质量不会有损失，SVG是万维网联盟的标准。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">svg</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.w3.org/2000/svg&quot;</span> <span class="attr">version</span>=<span class="string">&quot;1.1&quot;</span> <span class="attr">height</span>=<span class="string">&quot;190&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">polygon</span> <span class="attr">points</span>=<span class="string">&quot;100,10 40,180 190,60 10,60 160,180&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">style</span>=<span class="string">&quot;fill:lime;stroke:purple;stroke-width:5;fill-rule:evenodd;&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>SVG是一种使用XML描述2D图形的语言，而Canvas通过JavaScript绘制2D图形。</p>
+<p>SVG基于XML，因此SVG DOM中的每个元素都是可用的，可以为某个元素附加JavaScript事件处理器，在SVG中，每个被绘制的图形均被视为对象，若SVG对象属性发生变化，那么浏览器能自动重现图形；</p>
+<p>Canvas是逐像素进行渲染，一旦图形被绘制完成，便不会得到浏览器的关注，如果其位置发生变化，则整个场景需要进行重新绘制。<img src="/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/SVG%E4%B8%8ECanvas.png" alt="SVG与Canvas"></p>
+<h3 id="HTML5-MathML"><a href="#HTML5-MathML" class="headerlink" title="HTML5  MathML"></a>HTML5  MathML</h3><p>标签math，MathML是数学标记语言，基于XML的标准，用于互联网上书写数学符号与公式。</p>
+<h3 id="HTML5拖放drag和drop"><a href="#HTML5拖放drag和drop" class="headerlink" title="HTML5拖放drag和drop"></a>HTML5拖放drag和drop</h3><p>拖放是一种常见的特性，即抓取对象以后拖到另一个位置，在H5中任何元素都可以拖放。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">HTML</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>菜鸟教程(runoob.com)<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">&quot;text/css&quot;</span>&gt;</span></span><br><span class="line"><span class="css"><span class="selector-id">#div1</span> &#123;<span class="attribute">width</span>:<span class="number">350px</span>;<span class="attribute">height</span>:<span class="number">70px</span>;<span class="attribute">padding</span>:<span class="number">10px</span>;<span class="attribute">border</span>:<span class="number">1px</span> solid <span class="number">#aaaaaa</span>;&#125;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="function"><span class="keyword">function</span> <span class="title">allowDrop</span>(<span class="params">ev</span>)</span></span></span><br><span class="line">&#123;</span><br><span class="line">    ev.preventDefault();</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="javascript"><span class="function"><span class="keyword">function</span> <span class="title">drag</span>(<span class="params">ev</span>)</span></span></span><br><span class="line">&#123;</span><br><span class="line"><span class="javascript">    ev.dataTransfer.setData(<span class="string">&quot;Text&quot;</span>,ev.target.id);</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="javascript"><span class="function"><span class="keyword">function</span> <span class="title">drop</span>(<span class="params">ev</span>)</span></span></span><br><span class="line">&#123;</span><br><span class="line">    ev.preventDefault();</span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> data=ev.dataTransfer.getData(<span class="string">&quot;Text&quot;</span>);</span></span><br><span class="line"><span class="javascript">    ev.target.appendChild(<span class="built_in">document</span>.getElementById(data));</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>拖动 RUNOOB.COM 图片到矩形框中:<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;div1&quot;</span> <span class="attr">ondrop</span>=<span class="string">&quot;drop(event)&quot;</span> <span class="attr">ondragover</span>=<span class="string">&quot;allowDrop(event)&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">&quot;drag1&quot;</span> <span class="attr">src</span>=<span class="string">&quot;/images/logo.png&quot;</span> <span class="attr">draggable</span>=<span class="string">&quot;true&quot;</span> <span class="attr">ondragstart</span>=<span class="string">&quot;drag(event)&quot;</span> <span class="attr">width</span>=<span class="string">&quot;336&quot;</span> <span class="attr">height</span>=<span class="string">&quot;69&quot;</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>1、设置元素可拖放：把draggable属性设置为true；</p>
+<p>2、拖动什么：ondragstart属性调用了一个函数drag(event)，并在函数中用dataTransfer.setData()方法设置被拖数据的数据类型和值；</p>
+<p>3、放到何处：ondragover事件规定在何处放置被拖动的数据，默认中无法将数据、元素放置到其他元素中，通过调用ondragover事件的event.preventDefault()方法</p>
+<p>4、进行放置：当放置被拖数据时，会发生drop事件，在上面的例子中ondrop属性调用了一个函数，drop(event)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function drop(ev)</span><br><span class="line">&#123;</span><br><span class="line">    ev.preventDefault();</span><br><span class="line">    var data=ev.dataTransfer.getData(&quot;Text&quot;);</span><br><span class="line">    ev.target.appendChild(document.getElementById(data));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>调用 preventDefault() 来避免浏览器对数据的默认处理（drop 事件的默认行为是以链接形式打开）</li>
+<li>通过 dataTransfer.getData(“Text”) 方法获得被拖的数据。该方法将返回在 setData() 方法中设置为相同类型的任何数据。</li>
+<li>被拖数据是被拖元素的 id (“drag1”)</li>
+<li>把被拖元素追加到放置元素（目标元素）中</li>
+</ul>
+<h3 id="H5地理定位"><a href="#H5地理定位" class="headerlink" title="H5地理定位"></a>H5地理定位</h3><h3 id="H5视频"><a href="#H5视频" class="headerlink" title="H5视频"></a>H5视频</h3><p>H5规定了一种通过video元素来包含视频的标准方法，</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">video</span> <span class="attr">width</span>=<span class="string">&quot;320&quot;</span> <span class="attr">height</span>=<span class="string">&quot;240&quot;</span> <span class="attr">controls</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">&quot;movie.mp4&quot;</span> <span class="attr">type</span>=<span class="string">&quot;video/mp4&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">&quot;movie.ogg&quot;</span> <span class="attr">type</span>=<span class="string">&quot;video/ogg&quot;</span>&gt;</span></span><br><span class="line">您的浏览器不支持Video标签。</span><br><span class="line"><span class="tag">&lt;/<span class="name">video</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>video与audio元素同样拥有方法、属性、事件，且均可以使用JavaScript进行控制。方法：用于播放、暂停、加载；属性：时长、音量可以被读取或设置；其中DOM事件可以通知用户。下面的例子调用了play()和pause()方法，且使用了paused、width属性。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>菜鸟教程(runoob.com)<span class="tag">&lt;/<span class="name">title</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span> </span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">&quot;text-align:center&quot;</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;playPause()&quot;</span>&gt;</span>播放/暂停<span class="tag">&lt;/<span class="name">button</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;makeBig()&quot;</span>&gt;</span>放大<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;makeSmall()&quot;</span>&gt;</span>缩小<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;makeNormal()&quot;</span>&gt;</span>普通<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">br</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">video</span> <span class="attr">id</span>=<span class="string">&quot;video1&quot;</span> <span class="attr">width</span>=<span class="string">&quot;420&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">&quot;mov_bbb.mp4&quot;</span> <span class="attr">type</span>=<span class="string">&quot;video/mp4&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">src</span>=<span class="string">&quot;mov_bbb.ogg&quot;</span> <span class="attr">type</span>=<span class="string">&quot;video/ogg&quot;</span>&gt;</span></span><br><span class="line">    您的浏览器不支持 HTML5 video 标签。</span><br><span class="line">  <span class="tag">&lt;/<span class="name">video</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span> </span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span> </span><br><span class="line"><span class="javascript"><span class="keyword">var</span> myVideo=<span class="built_in">document</span>.getElementById(<span class="string">&quot;video1&quot;</span>); </span></span><br><span class="line"></span><br><span class="line"><span class="javascript"><span class="function"><span class="keyword">function</span> <span class="title">playPause</span>(<span class="params"></span>)</span></span></span><br><span class="line">&#123; </span><br><span class="line">    if (myVideo.paused) </span><br><span class="line">      myVideo.play(); </span><br><span class="line"><span class="javascript">    <span class="keyword">else</span> </span></span><br><span class="line">      myVideo.pause(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">makeBig</span>(<span class="params"></span>)</span></span></span><br><span class="line">&#123; </span><br><span class="line">    myVideo.width=560; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">makeSmall</span>(<span class="params"></span>)</span></span></span><br><span class="line">&#123; </span><br><span class="line">    myVideo.width=320; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">makeNormal</span>(<span class="params"></span>)</span></span></span><br><span class="line">&#123; </span><br><span class="line">    myVideo.width=420; </span><br><span class="line">&#125; </span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span> </span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="H5新的Input类型"><a href="#H5新的Input类型" class="headerlink" title="H5新的Input类型"></a>H5新的Input类型</h3><p>color、data(从日期选择器中选择时间)、datetime、datetime-local、email、month、number、range（用于应该包含一定范围内数字值的输入域）、search（定义一个搜索字段）、tel、time、url（自动验证url域的值）、week、</p>
+<h3 id="H5新的表单元素"><a href="#H5新的表单元素" class="headerlink" title="H5新的表单元素"></a>H5新的表单元素</h3><p>datalist：规定输入域的选项列表，该属性规定form、input域应该拥有自动完成功能，当用户在自动完成域中开始输入时，浏览器应该在该域中显示填写的选项，实现一个可输入下拉框的功能。</p>
+<p>keygen：提供一种验证用户的可靠方法，规定用于表单的密钥生成器字段；当提交表单时，会生成2个键，一个为私钥、一个为公钥，私钥存储于客户端，公钥被发送至服务器，公钥可用于之后验证用户的客户端证书。</p>
+<p>output元素：用于不同类型的输出</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">oninput</span>=<span class="string">&quot;x.value=parseInt(a.value)+parseInt(b.value)&quot;</span>&gt;</span>0</span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;range&quot;</span> <span class="attr">id</span>=<span class="string">&quot;a&quot;</span> <span class="attr">value</span>=<span class="string">&quot;50&quot;</span>&gt;</span>100 +</span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;number&quot;</span> <span class="attr">id</span>=<span class="string">&quot;b&quot;</span> <span class="attr">value</span>=<span class="string">&quot;50&quot;</span>&gt;</span>=</span><br><span class="line"><span class="tag">&lt;<span class="name">output</span> <span class="attr">name</span>=<span class="string">&quot;x&quot;</span> <span class="attr">for</span>=<span class="string">&quot;a b&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">output</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="H5表单属性"><a href="#H5表单属性" class="headerlink" title="H5表单属性"></a>H5表单属性</h3><p>H5的form、input标签添加了几个新属性</p>
+<form>新属性：
+
+<ul>
+<li>autocomplete</li>
+<li>novalidate</li>
+</ul>
+<p><input>新属性：</p>
+<ul>
+<li>autocomplete</li>
+<li>autofocus</li>
+<li>form</li>
+<li>formaction</li>
+<li>formenctype</li>
+<li>formmethod</li>
+<li>formnovalidate</li>
+<li>formtarget</li>
+<li>height 与 width</li>
+<li>list</li>
+<li>min 与 max</li>
+<li>multiple</li>
+<li>pattern (regexp)</li>
+<li>placeholder</li>
+<li>required</li>
+<li>step</li>
+</ul>
+<h3 id="H5语义元素"><a href="#H5语义元素" class="headerlink" title="H5语义元素"></a>H5语义元素</h3><p>语义元素：有意义的元素：能够清楚地描述其意义给浏览器和开发者；</p>
+<p>H5提供了新的语义元素来明确一个Web页面的不同部分。</p>
+<p>header（头部区域，定义内容的介绍展示区域）、nav(定义导航链接)、section（定义文档节，页眉、章节）、article（定义独立的内容）、aside（主区域以外的内容，如侧边栏）、figcaption、figure、footer（底部区域）</p>
+<h3 id="H5的Web存储"><a href="#H5的Web存储" class="headerlink" title="H5的Web存储"></a>H5的Web存储</h3><p>在本地存储用户的浏览数据，数据以键值对存在，只允许该网页访问使用。</p>
+<p>localStorage对象：用于长久保存整个网站的数据，保存数据无过期时间；</p>
+<p>sessionStorage对象：用于临时保存同一窗口数据，在关闭窗口后会删除数据。</p>
+<h3 id="H5-Web-SQL数据库"><a href="#H5-Web-SQL数据库" class="headerlink" title="H5 Web SQL数据库"></a>H5 Web SQL数据库</h3><p>引入了一组使用SQL操作客户端数据库的APIs，拥有三个核心方法：</p>
+<p>1、openDatabase:使用现有的数据库创建一个数据库对象；</p>
+<p>2、transaction：控制一个事务，以及基于这种情况执行提交或回滚；</p>
+<p>3、executeSql：执行实际的SQL查询。</p>
+<h3 id="H5-Web-Workers"><a href="#H5-Web-Workers" class="headerlink" title="H5 Web Workers"></a>H5 Web Workers</h3><p>web worker是运行在后台的JS，不会影响页面的性能，当HTML页面执行脚本时，页面的状态不可响应直至脚本完成，而Web Worker是运行在后台的JS，独立于其他脚本，不影响页面的性能，可继续做想做的事情。</p>
+<h3 id="HTML5-WebSocket"><a href="#HTML5-WebSocket" class="headerlink" title="HTML5 WebSocket"></a>HTML5 WebSocket</h3><p>WebSocket 是 HTML5 开始提供的一种在单个 TCP 连接上进行全双工通讯的协议。</p>
+<p>WebSocket 使得客户端和服务器之间的数据交换变得更加简单，允许服务端主动向客户端推送数据。在 WebSocket API 中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输。</p>
+<p>在 WebSocket API 中，浏览器和服务器只需要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。两者之间就直接可以数据互相传送。</p>
+<p>现在，很多网站为了实现推送技术，所用的技术都是 Ajax 轮询。轮询是在特定的的时间间隔（如每1秒），由浏览器对服务器发出HTTP请求，然后由服务器返回最新的数据给客户端的浏览器。这种传统的模式带来很明显的缺点，即浏览器需要不断的向服务器发出请求，然而HTTP请求可能包含较长的头部，其中真正有效的数据可能只是很小的一部分，显然这样会浪费很多的带宽等资源。</p>
+<p>HTML5 定义的 WebSocket 协议，能更好的节省服务器资源和带宽，并且能够更实时地进行通讯</p>
+</form>
+    </div>
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Li Yudong 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Li Yudong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/09/02/%E5%89%8D%E7%AB%AF/html%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" title="html">http://yoursite.com/2020/09/02/前端/html前端开发/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%88%9D%E5%AD%A6%E8%80%85/" rel="tag"># 初学者</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" rel="prev" title="自然语言处理">
+      <i class="fa fa-chevron-left"></i> 自然语言处理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/02/%E5%89%8D%E7%AB%AF/CSS%E6%A0%B7%E5%BC%8F%E8%A1%A8%E7%BC%96%E7%A8%8B/" rel="next" title="CSS样式表编程">
+      CSS样式表编程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">1、基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#html%E5%85%83%E7%B4%A0%E8%AF%AD%E6%B3%95%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">html元素语法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97%E7%9A%84HTML%E5%85%83%E7%B4%A0"><span class="nav-number">1.2.</span> <span class="nav-text">嵌套的HTML元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E5%B1%9E%E6%80%A7"><span class="nav-number">1.3.</span> <span class="nav-text">HTML属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">HTML格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E5%A4%B4%E9%83%A8"><span class="nav-number">1.5.</span> <span class="nav-text">HTML头部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E6%A0%B7%E5%BC%8F-CSS"><span class="nav-number">1.6.</span> <span class="nav-text">HTML样式 CSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E5%9B%BE%E5%83%8F"><span class="nav-number">1.7.</span> <span class="nav-text">HTML图像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E8%A1%A8%E6%A0%BC"><span class="nav-number">1.8.</span> <span class="nav-text">HTML表格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E5%88%97%E8%A1%A8"><span class="nav-number">1.9.</span> <span class="nav-text">HTML列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E5%8C%BA%E5%9D%97"><span class="nav-number">1.10.</span> <span class="nav-text">HTML区块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E5%B8%83%E5%B1%80"><span class="nav-number">1.11.</span> <span class="nav-text">HTML布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E8%A1%A8%E5%8D%95"><span class="nav-number">1.12.</span> <span class="nav-text">HTML表单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E6%A1%86%E6%9E%B6%E3%80%81"><span class="nav-number">1.13.</span> <span class="nav-text">HTML框架、</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E9%A2%9C%E8%89%B2"><span class="nav-number">1.14.</span> <span class="nav-text">HTML颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E8%84%9A%E6%9C%AC"><span class="nav-number">1.15.</span> <span class="nav-text">HTML脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E5%AD%97%E7%AC%A6%E5%AE%9E%E4%BD%93"><span class="nav-number">1.16.</span> <span class="nav-text">HTML字符实体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML-URL"><span class="nav-number">1.17.</span> <span class="nav-text">HTML URL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML%E9%80%9F%E6%9F%A5%E5%88%97%E8%A1%A8"><span class="nav-number">1.18.</span> <span class="nav-text">HTML速查列表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81H5%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">2、H5前端开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML5-Canvas"><span class="nav-number">2.1.</span> <span class="nav-text">HTML5 Canvas</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5%E5%86%85%E8%81%94SVG"><span class="nav-number">2.2.</span> <span class="nav-text">H5内联SVG</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML5-MathML"><span class="nav-number">2.3.</span> <span class="nav-text">HTML5  MathML</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML5%E6%8B%96%E6%94%BEdrag%E5%92%8Cdrop"><span class="nav-number">2.4.</span> <span class="nav-text">HTML5拖放drag和drop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5%E5%9C%B0%E7%90%86%E5%AE%9A%E4%BD%8D"><span class="nav-number">2.5.</span> <span class="nav-text">H5地理定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5%E8%A7%86%E9%A2%91"><span class="nav-number">2.6.</span> <span class="nav-text">H5视频</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5%E6%96%B0%E7%9A%84Input%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.7.</span> <span class="nav-text">H5新的Input类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5%E6%96%B0%E7%9A%84%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0"><span class="nav-number">2.8.</span> <span class="nav-text">H5新的表单元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5%E8%A1%A8%E5%8D%95%E5%B1%9E%E6%80%A7"><span class="nav-number">2.9.</span> <span class="nav-text">H5表单属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5%E8%AF%AD%E4%B9%89%E5%85%83%E7%B4%A0"><span class="nav-number">2.10.</span> <span class="nav-text">H5语义元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5%E7%9A%84Web%E5%AD%98%E5%82%A8"><span class="nav-number">2.11.</span> <span class="nav-text">H5的Web存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5-Web-SQL%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.12.</span> <span class="nav-text">H5 Web SQL数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5-Web-Workers"><span class="nav-number">2.13.</span> <span class="nav-text">H5 Web Workers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML5-WebSocket"><span class="nav-number">2.14.</span> <span class="nav-text">HTML5 WebSocket</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+

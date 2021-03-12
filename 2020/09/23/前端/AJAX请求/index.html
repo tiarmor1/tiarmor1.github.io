@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="AJAX简介与实例AJAX：即异步的JavaScript和XML，不是一种新的编程语言，而是一种使用现有标准的新方法。 AJAX 是一种用于创建快速动态网页的技术。通过在后台与服务器进行少量数据交换，AJAX 可以使网页实现异步更新。最大的优点在于不重新加载页面的情况下，可以与服务器交换数据并更新部分网页内容。 XMLHttpRequest 是 AJAX 的基础；有现代浏览器均支持 XMLHttp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AJAX与Json">
+<meta property="og:url" content="http://yoursite.com/2020/09/23/%E5%89%8D%E7%AB%AF/AJAX%E8%AF%B7%E6%B1%82/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="AJAX简介与实例AJAX：即异步的JavaScript和XML，不是一种新的编程语言，而是一种使用现有标准的新方法。 AJAX 是一种用于创建快速动态网页的技术。通过在后台与服务器进行少量数据交换，AJAX 可以使网页实现异步更新。最大的优点在于不重新加载页面的情况下，可以与服务器交换数据并更新部分网页内容。 XMLHttpRequest 是 AJAX 的基础；有现代浏览器均支持 XMLHttp">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-23T11:36:18.000Z">
+<meta property="article:modified_time" content="2020-09-23T14:51:40.107Z">
+<meta property="article:author" content="Li Yudong">
+<meta property="article:tag" content="初学者">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/23/%E5%89%8D%E7%AB%AF/AJAX%E8%AF%B7%E6%B1%82/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>AJAX与Json | Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">34</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/23/%E5%89%8D%E7%AB%AF/AJAX%E8%AF%B7%E6%B1%82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AJAX与Json
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+    
+              <time title="创建时间：2020-09-23 19:36:18 / 修改时间：22:51:40" itemprop="dateCreated datePublished" datetime="2020-09-23T19:36:18+08:00">2020-09-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2/" itemprop="url" rel="index"><span itemprop="name">前端页面</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="AJAX"><a href="#AJAX" class="headerlink" title="AJAX"></a>AJAX</h1><h2 id="简介与实例"><a href="#简介与实例" class="headerlink" title="简介与实例"></a>简介与实例</h2><p>AJAX：即异步的JavaScript和XML，不是一种新的编程语言，而是一种使用现有标准的新方法。</p>
+<p>AJAX 是一种用于创建快速动态网页的技术。通过在后台与服务器进行少量数据交换，AJAX 可以使网页实现异步更新。最大的优点在于不重新加载页面的情况下，可以与服务器交换数据并更新部分网页内容。</p>
+<p>XMLHttpRequest 是 AJAX 的基础；有现代浏览器均支持 XMLHttpRequest 对象（IE5 和 IE6 使用 ActiveXObject）。XMLHttpRequest 用于在后台与服务器交换数据。这意味着可以在不重新加载整个网页的情况下，对网页的某部分进行更新。</p>
+<p><em>variable</em>=new XMLHttpRequest();</p>
+<h2 id="请求与响应"><a href="#请求与响应" class="headerlink" title="请求与响应"></a>请求与响应</h2><p>XMLHttpRequest 对象用于和服务器交换数据。如需将请求发送到服务器，我们使用 XMLHttpRequest 对象的 open() 和 send() 方法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">xmlhttp.open(<span class="string">&quot;GET&quot;</span>,<span class="string">&quot;ajax_info.txt&quot;</span>,<span class="literal">true</span>);</span><br><span class="line">xmlhttp.send();</span><br></pre></td></tr></table></figure>
+
+<p>open(<em>method</em>,<em>url</em>,<em>async</em>)规定请求的类型、URL 以及是否异步处理请求。</p>
+<ul>
+<li><em>method</em>：请求的类型；GET 或 POST</li>
+<li><em>url</em>：文件在服务器上的位置</li>
+<li><em>async</em>：true（异步）或 false（同步）</li>
+</ul>
+<p>send(<em>string</em>)将请求发送到服务器。</p>
+<ul>
+<li><em>string</em>：仅用于 POST 请求</li>
+</ul>
+<p>如需获得来自服务器的响应，请使用 XMLHttpRequest 对象的 responseText 或 responseXML 属性。</p>
+<p>responseText：获得字符串形式的响应数据。</p>
+<p>responseXML：获得 XML 形式的响应数据。</p>
+<p>如果来自服务器的响应并非 XML，请使用 responseText 属性。responseText 属性返回字符串形式的响应，因此您可以这样使用：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">&quot;myDiv&quot;</span>).innerHTML=xmlhttp.responseText;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>如果来自服务器的响应是 XML，而且需要作为 XML 对象进行解析，请使用 responseXML 属性：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">xmlDoc=xmlhttp.responseXML;</span><br><span class="line">txt=<span class="string">&quot;&quot;</span>;</span><br><span class="line">x=xmlDoc.getElementsByTagName(<span class="string">&quot;ARTIST&quot;</span>);</span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>;i&lt;x.length;i++)</span><br><span class="line">&#123;</span><br><span class="line">    txt=txt + x[i].childNodes[<span class="number">0</span>].nodeValue + <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">&quot;myDiv&quot;</span>).innerHTML=txt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="AJAX事件"><a href="#AJAX事件" class="headerlink" title="AJAX事件"></a>AJAX事件</h2><p>当请求被发送到服务器时，我们需要执行一些基于响应的任务。每当 readyState 改变时，就会触发 onreadystatechange 事件。readyState 属性存有 XMLHttpRequest 的状态信息。下面是 XMLHttpRequest 对象的三个重要的属性：</p>
+<table>
+<thead>
+<tr>
+<th>onreadystatechange</th>
+<th>存储函数（或函数名），每当 readyState 属性改变时，就会调用该函数。</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>readyState</td>
+<td>存有 XMLHttpRequest 的状态。从 0 到 4 发生变化。0: 请求未初始化1: 服务器连接已建立2: 请求已接收3: 请求处理中4: 请求已完成，且响应已就绪</td>
+</tr>
+<tr>
+<td>status</td>
+<td>200: “OK” 404: 未找到页面</td>
+</tr>
+</tbody></table>
+<p>在 onreadystatechange 事件中，我们规定当服务器响应已做好被处理的准备时所执行的任务。当 readyState 等于 4 且状态为 200 时，表示响应已就绪：</p>
+<h3 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h3><p>回调函数是一种以参数形式传递给另一个函数的函数。如果您的网站上存在多个 AJAX 任务，那么您应该为创建 XMLHttpRequest 对象编写一个<em>标准</em>的函数，并为每个 AJAX 任务调用该函数。该函数调用应该包含 URL 以及发生 onreadystatechange 事件时执行的任务（每次调用可能不尽相同）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myFunction</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    loadXMLDoc(<span class="string">&quot;/try/ajax/ajax_info.txt&quot;</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (xmlhttp.readyState==<span class="number">4</span> &amp;&amp; xmlhttp.status==<span class="number">200</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">document</span>.getElementById(<span class="string">&quot;myDiv&quot;</span>).innerHTML=xmlhttp.responseText;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>AJAX 用于创造动态性更强的应用程序</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">showHint</span>(<span class="params">str</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> xmlhttp;</span><br><span class="line">    <span class="keyword">if</span> (str.length==<span class="number">0</span>)</span><br><span class="line">    &#123; </span><br><span class="line">        <span class="built_in">document</span>.getElementById(<span class="string">&quot;txtHint&quot;</span>).innerHTML=<span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">window</span>.XMLHttpRequest)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码</span></span><br><span class="line">        xmlhttp=<span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// IE6, IE5 浏览器执行代码</span></span><br><span class="line">        xmlhttp=<span class="keyword">new</span> ActiveXObject(<span class="string">&quot;Microsoft.XMLHTTP&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    xmlhttp.onreadystatechange=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (xmlhttp.readyState==<span class="number">4</span> &amp;&amp; xmlhttp.status==<span class="number">200</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">document</span>.getElementById(<span class="string">&quot;txtHint&quot;</span>).innerHTML=xmlhttp.responseText;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    xmlhttp.open(<span class="string">&quot;GET&quot;</span>,<span class="string">&quot;/try/ajax/gethint.php?q=&quot;</span>+str,<span class="literal">true</span>);</span><br><span class="line">    xmlhttp.send();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>源代码解析：</p>
+<p>如果输入框为空 <strong>str.length==0</strong>，则该函数清空 <strong>txtHint</strong> 占位符的内容，并退出函数。</p>
+<p>如果输入框不为空，<strong>showHint()</strong> 函数执行以下任务：</p>
+<ul>
+<li>创建 <strong>XMLHttpRequest</strong> 对象</li>
+<li>当服务器响应就绪时执行函数</li>
+<li>把请求发送到服务器上的文件</li>
+<li>请注意我们向 URL 添加了一个参数 q （带有输入框的内容）</li>
+</ul>
+<p>由上面的 JavaScript 调用的服务器页面是 ASP 文件，名为 “gethint.asp”。</p>
+<p>下面，我们创建了两个版本的服务器文件，一个用 ASP 编写，另一个用 PHP 编写。</p>
+<h1 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h1><h2 id="语法与简介"><a href="#语法与简介" class="headerlink" title="语法与简介"></a>语法与简介</h2><p>JSON: <strong>J</strong>ava<strong>S</strong>cript <strong>O</strong>bject <strong>N</strong>otation(JavaScript 对象表示法)；JSON 是存储和交换文本信息的语法。类似 XML。JSON 比 XML 更小、更快，更易解析</p>
+<ul>
+<li>JSON 指的是 JavaScript 对象表示法（<strong>J</strong>ava<strong>S</strong>cript <strong>O</strong>bject <strong>N</strong>otation）</li>
+<li>JSON 是轻量级的文本数据交换格式</li>
+<li>JSON 独立于语言：JSON 使用 Javascript语法来描述数据对象，但是 JSON 仍然独立于语言和平台。JSON 解析器和 JSON 库支持许多不同的编程语言。 目前非常多的动态（PHP，JSP，.NET）编程语言都支持JSON。</li>
+<li>JSON 具有自我描述性，更易理解</li>
+</ul>
+<p>JSON 文本格式在语法上与创建 JavaScript 对象的代码相同。</p>
+<p>由于这种相似性，无需解析器，JavaScript 程序能够使用内建的 eval() 函数，用 JSON 数据来生成原生的 JavaScript 对象。</p>
+<h3 id="与XML对比"><a href="#与XML对比" class="headerlink" title="与XML对比"></a>与XML对比</h3><p>与 XML 相同之处：</p>
+<ul>
+<li>JSON 是纯文本</li>
+<li>JSON 具有”自我描述性”（人类可读）</li>
+<li>JSON 具有层级结构（值中存在值）</li>
+<li>JSON 可通过 JavaScript 进行解析</li>
+<li>JSON 数据可使用 AJAX 进行传输</li>
+</ul>
+<p>与 XML 不同之处：</p>
+<ul>
+<li>没有结束标签</li>
+<li>更短</li>
+<li>读写的速度更快</li>
+<li>能够使用内建的 JavaScript eval() 方法进行解析</li>
+<li>使用数组</li>
+<li>不使用保留字</li>
+</ul>
+<p>为什么使用 JSON？</p>
+<p>对于 AJAX 应用程序来说，JSON 比 XML 更快更易使用：</p>
+<p>使用 XML：</p>
+<ul>
+<li>读取 XML 文档</li>
+<li>使用 XML DOM 来循环遍历文档</li>
+<li>读取值并存储在变量中</li>
+</ul>
+<p>使用 JSON：</p>
+<ul>
+<li>读取 JSON 字符串</li>
+<li>用 eval() 处理 JSON 字符串</li>
+</ul>
+<h3 id="JSON语法"><a href="#JSON语法" class="headerlink" title="JSON语法"></a>JSON语法</h3><p>JSON 语法是 JavaScript 对象表示语法的子集。</p>
+<ul>
+<li>数据在名称/值对中</li>
+<li>数据由逗号分隔</li>
+<li>大括号 <strong>{}</strong> 保存对象</li>
+<li>中括号 <strong>[]</strong> 保存数组，数组可以包含多个对象</li>
+</ul>
+<p>JSON 数据的书写格式是：key : value。名称/值对包括字段名称（在双引号中），后面写一个冒号，然后是值。</p>
+<p>“name” : “菜鸟教程”。等价于这条 JavaScript 语句：name = “菜鸟教程”。</p>
+<p>JSON 值可以是：</p>
+<ul>
+<li>数字（整数或浮点数）</li>
+<li>字符串（在双引号中）</li>
+<li>逻辑值（true 或 false）</li>
+<li>数组（在中括号中）</li>
+<li>对象（在大括号中）</li>
+<li>null</li>
+</ul>
+<p>JSON 数组在中括号 <strong>[]</strong> 中书写：数组可包含多个对象：对象 <strong>sites</strong> 是包含三个对象的数组。每个对象代表一条关于某个网站（name、url）的记录。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;sites&quot;</span>: [</span><br><span class="line">        &#123; <span class="string">&quot;name&quot;</span>:<span class="string">&quot;菜鸟教程&quot;</span> , <span class="string">&quot;url&quot;</span>:<span class="string">&quot;www.runoob.com&quot;</span> &#125;, </span><br><span class="line">        &#123; <span class="string">&quot;name&quot;</span>:<span class="string">&quot;google&quot;</span> , <span class="string">&quot;url&quot;</span>:<span class="string">&quot;www.google.com&quot;</span> &#125;, </span><br><span class="line">        &#123; <span class="string">&quot;name&quot;</span>:<span class="string">&quot;微博&quot;</span> , <span class="string">&quot;url&quot;</span>:<span class="string">&quot;www.weibo.com&quot;</span> &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为 JSON 使用 JavaScript 语法，所以无需额外的软件就能处理 JavaScript 中的 JSON。通过 JavaScript，您可以创建一个对象数组，并像这样进行赋值：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sites = [</span><br><span class="line">    &#123; <span class="string">&quot;name&quot;</span>:<span class="string">&quot;runoob&quot;</span> , <span class="string">&quot;url&quot;</span>:<span class="string">&quot;www.runoob.com&quot;</span> &#125;, </span><br><span class="line">    &#123; <span class="string">&quot;name&quot;</span>:<span class="string">&quot;google&quot;</span> , <span class="string">&quot;url&quot;</span>:<span class="string">&quot;www.google.com&quot;</span> &#125;, </span><br><span class="line">    &#123; <span class="string">&quot;name&quot;</span>:<span class="string">&quot;微博&quot;</span> , <span class="string">&quot;url&quot;</span>:<span class="string">&quot;www.weibo.com&quot;</span> &#125;</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>sites[0].name可以访问 JavaScript 对象数组中的第一项</p>
+<ul>
+<li>JSON 文件的文件类型是 <strong>.json</strong></li>
+<li>JSON 文本的 MIME 类型是 <strong>application/json</strong></li>
+</ul>
+<h2 id="与XML相比"><a href="#与XML相比" class="headerlink" title="与XML相比"></a>与XML相比</h2><p>JSON 和 XML 都用于接收 web 服务端的数据。JSON 和 XML在写法上有所不同，如下所示：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;sites&quot;</span>: [</span><br><span class="line">    &#123; <span class="attr">&quot;name&quot;</span>:<span class="string">&quot;菜鸟教程&quot;</span> , <span class="attr">&quot;url&quot;</span>:<span class="string">&quot;www.runoob.com&quot;</span> &#125;, </span><br><span class="line">    &#123; <span class="attr">&quot;name&quot;</span>:<span class="string">&quot;google&quot;</span> , <span class="attr">&quot;url&quot;</span>:<span class="string">&quot;www.google.com&quot;</span> &#125;, </span><br><span class="line">    &#123; <span class="attr">&quot;name&quot;</span>:<span class="string">&quot;微博&quot;</span> , <span class="attr">&quot;url&quot;</span>:<span class="string">&quot;www.weibo.com&quot;</span> &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">sites</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">site</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>菜鸟教程<span class="tag">&lt;/<span class="name">name</span>&gt;</span> <span class="tag">&lt;<span class="name">url</span>&gt;</span>www.runoob.com<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">site</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">site</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>google<span class="tag">&lt;/<span class="name">name</span>&gt;</span> <span class="tag">&lt;<span class="name">url</span>&gt;</span>www.google.com<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">site</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">site</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>微博<span class="tag">&lt;/<span class="name">name</span>&gt;</span> <span class="tag">&lt;<span class="name">url</span>&gt;</span>www.weibo.com<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">site</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">sites</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>JSON 与 XML 的相同之处：</p>
+<ul>
+<li>JSON 和 XML 数据都是 “自我描述” ，都易于理解。</li>
+<li>JSON 和 XML 数据都是有层次的结构</li>
+<li>JSON 和 XML 数据可以被大多数编程语言使用</li>
+<li></li>
+</ul>
+<p>JSON 与 XML 的不同之处：</p>
+<ul>
+<li>JSON 不需要结束标签</li>
+<li>JSON 更加简短</li>
+<li>JSON 读写速度更快</li>
+<li>JSON 可以使用数组</li>
+</ul>
+<blockquote>
+<p><strong>最大的不同是</strong>：XML 需要使用 XML 解析器来解析，JSON 可以使用标准的 JavaScript 函数来解析。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/js/javascript-json-parse.html">JSON.parse()</a>: 将一个 JSON 字符串转换为 JavaScript 对象。</li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/js/javascript-json-stringify.html">JSON.stringify()</a>: 于将 JavaScript 值转换为 JSON 字符串。</li>
+</ul>
+</blockquote>
+<h3 id="为什么-JSON-比-XML-更好？"><a href="#为什么-JSON-比-XML-更好？" class="headerlink" title="为什么 JSON 比 XML 更好？"></a>为什么 JSON 比 XML 更好？</h3><p>XML 比 JSON 更难解析。</p>
+<p>JSON 可以直接使用现有的 JavaScript 对象解析。</p>
+<p>针对 AJAX 应用，JSON 比 XML 数据加载更快，而且更简单：</p>
+<p>使用 XML</p>
+<ul>
+<li>获取 XML 文档</li>
+<li>使用 XML DOM 迭代循环文档</li>
+<li>接数据解析出来复制给变量</li>
+</ul>
+<p>使用 JSON</p>
+<ul>
+<li>获取 JSON 字符串</li>
+<li>JSON.Parse 解析 JSON 字符串</li>
+</ul>
+<h2 id="JSON对象与数组"><a href="#JSON对象与数组" class="headerlink" title="JSON对象与数组"></a>JSON对象与数组</h2><p>JSON 对象使用在大括号({})中书写。</p>
+<p>对象可以包含多个 <strong>key/value（键/值）</strong>对。key 必须是字符串，value 可以是合法的 JSON 数据类型（字符串, 数字, 对象, 数组, 布尔值或 null）。key 和 value 中使用冒号(:)分割。每个 key/value 对使用逗号(,)分割。</p>
+<p>你可以使用点号（.）来访问对象的值。你也可以使用中括号（[]）来访问对象的值：</p>
+<h3 id="循环对象"><a href="#循环对象" class="headerlink" title="循环对象"></a>循环对象</h3><p>你可以使用 for-in 来循环对象的属性：在 for-in 循环对象的属性时，使用中括号（[]）来访问属性的值：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var myObj = &#123; &quot;name&quot;:&quot;runoob&quot;, &quot;alexa&quot;:10000, &quot;site&quot;:null &#125;;</span><br><span class="line">for (x in myObj) &#123;</span><br><span class="line">    document.getElementById(&quot;demo&quot;).innerHTML += myObj[x] + &quot;&lt;br&gt;&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="嵌套-JSON-对象"><a href="#嵌套-JSON-对象" class="headerlink" title="嵌套 JSON 对象"></a>嵌套 JSON 对象</h3><p>JSON 对象中可以包含另外一个 JSON 对象：你可以使用点号(.)或者中括号([])来访问嵌套的 JSON 对象。x = myObj.sites.site1; // 或者 x = myObj.sites[“site1”];</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">myObj = &#123;</span><br><span class="line">    &quot;name&quot;:&quot;runoob&quot;,</span><br><span class="line">    &quot;alexa&quot;:10000,</span><br><span class="line">    &quot;sites&quot;: &#123;</span><br><span class="line">        &quot;site1&quot;:&quot;www.runoob.com&quot;,</span><br><span class="line">        &quot;site2&quot;:&quot;m.runoob.com&quot;,</span><br><span class="line">        &quot;site3&quot;:&quot;c.runoob.com&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>你可以使用点号(.)来修改 JSON 对象的值：你可以使用中括号([])来修改 JSON 对象的值：</p>
+<p>我们可以使用 <strong>delete</strong> 关键字来删除 JSON 对象的属性：你可以使用中括号([])或者点号.来删除 JSON 对象的属性：</p>
+<h2 id="数组作为-JSON-对象"><a href="#数组作为-JSON-对象" class="headerlink" title="数组作为 JSON 对象"></a>数组作为 JSON 对象</h2><p>JSON 数组在中括号中书写。JSON 中数组值必须是合法的 JSON 数据类型（字符串, 数字, 对象, 数组, 布尔值或 null）。</p>
+<p>JavaScript 中，数组值可以是以上的 JSON 数据类型，也可以是 JavaScript 的表达式，包括函数，日期，及 <em>undefined</em>。</p>
+<p>对象属性的值可以是一个数组：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="string">&quot;name&quot;</span>:<span class="string">&quot;网站&quot;</span>,</span><br><span class="line"><span class="string">&quot;num&quot;</span>:<span class="number">3</span>,</span><br><span class="line"><span class="string">&quot;sites&quot;</span>:[ <span class="string">&quot;Google&quot;</span>, <span class="string">&quot;Runoob&quot;</span>, <span class="string">&quot;Taobao&quot;</span> ]</span><br><span class="line">&#125;</span><br><span class="line">x = myObj.sites[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//可以使用for-in来访问数组</span></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> myObj.sites) &#123;</span><br><span class="line">    x += myObj.sites[i] + <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//也可以for循环</span></span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; myObj.sites.length; i++) &#123;</span><br><span class="line">    x += myObj.sites[i] + <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//嵌套JSON对象中的数组,JSON对象中的数组可以包含另外一个数组，或者另外一个JSON对象；</span></span><br><span class="line">myObj = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>:<span class="string">&quot;网站&quot;</span>,</span><br><span class="line">    <span class="string">&quot;num&quot;</span>:<span class="number">3</span>,</span><br><span class="line">    <span class="string">&quot;sites&quot;</span>: [</span><br><span class="line">        &#123; <span class="string">&quot;name&quot;</span>:<span class="string">&quot;Google&quot;</span>, <span class="string">&quot;info&quot;</span>:[ <span class="string">&quot;Android&quot;</span>, <span class="string">&quot;Google 搜索&quot;</span>, <span class="string">&quot;Google 翻译&quot;</span> ] &#125;,</span><br><span class="line">        &#123; <span class="string">&quot;name&quot;</span>:<span class="string">&quot;Runoob&quot;</span>, <span class="string">&quot;info&quot;</span>:[ <span class="string">&quot;菜鸟教程&quot;</span>, <span class="string">&quot;菜鸟工具&quot;</span>, <span class="string">&quot;菜鸟微信&quot;</span> ] &#125;,</span><br><span class="line">        &#123; <span class="string">&quot;name&quot;</span>:<span class="string">&quot;Taobao&quot;</span>, <span class="string">&quot;info&quot;</span>:[ <span class="string">&quot;淘宝&quot;</span>, <span class="string">&quot;网购&quot;</span> ] &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//可以使用for-in来循环访问每个数组:</span></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> myObj.sites) &#123;</span><br><span class="line">    x += <span class="string">&quot;&lt;h1&gt;&quot;</span> + myObj.sites[i].name + <span class="string">&quot;&lt;/h1&gt;&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span> (j <span class="keyword">in</span> myObj.sites[i].info) &#123;</span><br><span class="line">        x += myObj.sites[i].info[j] + <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="JSON的方法与使用"><a href="#JSON的方法与使用" class="headerlink" title="JSON的方法与使用"></a>JSON的方法与使用</h2><h3 id="JSON-parse"><a href="#JSON-parse" class="headerlink" title="JSON.parse()"></a>JSON.parse()</h3><p>JSON 通常用于与服务端交换数据。在接收服务器数据时一般是字符串。我们可以使用 JSON.parse() 方法将数据转换为 JavaScript 对象。</p>
+<p>JSON.parse(text[ , reviver])</p>
+<ul>
+<li>**text:**必需， 一个有效的 JSON 字符串。</li>
+<li><strong>reviver:</strong> 可选，一个转换结果的函数， 将为对象的每个成员调用此函数。</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//如果从服务器接收了以下的数据：</span></span><br><span class="line">&#123; <span class="attr">&quot;name&quot;</span>:<span class="string">&quot;runoob&quot;</span>, <span class="attr">&quot;alexa&quot;</span>:<span class="number">10000</span>, <span class="attr">&quot;site&quot;</span>:<span class="string">&quot;www.runoob.com&quot;</span> &#125;</span><br><span class="line"><span class="comment">//我们使用 JSON.parse() 方法处理以上数据，将其转换为 JavaScript 对象</span></span><br><span class="line">var obj = JSON.parse(&#x27;&#123; &quot;name&quot;:&quot;runoob&quot;, &quot;alexa&quot;:10000, &quot;site&quot;:&quot;www.runoob.com&quot; &#125;&#x27;);</span><br><span class="line"><span class="comment">//解析前要确保你的数据是标准的 JSON 格式，否则会解析出错解析完成后，我们就可以在网页上使用 JSON 数据了</span></span><br><span class="line">&lt;p id=&quot;demo&quot;&gt;&lt;/p&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">var obj = JSON.parse(&#x27;&#123; &quot;name&quot;:&quot;runoob&quot;, &quot;alexa&quot;:10000, &quot;site&quot;:&quot;www.runoob.com&quot; &#125;&#x27;);</span><br><span class="line">document.getElementById(&quot;demo&quot;).innerHTML = obj.name + &quot;：&quot; + obj.site;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">//我们可以使用AJAX从服务器请求JSON数据，并解析为JS对象</span></span><br><span class="line">var xmlhttp = new XMLHttpRequest();</span><br><span class="line">xmlhttp.onreadystatechange = function() &#123;</span><br><span class="line">    if (this.readyState == 4 &amp;&amp; this.status == 200) &#123;</span><br><span class="line">        myObj = JSON.parse(this.responseText);</span><br><span class="line">        document.getElementById(&quot;demo&quot;).innerHTML = myObj.name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">xmlhttp.open(&quot;GET&quot;, &quot;/try/ajax/json_demo.txt&quot;, true);</span><br><span class="line">xmlhttp.send();</span><br><span class="line"><span class="comment">//如果服务端接受的是数组的JSON数据，则JSON.parse会将其转换为JS数组</span></span><br><span class="line">var xmlhttp = new XMLHttpRequest();</span><br><span class="line">xmlhttp.onreadystatechange = function() &#123;</span><br><span class="line">    if (this.readyState == 4 &amp;&amp; this.status == 200) &#123;</span><br><span class="line">        myArr = JSON.parse(this.responseText);</span><br><span class="line">        document.getElementById(&quot;demo&quot;).innerHTML = myArr[1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">xmlhttp.open(&quot;GET&quot;, &quot;/try/ajax/json_demo_array.txt&quot;, true);</span><br><span class="line">xmlhttp.send();</span><br></pre></td></tr></table></figure>
+
+<p>异常：解析数据，JSON不能存储Date对象，若需要存储Date对象，则需要先将其转换成字符串，之后再将字符串转换成Date对象。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">var text = &#x27;&#123; &quot;name&quot;:&quot;Runoob&quot;, &quot;initDate&quot;:&quot;2013-12-14&quot;, &quot;site&quot;:&quot;www.runoob.com&quot;&#125;&#x27;;</span><br><span class="line">var obj = JSON.parse(text);</span><br><span class="line">obj.initDate = new Date(obj.initDate);</span><br><span class="line"> </span><br><span class="line">document.getElementById(&quot;demo&quot;).innerHTML = obj.name + &quot;创建日期: &quot; + obj.initDate;</span><br><span class="line"><span class="comment">//我们可以启用JSON.parse的第二个参数reviver，一个转换结果的函数，对象的每个成员调用此函数</span></span><br><span class="line">var text = &#x27;&#123; &quot;name&quot;:&quot;Runoob&quot;, &quot;initDate&quot;:&quot;2013-12-14&quot;, &quot;site&quot;:&quot;www.runoob.com&quot;&#125;&#x27;;</span><br><span class="line">var obj = JSON.parse(text, function (key, value) &#123;</span><br><span class="line">    if (key == &quot;initDate&quot;) &#123;</span><br><span class="line">        return new Date(value);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return value;</span><br><span class="line">&#125;&#125;);</span><br><span class="line"> </span><br><span class="line">document.getElementById(&quot;demo&quot;).innerHTML = obj.name + &quot;创建日期：&quot; + obj.initDate;</span><br><span class="line"></span><br><span class="line"><span class="comment">//解析函数：JSON不允许包含函数，但可以将函数作为字符串存储，之后再将字符串转换为函数</span></span><br><span class="line">var text = &#x27;&#123; &quot;name&quot;:&quot;Runoob&quot;, &quot;alexa&quot;:&quot;function () &#123;return 10000;&#125;&quot;, &quot;site&quot;:&quot;www.runoob.com&quot;&#125;&#x27;;</span><br><span class="line">var obj = JSON.parse(text);</span><br><span class="line">obj.alexa = eval(&quot;(&quot; + obj.alexa + &quot;)&quot;);</span><br><span class="line"> </span><br><span class="line">document.getElementById(&quot;demo&quot;).innerHTML = obj.name + &quot; Alexa 排名：&quot; + obj.alexa();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="JSON-stringify"><a href="#JSON-stringify" class="headerlink" title="JSON.stringify()"></a>JSON.stringify()</h3><p>JSON 通常用于与服务端交换数据。在向服务器发送数据时一般是字符串。我们可以使用 JSON.stringify() 方法将 JavaScript 对象转换为字符串。</p>
+<p>JSON.stringify(value[, replacer[, space]])</p>
+<ul>
+<li><p>value:</p>
+<p>必需， 要转换的 JavaScript 值（通常为对象或数组）。</p>
+</li>
+<li><p>replacer:</p>
+<p>可选。用于转换结果的函数或数组。</p>
+<p>如果 replacer 为函数，则 JSON.stringify 将调用该函数，并传入每个成员的键和值。使用返回值而不是原始值。如果此函数返回 undefined，则排除成员。根对象的键是一个空字符串：””。</p>
+<p>如果 replacer 是一个数组，则仅转换该数组中具有键值的成员。成员的转换顺序与键在数组中的顺序一样。当 value 参数也为数组时，将忽略 replacer 数组。</p>
+</li>
+<li><p>space:</p>
+<p>可选，文本添加缩进、空格和换行符，如果 space 是一个数字，则返回值文本在每个级别缩进指定数目的空格，如果 space 大于 10，则文本缩进 10 个空格。space 也可以使用非数字，如：\t。</p>
+</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">var obj = &#123; &quot;name&quot;:&quot;runoob&quot;, &quot;alexa&quot;:10000, &quot;site&quot;:&quot;www.runoob.com&quot;&#125;;</span><br><span class="line"><span class="comment">//使用JSON.stringify()方法处理以上数据，并将其转换为字符串</span></span><br><span class="line"></span><br><span class="line">var myJSON = JSON.stringify(obj);</span><br><span class="line">document.getElementById(&quot;demo&quot;).innerHTML = myJSON;</span><br><span class="line"></span><br><span class="line"><span class="comment">//同样也可以把JS数组转换成JSON字符串</span></span><br><span class="line">var arr = [ &quot;Google&quot;, &quot;Runoob&quot;, &quot;Taobao&quot;, &quot;Facebook&quot; ];</span><br><span class="line">var myJSON = JSON.stringify(arr);</span><br><span class="line">document.getElementById(&quot;demo&quot;).innerHTML = myJSON;</span><br><span class="line"></span><br><span class="line"><span class="comment">//JSON.stringify() 会将所有日期转换为字符串。之后你可以再将字符串转换为 Date 对象</span></span><br><span class="line">var obj = &#123; &quot;name&quot;:&quot;Runoob&quot;, &quot;initDate&quot;:new Date(), &quot;site&quot;:&quot;www.runoob.com&quot;&#125;;</span><br><span class="line">var myJSON = JSON.stringify(obj);</span><br><span class="line">document.getElementById(&quot;demo&quot;).innerHTML = myJSON;</span><br><span class="line"><span class="comment">//JSON 不允许包含函数，JSON.stringify() 会删除 JavaScript 对象的函数，包括 key 和 value</span></span><br><span class="line">var obj = &#123; &quot;name&quot;:&quot;Runoob&quot;, &quot;alexa&quot;:function () &#123;return 10000;&#125;, &quot;site&quot;:&quot;www.runoob.com&quot;&#125;;</span><br><span class="line">var myJSON = JSON.stringify(obj);</span><br><span class="line"> </span><br><span class="line">document.getElementById(&quot;demo&quot;).innerHTML = myJSON;</span><br><span class="line"></span><br><span class="line"><span class="comment">//我们可以在执行 JSON.stringify() 函数前将函数转换为字符串来避免以上问题的发生：</span></span><br><span class="line">var obj = &#123; &quot;name&quot;:&quot;Runoob&quot;, &quot;alexa&quot;:function () &#123;return 10000;&#125;, &quot;site&quot;:&quot;www.runoob.com&quot;&#125;;</span><br><span class="line">obj.alexa = obj.alexa.toString();</span><br><span class="line">var myJSON = JSON.stringify(obj);</span><br><span class="line"> </span><br><span class="line">document.getElementById(&quot;demo&quot;).innerHTML = myJSON;</span><br><span class="line"><span class="comment">//因此不建议在JSON中使用函数</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="JSON使用与教程"><a href="#JSON使用与教程" class="headerlink" title="JSON使用与教程"></a>JSON使用与教程</h3><p>JSON 最常见的用法之一，是从 web 服务器上读取 JSON 数据（作为文件或作为 HttpRequest），将 JSON 数据转换为 JavaScript 对象，然后在网页中使用该数据。为了更简单地为您讲解，我们使用字符串作为输入进行演示（而不是文件）。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建包含 JSON 语法的 JavaScript 字符串：</span></span><br><span class="line">var txt = &#x27;&#123; &quot;sites&quot; : [&#x27; +</span><br><span class="line">&#x27;&#123; &quot;name&quot;:&quot;菜鸟教程&quot; , &quot;url&quot;:&quot;www.runoob.com&quot; &#125;,&#x27; +</span><br><span class="line">&#x27;&#123; &quot;name&quot;:&quot;google&quot; , &quot;url&quot;:&quot;www.google.com&quot; &#125;,&#x27; +</span><br><span class="line">&#x27;&#123; &quot;name&quot;:&quot;微博&quot; , &quot;url&quot;:&quot;www.weibo.com&quot; &#125; ]&#125;&#x27;;</span><br><span class="line"><span class="comment">//由于 JSON 语法是 JavaScript 语法的子集，JavaScript 函数 eval() 可用于将 JSON 文本转换为 JavaScript 对象。eval() 函数使用的是 JavaScript 编译器，可解析 JSON 文本，然后生成 JavaScript 对象。必须把文本包围在括号中，这样才能避免语法错误。</span></span><br><span class="line">var obj = eval (&quot;(&quot; + txt + &quot;)&quot;);</span><br><span class="line"><span class="comment">//在网页中使用 JavaScript 对象</span></span><br><span class="line">var txt = &#x27;&#123; &quot;sites&quot; : [&#x27; +</span><br><span class="line">&#x27;&#123; &quot;name&quot;:&quot;菜鸟教程&quot; , &quot;url&quot;:&quot;www.runoob.com&quot; &#125;,&#x27; +</span><br><span class="line">&#x27;&#123; &quot;name&quot;:&quot;google&quot; , &quot;url&quot;:&quot;www.google.com&quot; &#125;,&#x27; +</span><br><span class="line">&#x27;&#123; &quot;name&quot;:&quot;微博&quot; , &quot;url&quot;:&quot;www.weibo.com&quot; &#125; ]&#125;&#x27;;</span><br><span class="line"> </span><br><span class="line">var obj = eval (&quot;(&quot; + txt + &quot;)&quot;);</span><br><span class="line"> </span><br><span class="line">document.getElementById(&quot;name&quot;).innerHTML=obj.sites[0].name </span><br><span class="line">document.getElementById(&quot;url&quot;).innerHTML=obj.sites[0].url</span><br><span class="line"></span><br><span class="line"><span class="comment">//JSON解析器</span></span><br><span class="line"> eval() 函数可编译并执行任何 JavaScript 代码。这隐藏了一个潜在的安全问题。</span><br><span class="line">使用 JSON 解析器将 JSON 转换为 JavaScript 对象是更安全的做法。JSON 解析器只能识别 JSON 文本，而不会编译脚本。</span><br><span class="line">在浏览器中，这提供了原生的 JSON 支持，而且 JSON 解析器的速度更快。</span><br><span class="line">较新的浏览器和最新的 ECMAScript (JavaScript) 标准中均包含了原生的对 JSON 的支持。</span><br></pre></td></tr></table></figure>
+
+<h2 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h2><p>Jsonp(JSON with Padding) 是 json 的一种”使用模式”，可以让网页从别的域名（网站）那获取资料，即跨域读取数据。为什么我们从不同的域（网站）访问数据需要一个特殊的技术( JSONP )呢？这是因为同源策略。同源策略，它是由 Netscape 提出的一个著名的安全策略，现在所有支持 JavaScript 的浏览器都会使用这个策略。</p>
+
+    </div>
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Li Yudong 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Li Yudong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/09/23/%E5%89%8D%E7%AB%AF/AJAX%E8%AF%B7%E6%B1%82/" title="AJAX与Json">http://yoursite.com/2020/09/23/前端/AJAX请求/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%88%9D%E5%AD%A6%E8%80%85/" rel="tag"># 初学者</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/16/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/23/%E5%89%8D%E7%AB%AF/jQuery%E6%95%99%E7%A8%8B/" rel="next" title="jQuery教程">
+      jQuery教程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AJAX"><span class="nav-number">1.</span> <span class="nav-text">AJAX</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.1.</span> <span class="nav-text">简介与实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%93%8D%E5%BA%94"><span class="nav-number">1.2.</span> <span class="nav-text">请求与响应</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AJAX%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">AJAX事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="nav-number">1.3.1.</span> <span class="nav-text">回调函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSON"><span class="nav-number">2.</span> <span class="nav-text">JSON</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95%E4%B8%8E%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">语法与简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8EXML%E5%AF%B9%E6%AF%94"><span class="nav-number">2.1.1.</span> <span class="nav-text">与XML对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON%E8%AF%AD%E6%B3%95"><span class="nav-number">2.1.2.</span> <span class="nav-text">JSON语法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8EXML%E7%9B%B8%E6%AF%94"><span class="nav-number">2.2.</span> <span class="nav-text">与XML相比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-JSON-%E6%AF%94-XML-%E6%9B%B4%E5%A5%BD%EF%BC%9F"><span class="nav-number">2.2.1.</span> <span class="nav-text">为什么 JSON 比 XML 更好？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON%E5%AF%B9%E8%B1%A1%E4%B8%8E%E6%95%B0%E7%BB%84"><span class="nav-number">2.3.</span> <span class="nav-text">JSON对象与数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.3.1.</span> <span class="nav-text">循环对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97-JSON-%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.3.2.</span> <span class="nav-text">嵌套 JSON 对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E4%BD%9C%E4%B8%BA-JSON-%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.4.</span> <span class="nav-text">数组作为 JSON 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON%E7%9A%84%E6%96%B9%E6%B3%95%E4%B8%8E%E4%BD%BF%E7%94%A8"><span class="nav-number">2.5.</span> <span class="nav-text">JSON的方法与使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-parse"><span class="nav-number">2.5.1.</span> <span class="nav-text">JSON.parse()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-stringify"><span class="nav-number">2.5.2.</span> <span class="nav-text">JSON.stringify()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%95%99%E7%A8%8B"><span class="nav-number">2.5.3.</span> <span class="nav-text">JSON使用与教程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSONP"><span class="nav-number">2.6.</span> <span class="nav-text">JSONP</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+

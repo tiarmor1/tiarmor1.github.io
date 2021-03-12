@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E6%AD%A6%E6%B1%8932x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E6%AD%A6%E6%B1%8916x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib1/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="jQuery基础jQuery 是一个 JavaScript 库。jQuery 极大地简化了 JavaScript 编程。 jQuery库包含以下功能：  HTML 元素选取 HTML 元素操作 CSS 操作 HTML 事件函数 JavaScript 特效和动画 HTML DOM 遍历和修改 AJAX Utilities  提示： 除此之外，Jquery还提供了大量的插件。 jQuery语法jQue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jQuery教程">
+<meta property="og:url" content="http://yoursite.com/2020/09/23/%E5%89%8D%E7%AB%AF/jQuery%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Technical blog">
+<meta property="og:description" content="jQuery基础jQuery 是一个 JavaScript 库。jQuery 极大地简化了 JavaScript 编程。 jQuery库包含以下功能：  HTML 元素选取 HTML 元素操作 CSS 操作 HTML 事件函数 JavaScript 特效和动画 HTML DOM 遍历和修改 AJAX Utilities  提示： 除此之外，Jquery还提供了大量的插件。 jQuery语法jQue">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2020/09/23/%E5%89%8D%E7%AB%AF/jQuery%E6%95%99%E7%A8%8B/%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8.png">
+<meta property="article:published_time" content="2020-09-23T14:53:01.000Z">
+<meta property="article:modified_time" content="2020-09-24T06:48:37.921Z">
+<meta property="article:author" content="Li Yudong">
+<meta property="article:tag" content="初学者">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/09/23/%E5%89%8D%E7%AB%AF/jQuery%E6%95%99%E7%A8%8B/%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/23/%E5%89%8D%E7%AB%AF/jQuery%E6%95%99%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>jQuery教程 | Technical blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Technical blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">IT小白的成长之旅</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">34</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tiarmor1" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/23/%E5%89%8D%E7%AB%AF/jQuery%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="Li Yudong">
+      <meta itemprop="description" content="请乐观，请珍惜">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Technical blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          jQuery教程
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+    
+              <time title="创建时间：2020-09-23 22:53:01" itemprop="dateCreated datePublished" datetime="2020-09-23T22:53:01+08:00">2020-09-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-24 14:48:37" itemprop="dateModified" datetime="2020-09-24T14:48:37+08:00">2020-09-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2/" itemprop="url" rel="index"><span itemprop="name">前端页面</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="jQuery基础"><a href="#jQuery基础" class="headerlink" title="jQuery基础"></a>jQuery基础</h1><p>jQuery 是一个 JavaScript 库。jQuery 极大地简化了 JavaScript 编程。</p>
+<p>jQuery库包含以下功能：</p>
+<ul>
+<li>HTML 元素选取</li>
+<li>HTML 元素操作</li>
+<li>CSS 操作</li>
+<li>HTML 事件函数</li>
+<li>JavaScript 特效和动画</li>
+<li>HTML DOM 遍历和修改</li>
+<li>AJAX</li>
+<li>Utilities</li>
+</ul>
+<p><strong>提示：</strong> 除此之外，Jquery还提供了大量的插件。</p>
+<h2 id="jQuery语法"><a href="#jQuery语法" class="headerlink" title="jQuery语法"></a>jQuery语法</h2><p>jQuery 语法是通过选取 HTML 元素，并对选取的元素执行某些操作。</p>
+<p>基础语法： <strong>$(*selector*).*action*()</strong></p>
+<ul>
+<li>美元符号定义 jQuery</li>
+<li>选择符（selector）”查询”和”查找” HTML 元素</li>
+<li>jQuery 的 action() 执行对元素的操作</li>
+</ul>
+<p>实例:</p>
+<ul>
+<li>$(this).hide() - 隐藏当前元素</li>
+<li>$(“p”).hide() - 隐藏所有 <p> 元素</p></li>
+<li>$(“p.test”).hide() - 隐藏所有 class=”test” 的 <p> 元素</p></li>
+<li>$(“#test”).hide() - 隐藏 id=”test” 的元素</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在我们的实例中的所有 jQuery 函数位于一个 document ready 函数中：</span></span><br><span class="line">$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 开始写 jQuery 代码...</span></span><br><span class="line"> </span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">/*这是为了防止文档在完全加载（就绪）之前运行 jQuery 代码，即在 DOM 加载完成后才可以对 DOM 进行操作。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">如果在文档没有完全加载之前就运行函数，操作可能失败。下面是两个具体的例子：</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">试图隐藏一个不存在的元素</span></span><br><span class="line"><span class="comment">获得未完全加载的图像的大小*/</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="jQuery选择器"><a href="#jQuery选择器" class="headerlink" title="jQuery选择器"></a>jQuery选择器</h2><p>jQuery 选择器允许您对 HTML 元素组或单个元素进行操作。jQuery 选择器基于元素的 id、类、类型、属性、属性值等”查找”（或选择）HTML 元素。 它基于已经存在的 <a target="_blank" rel="noopener" href="https://www.runoob.com/cssref/css-selectors.html">CSS 选择器</a>，除此之外，它还有一些自定义的选择器。</p>
+<p>jQuery 中所有选择器都以美元符号开头：$()。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//jQuery 元素选择器基于元素名选取元素,在页面中选取所有 &lt;p&gt; 元素。</span></span><br><span class="line"><span class="comment">//用户点击按钮后，所有 &lt;p&gt; 元素都隐藏。</span></span><br><span class="line">$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  $(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    $(<span class="string">&quot;p&quot;</span>).hide();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//jQuery #id 选择器通过 HTML 元素的 id 属性选取指定的元素。</span></span><br><span class="line"><span class="comment">//页面中元素的 id 应该是唯一的，所以您要在页面中选取唯一的元素需要通过 #id 选择器。</span></span><br><span class="line">$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  $(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    $(<span class="string">&quot;#test&quot;</span>).hide();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//jQuery 类选择器可以通过指定的 class 查找元素。</span></span><br><span class="line">$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  $(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    $(<span class="string">&quot;.test&quot;</span>).hide();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//如果您的网站包含许多页面，并且您希望您的 jQuery 函数易于维护，那么请把您的 jQuery 函数放到独立的 .js 文件中。</span></span><br><span class="line"><span class="comment">//当我们在教程中演示 jQuery 时，会将函数直接添加到 &lt;head&gt; 部分中。不过，把它们放到一个单独的文件中会更好，就像这样（通过 src 属性来引用文件）：</span></span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;script src=<span class="string">&quot;http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js&quot;</span>&gt;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;script src=<span class="string">&quot;my_jquery_functions.js&quot;</span>&gt;&lt;/script&gt;</span><br><span class="line">&lt;/head&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="jQuery事件"><a href="#jQuery事件" class="headerlink" title="jQuery事件"></a>jQuery事件</h2><p>在 jQuery 中，大多数 DOM 事件都有一个等效的 jQuery 方法。页面中指定一个点击事件：下一步是定义什么时间触发事件，可以通过一个事件函数来实现；</p>
+<h3 id="常用的-jQuery-事件方法"><a href="#常用的-jQuery-事件方法" class="headerlink" title="常用的 jQuery 事件方法"></a>常用的 jQuery 事件方法</h3><h4 id="document-ready"><a href="#document-ready" class="headerlink" title="$(document).ready()"></a>$(document).ready()</h4><p>$(document).ready() 方法允许我们在文档完全加载完后执行函数。该事件方法在 <a target="_blank" rel="noopener" href="https://www.runoob.com/jquery/jquery-syntax.html">jQuery 语法</a> 章节中已经提到过。</p>
+<h4 id="click"><a href="#click" class="headerlink" title="click()"></a>click()</h4><p>click() 方法是当按钮点击事件被触发时会调用一个函数。该函数在用户点击 HTML 元素时执行。</p>
+<h4 id="dblclick"><a href="#dblclick" class="headerlink" title="dblclick()"></a>dblclick()</h4><p>当双击元素时，会发生 dblclick 事件。</p>
+<p>dblclick() 方法触发 dblclick 事件，或规定当发生 dblclick 事件时运行的函数：</p>
+<h4 id="mouseenter"><a href="#mouseenter" class="headerlink" title="mouseenter()"></a>mouseenter()</h4><p>当鼠标指针穿过元素时，会发生 mouseenter 事件。</p>
+<p>mouseenter() 方法触发 mouseenter 事件，或规定当发生 mouseenter 事件时运行的函数：</p>
+<h4 id="mouseleave"><a href="#mouseleave" class="headerlink" title="mouseleave()"></a>mouseleave()</h4><p>当鼠标指针离开元素时，会发生 mouseleave 事件。</p>
+<p>mouseleave() 方法触发 mouseleave 事件，或规定当发生 mouseleave 事件时运行的函数：</p>
+<h4 id="mousedown"><a href="#mousedown" class="headerlink" title="mousedown()"></a>mousedown()</h4><p>当鼠标指针移动到元素上方，并按下鼠标按键时，会发生 mousedown 事件。</p>
+<p>mousedown() 方法触发 mousedown 事件，或规定当发生 mousedown 事件时运行的函数</p>
+<h4 id="mouseup"><a href="#mouseup" class="headerlink" title="mouseup()"></a>mouseup()</h4><p>当在元素上松开鼠标按钮时，会发生 mouseup 事件。</p>
+<p>mouseup() 方法触发 mouseup 事件，或规定当发生 mouseup 事件时运行的函数：</p>
+<h4 id="hover"><a href="#hover" class="headerlink" title="hover()"></a>hover()</h4><p>hover()方法用于模拟光标悬停事件。</p>
+<p>当鼠标移动到元素上时，会触发指定的第一个函数(mouseenter);当鼠标移出这个元素时，会触发指定的第二个函数(mouseleave)。</p>
+<h4 id="focus"><a href="#focus" class="headerlink" title="focus()"></a>focus()</h4><p>当元素获得焦点时，发生 focus 事件。</p>
+<p>当通过鼠标点击选中元素或通过 tab 键定位到元素时，该元素就会获得焦点。</p>
+<p>focus() 方法触发 focus 事件，或规定当发生 focus 事件时运行的函数</p>
+<h4 id="blur"><a href="#blur" class="headerlink" title="blur()"></a>blur()</h4><p>当元素失去焦点时，发生 blur 事件。</p>
+<p>blur() 方法触发 blur 事件，或规定当发生 blur 事件时运行的函数：</p>
+<h1 id="jQuery效果"><a href="#jQuery效果" class="headerlink" title="jQuery效果"></a>jQuery效果</h1><h2 id="隐藏与显示"><a href="#隐藏与显示" class="headerlink" title="隐藏与显示"></a>隐藏与显示</h2><p>通过 jQuery，您可以使用 hide() 和 show() 方法来隐藏和显示 HTML 元素：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$(selector).hide(speed,callback);</span><br><span class="line">$(selector).show(speed,callback);</span><br><span class="line"><span class="comment">//可选的 speed 参数规定隐藏/显示的速度，可以取以下值：&quot;slow&quot;、&quot;fast&quot; 或毫秒。</span></span><br><span class="line"><span class="comment">//可选的 callback 参数是隐藏或显示完成后所执行的函数名称。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//通过 jQuery，您可以使用 toggle() 方法来切换 hide() 和 show() 方法。</span></span><br><span class="line"><span class="comment">//显示被隐藏的元素，并隐藏已显示的元素：</span></span><br><span class="line">$(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  $(<span class="string">&quot;p&quot;</span>).toggle();</span><br><span class="line">&#125;);</span><br><span class="line">$(selector).toggle(speed,callback);</span><br><span class="line"><span class="comment">//可选的 speed 参数规定隐藏/显示的速度，可以取以下值：&quot;slow&quot;、&quot;fast&quot; 或毫秒。可选的 callback 参数是隐藏或显示完成后所执行的函数名称。</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="淡入淡出"><a href="#淡入淡出" class="headerlink" title="淡入淡出"></a>淡入淡出</h2><p>通过 jQuery，您可以实现元素的淡入淡出效果。jQuery 拥有下面四种 fade 方法：</p>
+<ul>
+<li>fadeIn()</li>
+<li>fadeOut()</li>
+<li>fadeToggle()</li>
+<li>fadeTo()</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//jQuery fadeIn() 用于淡入已隐藏的元素;</span></span><br><span class="line">$(selector).fadeIn(speed,callback);</span><br><span class="line">$(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  $(<span class="string">&quot;#div1&quot;</span>).fadeIn();</span><br><span class="line">  $(<span class="string">&quot;#div2&quot;</span>).fadeIn(<span class="string">&quot;slow&quot;</span>);</span><br><span class="line">  $(<span class="string">&quot;#div3&quot;</span>).fadeIn(<span class="number">3000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//jQuery fadeOut() 方法用于淡出可见元素</span></span><br><span class="line">$(selector).fadeOut(speed,callback);</span><br><span class="line">$(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  $(<span class="string">&quot;#div1&quot;</span>).fadeOut();</span><br><span class="line">  $(<span class="string">&quot;#div2&quot;</span>).fadeOut(<span class="string">&quot;slow&quot;</span>);</span><br><span class="line">  $(<span class="string">&quot;#div3&quot;</span>).fadeOut(<span class="number">3000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//jQuery fadeToggle() 方法可以在 fadeIn() 与 fadeOut() 方法之间进行切换。</span></span><br><span class="line"><span class="comment">//如果元素已淡出，则 fadeToggle() 会向元素添加淡入效果。如果元素已淡入，则 fadeToggle() 会向元素添加淡出效果。</span></span><br><span class="line">$(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  $(<span class="string">&quot;#div1&quot;</span>).fadeToggle();</span><br><span class="line">  $(<span class="string">&quot;#div2&quot;</span>).fadeToggle(<span class="string">&quot;slow&quot;</span>);</span><br><span class="line">  $(<span class="string">&quot;#div3&quot;</span>).fadeToggle(<span class="number">3000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//jQuery fadeTo() 方法允许渐变为给定的不透明度（值介于 0 与 1 之间）。</span></span><br><span class="line">$(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  $(<span class="string">&quot;#div1&quot;</span>).fadeTo(<span class="string">&quot;slow&quot;</span>,<span class="number">0.15</span>);</span><br><span class="line">  $(<span class="string">&quot;#div2&quot;</span>).fadeTo(<span class="string">&quot;slow&quot;</span>,<span class="number">0.4</span>);</span><br><span class="line">  $(<span class="string">&quot;#div3&quot;</span>).fadeTo(<span class="string">&quot;slow&quot;</span>,<span class="number">0.7</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="滑动效果"><a href="#滑动效果" class="headerlink" title="滑动效果"></a>滑动效果</h2><p>通过 jQuery，您可以在元素上创建滑动效果。jQuery 拥有以下滑动方法：</p>
+<ul>
+<li>slideDown()</li>
+<li>slideUp()</li>
+<li>slideToggle()</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//jQuery slideDown() 方法用于向下滑动元素。</span></span><br><span class="line"><span class="comment">//jQuery slideUp() 方法用于向上滑动元素。</span></span><br><span class="line"><span class="comment">//jQuery slideToggle() 方法可以在 slideDown() 与 slideUp() 方法之间进行切换。</span></span><br><span class="line"><span class="comment">//如果元素向下滑动，则 slideToggle() 可向上滑动它们。如果元素向上滑动，则 slideToggle() 可向下滑动它们。</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="jQuery动画"><a href="#jQuery动画" class="headerlink" title="jQuery动画"></a>jQuery动画</h2><p>jQuery animate() 方法用于创建自定义动画。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">$(selector).animate(&#123;params&#125;,speed,callback);</span><br><span class="line"><span class="comment">/*必需的 params 参数定义形成动画的 CSS 属性。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">可选的 speed 参数规定效果的时长。它可以取以下值：&quot;slow&quot;、&quot;fast&quot; 或毫秒。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">可选的 callback 参数是动画完成后所执行的函数名称。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">下面的例子演示 animate() 方法的简单应用。它把 &lt;div&gt; 元素往右边移动了 250 像素：*/</span></span><br><span class="line">$(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  $(<span class="string">&quot;div&quot;</span>).animate(&#123;<span class="attr">left</span>:<span class="string">&#x27;250px&#x27;</span>&#125;);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//默认情况下，所有的 HTML 元素有一个静态的位置，且是不可移动的。 如果需要改变为，我们需要将元素的 position 属性设置为 relative, fixed, 或 absolute!</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//同样生成动画的过程中可以同时使用多个属性</span></span><br><span class="line">$(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  $(<span class="string">&quot;div&quot;</span>).animate(&#123;</span><br><span class="line">    left:<span class="string">&#x27;250px&#x27;</span>,</span><br><span class="line">    opacity:<span class="string">&#x27;0.5&#x27;</span>,</span><br><span class="line">    height:<span class="string">&#x27;150px&#x27;</span>,</span><br><span class="line">    width:<span class="string">&#x27;150px&#x27;</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//：当使用 animate() 时，必须使用 Camel 标记法书写所有的属性名，比如，必须使用 paddingLeft 而不是 padding-left，使用 marginRight 而不是 margin-right，等等。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//也可以定义相对值（该值相对于元素的当前值）。需要在值的前面加上 += 或 -=：</span></span><br><span class="line"><span class="comment">//默认地，jQuery 提供针对动画的队列功能。</span></span><br><span class="line"><span class="comment">//这意味着如果您在彼此之后编写多个 animate() 调用，jQuery 会创建包含这些方法调用的&quot;内部&quot;队列。然后逐一运行这些 animate 调用。</span></span><br><span class="line">$(<span class="string">&quot;button&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> div=$(<span class="string">&quot;div&quot;</span>);</span><br><span class="line">  div.animate(&#123;<span class="attr">left</span>:<span class="string">&#x27;100px&#x27;</span>&#125;,<span class="string">&quot;slow&quot;</span>);</span><br><span class="line">  div.animate(&#123;<span class="attr">fontSize</span>:<span class="string">&#x27;3em&#x27;</span>&#125;,<span class="string">&quot;slow&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//</span></span><br></pre></td></tr></table></figure>
+
+<p>jQuery stop() 方法用于在动画或效果完成前对它们进行停止。stop() 方法适用于所有 jQuery 效果函数，包括滑动、淡入淡出和自定义动画</p>
+<p>$(<em>selector</em>).stop(<em>stopAll,goToEnd</em>)。</p>
+<p>可选的 stopAll 参数规定是否应该清除动画队列。默认是 false，即仅停止活动的动画，允许任何排入队列的动画向后执行。可选的 goToEnd 参数规定是否立即完成当前动画。默认是 false。因此，默认地，stop() 会清除在被选元素上指定的当前动画。</p>
+<p>Callback 函数在当前动画 100% 完成之后执行。</p>
+<h2 id="jQuery链"><a href="#jQuery链" class="headerlink" title="jQuery链"></a>jQuery链</h2><p>通过 jQuery，可以把动作/方法链接在一起。Chaining 允许我们在一条语句中运行多个 jQuery 方法（在相同的元素上）</p>
+<p>直到现在，我们都是一次写一条 jQuery 语句（一条接着另一条）。</p>
+<p>不过，有一种名为链接（chaining）的技术，允许我们在相同的元素上运行多条 jQuery 命令，一条接着另一条。<strong>提示：</strong> 这样的话，浏览器就不必多次查找相同的元素。如需链接一个动作，您只需简单地把该动作追加到之前的动作上。下面的例子把 css()、slideUp() 和 slideDown() 链接在一起。”p1” 元素首先会变为红色，然后向上滑动，再然后向下滑动：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">&quot;#p1&quot;</span>).css(<span class="string">&quot;color&quot;</span>,<span class="string">&quot;red&quot;</span>).slideUp(<span class="number">2000</span>).slideDown(<span class="number">2000</span>);</span><br><span class="line"><span class="comment">//如果需要，我们也可以添加多个方法调用。</span></span><br><span class="line"><span class="comment">//提示：当进行链接时，代码行会变得很长。不过，jQuery 语法不是很严格；您可以按照希望的格式来写，包含换行和缩进。如下书写也可以很好地运行：</span></span><br><span class="line">$(<span class="string">&quot;#p1&quot;</span>).css(<span class="string">&quot;color&quot;</span>,<span class="string">&quot;red&quot;</span>)</span><br><span class="line">  .slideUp(<span class="number">2000</span>)</span><br><span class="line">  .slideDown(<span class="number">2000</span>);</span><br><span class="line"><span class="comment">//jQuery 会抛掉多余的空格，并当成一行长代码来执行上面的代码行。</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="什么是链式调用"><a href="#什么是链式调用" class="headerlink" title="什么是链式调用"></a>什么是链式调用</h2><p>链式调用完方法后，return this返回当前调用方法的对象。普通的定义类方法，在多次调用一个对象的不同方法时有一个弊端，就是会多次重复使用一个对象变量，进行了多次查找，可以在原本的实现类中增添一行return this 从而能简单地实现链式调用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建一个bird类</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">Bird</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.name=name;</span><br><span class="line">        <span class="built_in">this</span>.run=<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">document</span>.write(name+<span class="string">&quot; &quot;</span>+<span class="string">&quot;start run;&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;<span class="comment">// return this返回当前调用方法的对象。</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">this</span>.stopRun=<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">document</span>.write(name+<span class="string">&quot; &quot;</span>+<span class="string">&quot;start run;&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">this</span>.sing=<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">document</span>.write(name+<span class="string">&quot; &quot;</span>+<span class="string">&quot;start sing;&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">this</span>.stopSing=<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">document</span>.write(name+<span class="string">&quot; &quot;</span>+<span class="string">&quot;start stopSing;&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> bird=<span class="keyword">new</span> Bird(<span class="string">&quot;测试&quot;</span>);</span><br><span class="line">    bird.run().sing().stopSing().stopRun();</span><br><span class="line"><span class="comment">//结果为;测试 start run;测试 start sing;测试 start stopSing;测试 start run;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="jq的链式调用"><a href="#jq的链式调用" class="headerlink" title="jq的链式调用"></a>jq的链式调用</h2><p>jq的链式调用其实就是比如我们在选择dom的时候，</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">&#x27;input[type=&quot;button&quot;]&#x27;</span>)</span><br><span class="line">    .eq(<span class="number">0</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        alert(<span class="string">&#x27;点击我!&#x27;</span>);</span><br><span class="line">&#125;).end().eq(<span class="number">1</span>)</span><br><span class="line">.click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    $(<span class="string">&#x27;input[type=&quot;button&quot;]:eq(0)&#x27;</span>).trigger(<span class="string">&#x27;click&#x27;</span>);</span><br><span class="line">&#125;).end().eq(<span class="number">2</span>)</span><br><span class="line">.toggle(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    $(<span class="string">&#x27;.aa&#x27;</span>).hide(<span class="string">&#x27;slow&#x27;</span>);</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    $(<span class="string">&#x27;.aa&#x27;</span>).show(<span class="string">&#x27;slow&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>比如如上代码，先选择type类型为button的所有DOM，然后再选择第一个…</p>
+<p>我们自然想到每次其实就是返回选择后的结果，在js里面有什么东西可以指代这个吗？<br>如果你想到this就对了。</p>
+<p>q的方法都是挂在原型的，那么如果我们每次在内部方法返回this，也就是返回实例对象，那么我们就可以继续调用原型上的方法了，这样的就节省代码量，提高代码的效率，代码看起来更优雅。</p>
+<p>但是也会出现一个问题：所有对象的方法返回的都是对象本身，也就是说没有返回值，所以这种方法不一定在任何环境下都适合。</p>
+<h2 id="模仿jQuery的链式调用"><a href="#模仿jQuery的链式调用" class="headerlink" title="模仿jQuery的链式调用"></a>模仿jQuery的链式调用</h2><p>1、定义一个含参数的空对象；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="comment">//下划线：表示私有变量的写法</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">_$</span>(<span class="params">els</span>) </span>&#123; &#125;;<span class="comment">//有参数的空函数对象</span></span><br><span class="line">&#125;)()<span class="comment">//程序启动的时候 里面的代码直接执行了</span></span><br></pre></td></tr></table></figure>
+
+<p>2、准备方法：在_$上定义一个onrReady方法；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">   <span class="comment">//第一步，下划线：表示私有变量的写法</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">_$</span>(<span class="params">els</span>) </span>&#123; &#125;;<span class="comment">//有参数的空对象</span></span><br><span class="line">    <span class="comment">//第二步，准备方法  在_$上定义一个onrReady方法</span></span><br><span class="line">    _$.onrReady=<span class="function"><span class="keyword">function</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//按要求把对象（_$）注册到window对象上</span></span><br><span class="line">        <span class="comment">//对外开放的接口</span></span><br><span class="line">        <span class="built_in">window</span>.$=<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> _$(<span class="built_in">arguments</span>);</span><br><span class="line">            <span class="comment">//传递相应的方法调用参数  返回一可以使用function类原型上的方法的对象（$(&quot;&quot;)=_$(参数)）</span></span><br><span class="line">        &#125;</span><br><span class="line">        fn();</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+
+<p>3、为了类能扩展函数，我们定义一个它的静态函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.method=<span class="function"><span class="keyword">function</span> (<span class="params">name,fn</span>) </span>&#123;<span class="comment">//（函数名称，函数本身）</span></span><br><span class="line">     <span class="built_in">this</span>.prototype[name]=fn;</span><br><span class="line">     <span class="keyword">return</span> <span class="built_in">this</span>;<span class="comment">//链式调用关键</span></span><br><span class="line">&#125;;<span class="comment">//这个函数的意思：为function对象增加函数，会用链式调用，链式调用有两个参数name,和fn</span></span><br></pre></td></tr></table></figure>
+
+<p>4、扩展类的相应方法，链式的对象增加jquery库提供的操作函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="comment">//下划线：表示私有变量的写法</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">_$</span>(<span class="params">els</span>) </span>&#123; &#125;;<span class="comment">//有参数的空对象</span></span><br><span class="line">    <span class="comment">//第二步，准备方法  在_$上定义一个onrReady方法</span></span><br><span class="line">    _$.onrReady=<span class="function"><span class="keyword">function</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//按要求把对象（_$）注册到window对象上   </span></span><br><span class="line">        <span class="comment">//对外开放的接口</span></span><br><span class="line">        <span class="built_in">window</span>.$=<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> _$(<span class="built_in">arguments</span>);<span class="comment">//传递相应的方法调用参数  返回一可以使用function类原型上的方法的对象（$(&quot;&quot;)=_$(参数)）</span></span><br><span class="line">        &#125;</span><br><span class="line">        fn();</span><br><span class="line">    &#125;</span><br><span class="line">     <span class="comment">//第四步</span></span><br><span class="line">    <span class="comment">//扩展类的相应方法  链式的对象增加jquery库提供的操作函数  </span></span><br><span class="line">_$.method(<span class="string">&quot;AddEvent&quot;</span>,<span class="function"><span class="keyword">function</span> (<span class="params">type,fn</span>) </span>&#123;<span class="comment">//_$本身是一个function要继承原型链上的东西。</span></span><br><span class="line">    fn();</span><br><span class="line">&#125;).method(<span class="string">&quot;getEvent&quot;</span>,<span class="function"><span class="keyword">function</span> (<span class="params">fn,e</span>) </span>&#123;</span><br><span class="line">    fn();</span><br><span class="line">&#125;)</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+
+<p>5、使用，需要调用_$.onReady方法才可以返回对象使用从function类继承而来的原型上的方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// （1）下划线：表示私有变量的写法</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">_$</span>(<span class="params">els</span>) </span>&#123; &#125;;<span class="comment">//有参数的空对象</span></span><br><span class="line">    <span class="comment">//（2）准备方法  在_$上定义一个onrReady方法</span></span><br><span class="line">      <span class="comment">// window.$=_$;</span></span><br><span class="line">    _$.onrReady=<span class="function"><span class="keyword">function</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//按要求把对象（_$）注册到window对象上   在任何地方都可以使用</span></span><br><span class="line">        <span class="comment">//对外开放的接口</span></span><br><span class="line">        <span class="built_in">window</span>.$=<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="comment">//window 上先注册一个全局变量 与外界产生关系</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> _$(<span class="built_in">arguments</span>);<span class="comment">//传递相应的方法调用参数  返回一可以使用function类原型上的方法的对象（$(&quot;&quot;)=_$(参数)）</span></span><br><span class="line">        &#125;</span><br><span class="line">        fn();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//（4）扩展类的相应方法  链式的对象增加jquery库提供的操作函数</span></span><br><span class="line">_$.method(<span class="string">&quot;AddEvent&quot;</span>,<span class="function"><span class="keyword">function</span> (<span class="params">type,fn</span>) </span>&#123;<span class="comment">//_$本身是一个function要继承原型链上的东西。</span></span><br><span class="line">    fn();</span><br><span class="line">&#125;).method(<span class="string">&quot;getEvent&quot;</span>,<span class="function"><span class="keyword">function</span> (<span class="params">fn,e</span>) </span>&#123;</span><br><span class="line">    fn();</span><br><span class="line">&#125;);</span><br><span class="line">    <span class="comment">//第五步，开始使用 ，需要调用_$.onready方法才可以返回对象使用从function类继承而来的原型上的方法</span></span><br><span class="line">     _$.onrReady(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="comment">//$是绑定在Windows上的</span></span><br><span class="line">        $(<span class="string">&quot;&quot;</span>).AddEvent(<span class="string">&quot;click&quot;</span>,<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            alert(<span class="string">&quot;click&quot;</span>)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/09/23/%E5%89%8D%E7%AB%AF/jQuery%E6%95%99%E7%A8%8B/%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8.png" alt="链式调用"></p>
+<p>简单的加减法链式调用</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">Number</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">isNaN</span>(<span class="built_in">Number</span>)?<span class="built_in">Number</span>:<span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">Add</span>(<span class="params">num</span>)</span>&#123;</span><br><span class="line">        test(num)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span> + num</span><br><span class="line">    &#125;</span><br><span class="line">      <span class="function"><span class="keyword">function</span> <span class="title">jian</span>(<span class="params">num</span>)</span>&#123;</span><br><span class="line">           test(num)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span> - num</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Function</span>.prototype.Add = Add</span><br><span class="line">    <span class="built_in">Function</span>.prototype.jian = jian</span><br><span class="line"></span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Li Yudong 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Li Yudong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/09/23/%E5%89%8D%E7%AB%AF/jQuery%E6%95%99%E7%A8%8B/" title="jQuery教程">http://yoursite.com/2020/09/23/前端/jQuery教程/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%88%9D%E5%AD%A6%E8%80%85/" rel="tag"># 初学者</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/23/%E5%89%8D%E7%AB%AF/AJAX%E8%AF%B7%E6%B1%82/" rel="prev" title="AJAX与Json">
+      <i class="fa fa-chevron-left"></i> AJAX与Json
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/29/%E7%AE%97%E6%B3%95/%E5%8F%8C%E6%8C%87%E9%92%88%E6%9F%A5%E6%89%BE/" rel="next" title="双指针查找与常用算法框架">
+      双指针查找与常用算法框架 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#jQuery%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">jQuery基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#jQuery%E8%AF%AD%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">jQuery语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jQuery%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">jQuery选择器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jQuery%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">jQuery事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84-jQuery-%E4%BA%8B%E4%BB%B6%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.1.</span> <span class="nav-text">常用的 jQuery 事件方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#document-ready"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">$(document).ready()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#click"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">click()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dblclick"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">dblclick()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mouseenter"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">mouseenter()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mouseleave"><span class="nav-number">1.3.1.5.</span> <span class="nav-text">mouseleave()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mousedown"><span class="nav-number">1.3.1.6.</span> <span class="nav-text">mousedown()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mouseup"><span class="nav-number">1.3.1.7.</span> <span class="nav-text">mouseup()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hover"><span class="nav-number">1.3.1.8.</span> <span class="nav-text">hover()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#focus"><span class="nav-number">1.3.1.9.</span> <span class="nav-text">focus()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#blur"><span class="nav-number">1.3.1.10.</span> <span class="nav-text">blur()</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jQuery%E6%95%88%E6%9E%9C"><span class="nav-number">2.</span> <span class="nav-text">jQuery效果</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E4%B8%8E%E6%98%BE%E7%A4%BA"><span class="nav-number">2.1.</span> <span class="nav-text">隐藏与显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%A1%E5%85%A5%E6%B7%A1%E5%87%BA"><span class="nav-number">2.2.</span> <span class="nav-text">淡入淡出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E6%95%88%E6%9E%9C"><span class="nav-number">2.3.</span> <span class="nav-text">滑动效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jQuery%E5%8A%A8%E7%94%BB"><span class="nav-number">2.4.</span> <span class="nav-text">jQuery动画</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jQuery%E9%93%BE"><span class="nav-number">2.5.</span> <span class="nav-text">jQuery链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8"><span class="nav-number">2.6.</span> <span class="nav-text">什么是链式调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jq%E7%9A%84%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8"><span class="nav-number">2.7.</span> <span class="nav-text">jq的链式调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E4%BB%BFjQuery%E7%9A%84%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8"><span class="nav-number">2.8.</span> <span class="nav-text">模仿jQuery的链式调用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Li Yudong"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">Li Yudong</p>
+  <div class="site-description" itemprop="description">请乐观，请珍惜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tiarmor1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tiarmor1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1157019137@qq.com" title="E-Mail → mailto:1157019137@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Li Yudong</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib1/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib1/anime.min.js"></script>
+  <script src="/lib1/velocity/velocity.min.js"></script>
+  <script src="/lib1/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/fireworks.js"></script>
+  
+</body>
+</html>
+
